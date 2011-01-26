@@ -3,8 +3,7 @@
 /* User must edit this file, inserting servant  */
 /* specific code between markers. */
 
-#include "OpenRTM-aist.h"
-#include <rtm/OpenRTM-aist-skelimpl.h>
+#include "OpenRTM-aist-skelimpl.h"
 
 /*** epv structures ***/
 static PortableServer_ServantBase__epv impl_SDOPackage_SDOSystemElement_base_epv = {
@@ -595,7 +594,7 @@ impl_SDOPackage_SDOSystemElement__create(PortableServer_POA poa, CORBA_Environme
   return retval;
 }
 
- void
+void
 impl_SDOPackage_SDOSystemElement__destroy(impl_POA_SDOPackage_SDOSystemElement *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -669,7 +668,7 @@ impl_SDOPackage_SDO__create(PortableServer_POA poa, CORBA_Environment *ev)
   return retval;
 }
 
- void
+void
 impl_SDOPackage_SDO__destroy(impl_POA_SDOPackage_SDO *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -889,7 +888,7 @@ impl_SDOPackage_Configuration__create(PortableServer_POA poa, CORBA_Environment 
   return retval;
 }
 
- void
+void
 impl_SDOPackage_Configuration__destroy(impl_POA_SDOPackage_Configuration *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -1171,7 +1170,7 @@ impl_SDOPackage_Monitoring__create(PortableServer_POA poa, CORBA_Environment *ev
   return retval;
 }
 
- void
+void
 impl_SDOPackage_Monitoring__destroy(impl_POA_SDOPackage_Monitoring *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -1232,7 +1231,7 @@ impl_SDOPackage_SDOService__create(PortableServer_POA poa, CORBA_Environment *ev
   return retval;
 }
 
- void
+void
 impl_SDOPackage_SDOService__destroy(impl_POA_SDOPackage_SDOService *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -1293,7 +1292,7 @@ impl_SDOPackage_Organization__create(PortableServer_POA poa, CORBA_Environment *
   return retval;
 }
 
- void
+void
 impl_SDOPackage_Organization__destroy(impl_POA_SDOPackage_Organization *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -1546,7 +1545,7 @@ impl_RTC_ComponentAction__create(PortableServer_POA poa, CORBA_Environment *ev)
   return retval;
 }
 
- void
+void
 impl_RTC_ComponentAction__destroy(impl_POA_RTC_ComponentAction *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -1731,7 +1730,7 @@ impl_RTC_LightweightRTObject__create(PortableServer_POA poa, CORBA_Environment *
   return retval;
 }
 
- void
+void
 impl_RTC_LightweightRTObject__destroy(impl_POA_RTC_LightweightRTObject *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -2051,7 +2050,7 @@ impl_RTC_ExecutionContext__create(PortableServer_POA poa, CORBA_Environment *ev)
   return retval;
 }
 
- void
+void
 impl_RTC_ExecutionContext__destroy(impl_POA_RTC_ExecutionContext *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -2275,7 +2274,7 @@ impl_RTC_PortService__create(PortableServer_POA poa, CORBA_Environment *ev)
   return retval;
 }
 
- void
+void
 impl_RTC_PortService__destroy(impl_POA_RTC_PortService *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -2445,7 +2444,7 @@ impl_RTC_ExecutionContextService__create(PortableServer_POA poa, CORBA_Environme
   return retval;
 }
 
- void
+void
 impl_RTC_ExecutionContextService__destroy(impl_POA_RTC_ExecutionContextService *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -2682,7 +2681,7 @@ impl_RTC_RTObject__create(PortableServer_POA poa, CORBA_Environment *ev)
   return retval;
 }
 
- void
+void
 impl_RTC_RTObject__destroy(impl_POA_RTC_RTObject *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -3187,7 +3186,7 @@ impl_RTC_DataFlowComponentAction__create(PortableServer_POA poa, CORBA_Environme
   return retval;
 }
 
- void
+void
 impl_RTC_DataFlowComponentAction__destroy(impl_POA_RTC_DataFlowComponentAction *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -3290,7 +3289,7 @@ impl_RTC_DataFlowComponent__create(PortableServer_POA poa, CORBA_Environment *ev
   return retval;
 }
 
- void
+void
 impl_RTC_DataFlowComponent__destroy(impl_POA_RTC_DataFlowComponent *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -3393,7 +3392,7 @@ impl_OpenRTM_DataFlowComponent__create(PortableServer_POA poa, CORBA_Environment
   return retval;
 }
 
- void
+void
 impl_OpenRTM_DataFlowComponent__destroy(impl_POA_OpenRTM_DataFlowComponent *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -3496,7 +3495,7 @@ impl_OpenRTM_ExtTrigExecutionContextService__create(PortableServer_POA poa, CORB
   return retval;
 }
 
- void
+void
 impl_OpenRTM_ExtTrigExecutionContextService__destroy(impl_POA_OpenRTM_ExtTrigExecutionContextService *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -3742,7 +3741,7 @@ impl_RTM_Manager__create(PortableServer_POA poa, CORBA_Environment *ev)
   return retval;
 }
 
- void
+void
 impl_RTM_Manager__destroy(impl_POA_RTM_Manager *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -4114,7 +4113,7 @@ impl_OpenRTM_InPortCdr__create(PortableServer_POA poa, CORBA_Environment *ev)
   return retval;
 }
 
- void
+void
 impl_OpenRTM_InPortCdr__destroy(impl_POA_OpenRTM_InPortCdr *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -4189,7 +4188,7 @@ impl_OpenRTM_OutPortCdr__create(PortableServer_POA poa, CORBA_Environment *ev)
   return retval;
 }
 
- void
+void
 impl_OpenRTM_OutPortCdr__destroy(impl_POA_OpenRTM_OutPortCdr *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
