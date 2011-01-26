@@ -1,0 +1,11 @@
+/*
+
+*/
+#include "BasicDataType.idl"
+
+#include "OpenRTM.idl"
+
+#pragma prefix ""
+#include "Manager.idl"
+#include "DataPort.idl"
+
