@@ -1,0 +1,81 @@
+// -*- IDL -*-
+
+/*
+ * $Log: not supported by cvs2svn $
+ *
+ */
+
+#ifndef __MANAGER_IDL__
+#define __MANAGER_IDL__
+
+#include "SDOPackage.idl"
+#include "RTC.idl"
+
+module RTM
+{
+  typedef SDOPackage::NVList NVList;
+
+  struct ModuleProfile
+  {
+    NVList properties;
+  };
+
+  typedef sequence<ModuleProfile> ModuleProfileList;
+  
+  struct ManagerProfile
+  {
+    NVList properties;
+  };
+
+  interface Manager;
+  typedef sequence<Manager> ManagerList;
+
+  interface Manager
+  {
+    RTC::ReturnCode_t load_module(in string pathname, in string initfunc);
+
+    RTC::ReturnCode_t unload_module(in string pathname);
+
+    ModuleProfileList get_loadable_modules();
+
+    ModuleProfileList get_loaded_modules();
+    
+    ModuleProfileList get_factory_profiles();
+
+    RTC::RTObject create_component(in string module_name);
+
+    RTC::ReturnCode_t delete_component(in string instance_name);
+
+    RTC::RTCList get_components();
+
+    RTC::ComponentProfileList get_component_profiles();
+
+    ManagerProfile get_profile();
+
+    NVList get_configuration();
+
+    RTC::ReturnCode_t set_configuration(in string name, in string value);
+
+    boolean is_master();
+
+    ManagerList get_master_managers();
+
+    RTC::ReturnCode_t add_master_manager(in Manager mgr);
+
+    RTC::ReturnCode_t remove_master_manager(in Manager mgr);
+
+    ManagerList get_slave_managers();
+    RTC::ReturnCode_t add_slave_manager(in Manager mgr);
+
+    RTC::ReturnCode_t remove_slave_manager(in Manager mgr);
+
+    RTC::ReturnCode_t fork();
+    RTC::ReturnCode_t shutdown();
+    RTC::ReturnCode_t restart();
+
+    Object get_service(in string name);
+  };
+  
+}; // end of namespace RTM
+
+#endif // __MANAGER_IDL__
