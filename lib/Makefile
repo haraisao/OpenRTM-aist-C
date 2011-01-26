@@ -14,40 +14,42 @@ IDL_FLAGS = -DORBIT2_IDL -I. -Iidl --nocpp-defs
 
 IDL_SOURCES = OpenRTM-aist.idl 
 
-IDL_SKELIMPL = OpenRTM-aist-skelimpl.c
 
 IDL_H = $(IDL_SOURCES:.idl=.h)
 IDL_DECLS_H = $(IDL_SOURCES:.idl=-decls.h)
 IDL_COMMON_C = $(IDL_SOURCES:.idl=-common.c)
 IDL_STUB_C = $(IDL_SOURCES:.idl=-stubs.c)
-IDL_STKEL_C = $(IDL_SOURCES:.idl=skels.c)
+IDL_SKEL_C = $(IDL_SOURCES:.idl=-skels.c)
 
-ALL_SRC = \
+IDL_SKELIMPL = $(IDL_SOURCES:.idl=-skelimpl.c)
+
+IDL_AUTOGEN_SRC = \
         $(IDL_H)   \
         $(IDL_DECLS_H)   \
         $(IDL_COMMON_C)   \
-        $(IDL_STUBS_C)   \
-        $(IDL_SKELS_C)   \
+        $(IDL_STUB_C)   \
+        $(IDL_SKEL_C)
+
+LIB_SOURCES = \
+        $(IDL_COMMON_C)   \
+        $(IDL_STUB_C)   \
+        $(IDL_SKEL_C)   \
         $(IDL_SKELIMPL)
+LIB_SOURCES += Manager.c
 
-LIBRTM = libRTM.so
-
-LIBOBJS = OpenRTM-aist-common.o
-LIBOBJS += OpenRTM-aist-skels.o
-LIBOBJS += OpenRTM-aist-stubs.o
-LIBOBJS += OpenRTM-aist-skelimpl.o
-LIBOBJS += Manager.o
+LIBOBJS = $(LIB_SOURCES:.c=.o)
 
 LINK_LIBS = -L$(RTORB_DIR)/lib -lRtORB
+LIBRTM = libRTM.so
 
 all:
-	$(MAKE) idl_compile
+	$(MAKE) idl_comp
 	$(MAKE) $(LIBRTM) 
 
-idl_compile: $(IDL_SOURCES)
+idl_comp: $(IDL_SOURCES)
 	$(IDL_COMP) $(IDL_FLAGS) $(IDL_SOURCES)
 
-skelImpl: 
+skelimpl: 
 	$(IDL_COMP) $(IDL_FLAGS) --skeleton-impl $(IDL_SOURCES)
 
 $(LIBRTM): $(LIBOBJS)
@@ -55,4 +57,4 @@ $(LIBRTM): $(LIBOBJS)
 
 
 clean:
-	rm *.o $(IDL_H) $(IDL_DECLS_H) $(IDL_COMMON_C) $(IDL_STUB_C) $(IDL_SKEL_C) $(LIBRTM)
+	rm *.o $(IDL_AUTOGEN_SRC) $(LIBRTM)
