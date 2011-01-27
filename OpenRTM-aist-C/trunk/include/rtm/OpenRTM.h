@@ -19,6 +19,7 @@
 #include <rtm/NVUtil.h>
 
 #include <rtm/Manager.h>
+#include <rtm/RTObject.h>
 
 typedef CORBA_RTC_RTObject RTC_RtcBase;
 

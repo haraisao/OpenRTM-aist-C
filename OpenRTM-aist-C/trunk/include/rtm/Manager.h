@@ -18,8 +18,17 @@
 
 typedef struct RTC_Manager_struct{
   void *private;
+  PortableServer_POA poa;
   ECMode_t mode;
   int32_t status;
+
+  int argc;
+  char **argv;
+
+  CORBA_ORB m_pORB;
+  PortableServer_POA m_pPOA;
+  PortableServer_POAManager m_pPOAManager;
+
   RTC_ReturnCode_t (*module_init_func)(struct RTC_Manager_struct *);
 
 }RTC_Manager;
@@ -40,6 +49,16 @@ CORBA_RTC_RTObject* RTC_Manager_createComponent(RTC_Manager *manager, const char
 
 void RTC_Manager_registerFactory(RTC_Manager *manager, RTC_Properties *profile,
       void *(*creat_func)(RTC_Manager *manager),void (*delete_func)(void **obj));
+
+void RTC_Manager_initManager(RTC_Manager *mgr, int argc, char **argv);
+void RTC_Manager_initLogger(RTC_Manager *mgr);
+void RTC_Manager_initORB(RTC_Manager *mgr);
+void RTC_Manager_initNaming(RTC_Manager *mgr);
+void RTC_Manager_initFactories(RTC_Manager *mgr);
+void RTC_Manager_initExecContext(RTC_Manager *mgr);
+void RTC_Manager_initComposite(RTC_Manager *mgr);
+void RTC_Manager_initTimer(RTC_Manager *mgr);
+void RTC_Manager_initManagerServant(RTC_Manager *mgr);
 
 
 

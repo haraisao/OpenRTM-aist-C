@@ -8,6 +8,7 @@ RTORB_DIR  = $(HOME)/src/RtORB-1.0/trunk
 RTM_DIR  = $(HOME)/src/RtORB-1.0/OpenRTM-aist-C/trunk
 
 CFLAGS  = -I$(RTORB_DIR)/include -I. -I$(RTM_DIR)/include
+CFLAGS  += -g
 
 CIN_OBJS = ConsoleInComp.o ConsoleIn.o
 

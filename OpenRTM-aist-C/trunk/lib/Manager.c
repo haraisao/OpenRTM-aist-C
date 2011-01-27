@@ -16,6 +16,16 @@ RTC_Manager_init(int argc, char **argv)
   RTC_Manager *res = (RTC_Manager *)calloc(1,sizeof(RTC_Manager));
 
   if(res != NULL){
+    RTC_Manager_initManager(res, argc, argv);
+    RTC_Manager_initLogger(res);
+    RTC_Manager_initORB(res);
+    RTC_Manager_initNaming(res);
+    RTC_Manager_initFactories(res);
+    RTC_Manager_initExecContext(res);
+    RTC_Manager_initComposite(res);
+    RTC_Manager_initTimer(res);
+    RTC_Manager_initManagerServant(res);
+
     res->status = RTC_INACTIVE;
   }else{
     fprintf(stderr, "ERROR in RTC_Manager_init: fail to create manager\n");
@@ -107,7 +117,7 @@ RTC_RtcBase *
 RTC_Manager_createComponent(RTC_Manager *manager, const char *name)
 {
   RTC_RtcBase *res;
-  res = NULL;
+  res = RTC_DataFlowComponentBase_create(manager);
   return res;
 }
 
@@ -119,6 +129,114 @@ void
 RTC_Manager_registerFactory(RTC_Manager *manager, RTC_Properties *profile,
                             void *(*creat_func)(RTC_Manager *manager),
 			    void (*delete_func)(void **obj))
+{
+
+  return;
+}
+
+/*
+
+*/
+void
+RTC_Manager_initManager(RTC_Manager *mgr, int argc, char **argv)
+{
+
+  mgr->argc = argc;
+  mgr->argv = argv;
+  return;
+}
+
+/*
+
+*/
+void
+RTC_Manager_initLogger(RTC_Manager *mgr)
+{
+
+  return;
+}
+
+/*
+
+*/
+void
+RTC_Manager_initORB(RTC_Manager *mgr)
+{
+  CORBA_Environment env;
+
+  // ORB initialization
+  mgr->m_pORB = (CORBA_ORB)CORBA_ORB_init(&mgr->argc, mgr->argv, 0, &env);
+
+  // Get the RootPOA
+  CORBA_Object poa_obj = CORBA_ORB_resolve_initial_references(mgr->m_pORB, "RootPOA", &env);
+  mgr->m_pPOA = poa_obj->poa;
+
+  catchDefaultException(&env);
+
+  // Get the POAManager
+  mgr->m_pPOAManager =
+         (PortableServer_POAManager)PortableServer_POA__get_the_POAManager(mgr->m_pPOA, &env);
+
+  PortableServer_POAManager_activate(mgr->m_pPOAManager, &env);
+
+  return;
+}
+
+/*
+
+*/
+void
+RTC_Manager_initNaming(RTC_Manager *mgr)
+{
+
+  return;
+}
+
+/*
+
+*/
+void
+RTC_Manager_initFactories(RTC_Manager *mgr)
+{
+
+  return;
+}
+
+/*
+
+*/
+void
+RTC_Manager_initExecContext(RTC_Manager *mgr)
+{
+
+  return;
+}
+
+/*
+
+*/
+void
+RTC_Manager_initComposite(RTC_Manager *mgr)
+{
+
+  return;
+}
+
+/*
+
+*/
+void
+RTC_Manager_initTimer(RTC_Manager *mgr)
+{
+
+  return;
+}
+
+/*
+
+*/
+void
+RTC_Manager_initManagerServant(RTC_Manager *mgr)
 {
 
   return;

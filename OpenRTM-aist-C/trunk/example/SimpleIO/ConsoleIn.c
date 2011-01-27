@@ -30,7 +30,7 @@ ConsoleIn_create(RTC_Manager *manager)
 {
   ConsoleIn *res = (ConsoleIn *)RtORB_calloc(sizeof(ConsoleIn), 1, "Create ConsoleIn");
   res->parent = RTC_DataFlowComponentBase_create(manager);
-  res->m_outOut = RTC_OutPort_create("out", res->m_out);
+  res->m_outOut = RTC_OutPort_create(manager, "out", res->m_out);
 
   // Registration: InPort/OutPort/Service
   // <rtc-template block="registration">

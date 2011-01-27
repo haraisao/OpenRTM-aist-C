@@ -7,6 +7,7 @@ UNAME := $(shell uname -s)
 RTORB_DIR  = $(HOME)/src/RtORB-1.0/trunk
 
 CFLAGS  = -I$(RTORB_DIR)/include -I. -I../include
+CFLAGS  += -g
 
 IDL_COMP  = $(RTORB_DIR)/bin/rtorb-idl
 IDL_FLAGS = -DORBIT2_IDL -I. -Iidl --nocpp-defs
