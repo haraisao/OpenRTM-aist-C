@@ -30,7 +30,7 @@ ConsoleIn_create(RTC_Manager *manager)
 {
   ConsoleIn *res = (ConsoleIn *)RtORB_calloc(sizeof(ConsoleIn), 1, "Create ConsoleIn");
   res->parent = RTC_DataFlowComponentBase_create(manager);
-  res->m_outOut = RTC_OutPort_create("out", m_out);
+  res->m_outOut = RTC_OutPort_create("out", res->m_out);
 
   // Registration: InPort/OutPort/Service
   // <rtc-template block="registration">
@@ -61,6 +61,7 @@ ConsoleIn_onInitialize(ConsoleIn *obj)
   /*
     add Event Listener : DataListener
    */
+#if 0
   RTC_addConnectorDataListener(obj->m_outOut, ON_BUFFER_WRITE,
                                      DataListener_create("ON_BUFFER_WRITE"));
   RTC_addConnectorDataListener(obj->m_outOut, ON_BUFFER_FULL, 
@@ -97,24 +98,24 @@ ConsoleIn_onInitialize(ConsoleIn *obj)
                                      ConnListener_create("ON_CONNECT"));
   RTC_addConnectorListener(obj->m_outOut,ON_DISCONNECT,
                                      ConnListener_create("ON_CONNECT"));
-
-  return RTC_OK;
+#endif
+  return RTC_RTC_OK;
 }
 
 RTC_ReturnCode_t
-ConsoleIn_onExecute(ConsoleIn *obj, RTC_UniqueId ec_id)
+ConsoleIn_onExecute(ConsoleIn *obj, RTC_UniqueIdentifier ec_id)
 {
 
-  fpruntf(stdout, "Please input number: ");
-  fscanf(stdin, "%s", obj->m_out.data);
+  fprintf(stdout, "Please input number: ");
+  fscanf(stdin, "%d", &obj->m_out->data);
 
-  fprintf(stdout, "data=%d\n", obj->m_out.data);
+  fprintf(stdout, "data=%d\n", obj->m_out->data);
 
-  if (obj->m_out.data == 666) return RTC_ERROR;
+  if (obj->m_out->data == 666) return RTC_ERROR;
 
   RTC_OutPort_write(obj->m_outOut);
 
-  return RTC_OK;
+  return RTC_RTC_OK;
 }
 
 

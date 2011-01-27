@@ -16,7 +16,6 @@
 #define RTC_ERROR	-1
 
 
-
 typedef struct RTC_Manager_struct{
   void *private;
   ECMode_t mode;
@@ -37,6 +36,10 @@ void RTC_Manager_stopManager(RTC_Manager *manager);
 void RTC_Manager_delete(RTC_Manager *manager);
 
 CORBA_RTC_RTObject* RTC_Manager_createComponent(RTC_Manager *manager, const char *name);
+
+
+void RTC_Manager_registerFactory(RTC_Manager *manager, RTC_Properties *profile,
+      void *(*creat_func)(RTC_Manager *manager),void (*delete_func)(void **obj));
 
 
 

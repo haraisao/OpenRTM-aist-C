@@ -111,3 +111,15 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *name)
   return res;
 }
 
+/*
+
+*/
+
+void
+RTC_Manager_registerFactory(RTC_Manager *manager, RTC_Properties *profile,
+                            void *(*creat_func)(RTC_Manager *manager),
+			    void (*delete_func)(void **obj))
+{
+
+  return;
+}

@@ -15,8 +15,10 @@
 #include <rtm/OpenRTM-aist-decls.h>
 
 
-#include <rtm/Manager.h>
+#include <rtm/Properties.h>
 #include <rtm/NVUtil.h>
+
+#include <rtm/Manager.h>
 
 typedef CORBA_RTC_RTObject RTC_RtcBase;
 

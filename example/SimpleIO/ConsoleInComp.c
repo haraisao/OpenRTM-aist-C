@@ -17,6 +17,8 @@ MyModuleInit(RTC_Manager *manager)
   RTC_RtcBase *comp;
   RTC_ComponentProfile *prof;
   RTC_PortServiceList *portlist;
+  CORBA_Environment env;
+
   int i, n;
 
   /*
@@ -31,7 +33,7 @@ MyModuleInit(RTC_Manager *manager)
   comp = (RTC_RtcBase *)RTC_Manager_createComponent(manager, "ConsoleIn");
   fprintf(stdout,  "succeed.\n");
 
-  prof = RTC_get_component_profile(comp);
+  prof = RTC_RTObject_get_component_profile(comp, &env);
 
   fprintf(stdout, "=================================================\n" );
   fprintf(stdout, " Component Profile\n");
@@ -48,7 +50,7 @@ MyModuleInit(RTC_Manager *manager)
 
   fprintf(stdout, "=================================================\n");
 
-  portlist = RTC_get_ports(comp);
+  portlist = RTC_RTObject_get_ports(comp, &env);
   n = portlist->_length; 
 
   for (i=0; i < n; ++i)
@@ -56,12 +58,13 @@ MyModuleInit(RTC_Manager *manager)
     RTC_PortService *port;
     RTC_PortProfile *port_profile;
     RTC_PortInterfaceProfileList *iflist;
+    RTC_PortInterfaceProfile *pip;
     int ProfileLen=0;
     int j;
     const char* pol;
 
-    port = portlist->_buffer[i];
-    port_profile = RTC_PortService_get_port_profile(port);
+    port = &(CORBA_sequence_elementAt(portlist,i));
+    port_profile = RTC_PortService_get_port_profile(port, &env);
 
     fprintf(stdout, "=================================================\n");
     if(port_profile != NULL){
@@ -74,13 +77,14 @@ MyModuleInit(RTC_Manager *manager)
     iflist = &port_profile->interfaces;
     ProfileLen = iflist->_length;
 
-    for (j=0; i < n; ++j)
+    for (j=0; j < n; ++j)
     {
-        pol = iflist->_buffer[i].polarity == 0 ? "PROVIDED" : "REQUIRED";
+        pip = &(iflist->_buffer[j]);
+        pol = pip->polarity == 0 ? "PROVIDED" : "REQUIRED";
 
-        fprintf(stdout, "I/F name: %s\n", iflist->_buffer[j].instance_name);
-        fprintf(stdout, "I/F type: %s\n", iflist->_buffer[j].type_name);
-        if(iflist->_buffer[j].polarity == 0){
+        fprintf(stdout, "I/F name: %s\n", pip->instance_name);
+        fprintf(stdout, "I/F type: %s\n", pip->type_name);
+        if(pip->polarity == 0){
           fprintf(stdout, "Polarity: PROVIDED\n");
         }else{
           fprintf(stdout, "Polarity: REQUIRED\n");
