@@ -5,7 +5,7 @@
 
 UNAME := $(shell uname -s)
 RTORB_DIR  = $(HOME)/src/RtORB-1.0/trunk
-RTM_DIR  = $(HOME)/src/RtORB-1.0/RTM-C
+RTM_DIR  = $(HOME)/src/RtORB-1.0/OpenRTM-aist-C/trunk
 
 CFLAGS  = -I$(RTORB_DIR)/include -I. -I$(RTM_DIR)/include
 
@@ -24,4 +24,4 @@ ConsoleInComp: $(CIN_OBJS)
 	$(CC) -o $@ $(CIN_OBJS) $(LINK_LIBS)
 
 clean:
-	rm *-common.c *-skels.c *-stubs.c *.o
+	rm *.o

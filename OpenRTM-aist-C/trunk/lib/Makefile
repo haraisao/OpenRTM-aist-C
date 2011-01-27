@@ -36,6 +36,8 @@ LIB_SOURCES = \
         $(IDL_SKEL_C)   \
         $(IDL_SKELIMPL)
 LIB_SOURCES += Manager.c
+LIB_SOURCES += NVUtil.c
+LIB_SOURCES += RTObject.c
 
 LIBOBJS = $(LIB_SOURCES:.c=.o)
 
