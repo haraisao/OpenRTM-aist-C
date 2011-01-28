@@ -43,7 +43,7 @@ RTC_Manager_setModuleInitProc(RTC_Manager *manager,
 {
 
   if(manager != NULL){
-    manager->module_init_func = init_func;
+    manager->ModuleInitProc = init_func;
   }else{
     fprintf(stderr, "ERROR in RTC_Manager_setModuleInitProc: no manager\n");
   }
@@ -57,8 +57,8 @@ void
 RTC_Manager_activateManager(RTC_Manager *manager)
 {
   if(manager != NULL){
-    if(manager->module_init_func != NULL){
-      RTC_ReturnCode_t res = (manager->module_init_func)(manager);
+    if(manager->ModuleInitProc != NULL){
+      RTC_ReturnCode_t res = (manager->ModuleInitProc)(manager);
       if(res == RTC_RTC_OK){
         manager->status = RTC_ACTIVE;
       }else{
@@ -135,19 +135,21 @@ RTC_Manager_registerFactory(RTC_Manager *manager, RTC_Properties *profile,
 }
 
 /*
-
+  Initialize RTC Manager
 */
 void
 RTC_Manager_initManager(RTC_Manager *mgr, int argc, char **argv)
 {
-
   mgr->argc = argc;
   mgr->argv = argv;
+  
+  mgr->m_config = RTC_Manager_configure(argc, argv);
+
   return;
 }
 
 /*
-
+   Not supported
 */
 void
 RTC_Manager_initLogger(RTC_Manager *mgr)
@@ -188,7 +190,7 @@ RTC_Manager_initORB(RTC_Manager *mgr)
 void
 RTC_Manager_initNaming(RTC_Manager *mgr)
 {
-
+  mgr->m_namingManager = (RTC_NamingManager *)calloc(1, sizeof(RTC_NamingManager));
   return;
 }
 
@@ -240,4 +242,19 @@ RTC_Manager_initManagerServant(RTC_Manager *mgr)
 {
 
   return;
+}
+
+/*
+
+*/
+RTC_Properties *
+RTC_Manager_configure(int argc, char **argv)
+{
+  RTC_Properties *res;
+
+  res = Properties__new();
+
+
+  
+  return res;
 }

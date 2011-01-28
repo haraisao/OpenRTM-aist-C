@@ -8,6 +8,8 @@
 
 #include <rtm/OpenRTM-aist.h>
 #include <rtm/OpenRTM-aist-decls.h>
+#include <rtm/Properties.h>
+#include <rtm/NamingManager.h>
 
 #define RTC_CREATED	0
 #define RTC_INACTIVE	1
@@ -25,14 +27,19 @@ typedef struct RTC_Manager_struct{
   int argc;
   char **argv;
 
+  RTC_Properties *m_config;
+//  ModuleManager *m_module;
+  RTC_NamingManager *m_namingManager;
+// Timer *m_timer;
+// Logger *m_logger;
+
   CORBA_ORB m_pORB;
   PortableServer_POA m_pPOA;
   PortableServer_POAManager m_pPOAManager;
 
-  RTC_ReturnCode_t (*module_init_func)(struct RTC_Manager_struct *);
+  RTC_ReturnCode_t (*ModuleInitProc)(struct RTC_Manager_struct *);
 
 }RTC_Manager;
-
 
 /**** Functions ****/
 RTC_Manager * RTC_Manager_init(int argc, char **argv);
@@ -59,6 +66,8 @@ void RTC_Manager_initExecContext(RTC_Manager *mgr);
 void RTC_Manager_initComposite(RTC_Manager *mgr);
 void RTC_Manager_initTimer(RTC_Manager *mgr);
 void RTC_Manager_initManagerServant(RTC_Manager *mgr);
+
+RTC_Properties * RTC_Manager_configure(int argc, char **argv);
 
 
 
