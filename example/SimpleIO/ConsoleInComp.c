@@ -30,6 +30,8 @@ MyModuleInit(RTC_Manager *manager)
      Create a component: library
   */
   fprintf(stdout,  "Creating a component: \"ConsoleIn\"....");
+  clearEnvironment(&env);
+
   comp = RTC_Manager_createComponent(manager, "ConsoleIn");
   fprintf(stdout,  "succeed.\n");
 
