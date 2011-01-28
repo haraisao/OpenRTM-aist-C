@@ -38,12 +38,12 @@ MyModuleInit(RTC_Manager *manager)
   fprintf(stdout, "=================================================\n" );
   fprintf(stdout, " Component Profile\n");
   fprintf(stdout, "-------------------------------------------------\n" );
-  fprintf(stdout, "InstanceID:     %s", prof->instance_name );
-  fprintf(stdout, "Implementation: %s", prof->type_name );
-  fprintf(stdout, "Description:    %s", prof->description );
-  fprintf(stdout, "Version:        %s", prof->version );
-  fprintf(stdout, "Maker:          %s", prof->vendor );
-  fprintf(stdout, "Category:       %s", prof->category );
+  fprintf(stdout, "InstanceID:     %s\n", prof->instance_name );
+  fprintf(stdout, "Implementation: %s\n", prof->type_name );
+  fprintf(stdout, "Description:    %s\n", prof->description );
+  fprintf(stdout, "Version:        %s\n", prof->version );
+  fprintf(stdout, "Maker:          %s\n", prof->vendor );
+  fprintf(stdout, "Category:       %s\n", prof->category );
   fprintf(stdout, "  Other properties   \n");
 
   NVUtil_dump(prof->properties);
@@ -52,6 +52,10 @@ MyModuleInit(RTC_Manager *manager)
 
   portlist = RTC_RTObject_get_ports(comp, &env);
   n = portlist->_length; 
+
+  if(n == 0){
+      fprintf(stdout, "No data port found.\n");
+  }
 
   for (i=0; i < n; ++i)
   {

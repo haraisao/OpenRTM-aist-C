@@ -2726,6 +2726,8 @@ impl_RTC_RTObject_get_ports(
   RTC_PortServiceList* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+ fprintf(stderr, "CALL impl_RTC_RTObject_get_ports \n");
+  retval = RTC_PortServiceList__alloc();
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -2739,6 +2741,8 @@ impl_RTC_RTObject_get_component_profile(
   RTC_ComponentProfile* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  retval = RTC_ComponentProfile__alloc();
+
     /* ------ ---------- end ------------ ------ */
 
   return retval;
