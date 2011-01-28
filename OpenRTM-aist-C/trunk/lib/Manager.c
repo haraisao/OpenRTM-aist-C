@@ -25,7 +25,6 @@ RTC_Manager_init(int argc, char **argv)
     RTC_Manager_initComposite(res);
     RTC_Manager_initTimer(res);
     RTC_Manager_initManagerServant(res);
-
     res->status = RTC_INACTIVE;
   }else{
     fprintf(stderr, "ERROR in RTC_Manager_init: fail to create manager\n");
@@ -118,6 +117,7 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *name)
 {
   RTC_RtcBase *res;
   res = RTC_DataFlowComponentBase_create(manager);
+
   return res;
 }
 
@@ -250,11 +250,11 @@ RTC_Manager_initManagerServant(RTC_Manager *mgr)
 RTC_Properties *
 RTC_Manager_configure(int argc, char **argv)
 {
-  RTC_Properties *res;
+  int n;
+  RTC_Properties *res = NULL;
 
-  res = Properties__new();
-
-
-  
+/*
+  n = Properties_setDafaults(res, argv, argc);
+ */ 
   return res;
 }
