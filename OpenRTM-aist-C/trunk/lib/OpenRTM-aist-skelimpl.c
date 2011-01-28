@@ -2741,7 +2741,9 @@ impl_RTC_RTObject_get_component_profile(
   RTC_ComponentProfile* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+fprintf(stderr, "Call impl_RTC_RTObject_get_component_profile...\n");
   retval = RTC_ComponentProfile__alloc();
+//  retval = RTC_ComponentProfileList__alloc();
 
     /* ------ ---------- end ------------ ------ */
 
