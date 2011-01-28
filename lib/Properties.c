@@ -79,6 +79,33 @@ Properties_setDafault(RTC_Properties *prop, char *key, char *value)
   return value;
 }
 
+void
+free_string_array(char **str, int n)
+{
+  int i;
+  for(i=0;i<n;i++){
+    free(str[i]);
+  }
+  free(str);
+}
+
+int
+Properties_setDafaults(RTC_Properties *prop, char **str, int n)
+{
+  int i, n_prop;
+  int count=0;
+  char **vals = split_string(str, ':', &n_prop);
+
+  for(i=0; i<n_prop; i++){
+    if(n_prop == 2){
+      Properties_setDafault(prop, vals[0], vals[1]);
+      count++;
+    }
+    free_string_array(vals, n_prop);
+  }
+  return;
+}
+
 char **
 split_string(char *key, const char delim,  int *n_keys)
 {
