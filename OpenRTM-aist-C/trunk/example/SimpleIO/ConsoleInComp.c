@@ -14,7 +14,7 @@
 RTC_ReturnCode_t
 MyModuleInit(RTC_Manager *manager)
 {
-  RTC_RtcBase *comp;
+  RTC_RtcBase comp;
   RTC_ComponentProfile *prof;
   RTC_PortServiceList *portlist;
   CORBA_Environment env;
@@ -30,7 +30,7 @@ MyModuleInit(RTC_Manager *manager)
      Create a component: library
   */
   fprintf(stdout,  "Creating a component: \"ConsoleIn\"....");
-  comp = (RTC_RtcBase *)RTC_Manager_createComponent(manager, "ConsoleIn");
+  comp = RTC_Manager_createComponent(manager, "ConsoleIn");
   fprintf(stdout,  "succeed.\n");
 
   prof = RTC_RTObject_get_component_profile(comp, &env);
@@ -112,13 +112,13 @@ main(int argc, char** argv)
   ECMode_t mode = RTC_MGR_NON_BLOCKING;
 
   manager = RTC_Manager_init(argc, argv);
-
   RTC_Manager_setModuleInitProc(manager, MyModuleInit);
 
   RTC_Manager_activateManager(manager);
 
+#if 0
   RTC_Manager_runManager(manager, mode);
-
+#endif
   return 0;
 }
 
