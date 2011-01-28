@@ -101,7 +101,7 @@ Properties_setDafaults(RTC_Properties *prop, char **str, int n)
       Properties_setDafault(prop, vals[0], vals[1]);
       count++;
     }
-    free_string_array(vals, n_prop);
+//    free_string_array(vals, n_prop);
   }
   return;
 }

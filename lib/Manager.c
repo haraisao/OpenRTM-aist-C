@@ -112,10 +112,10 @@ RTC_Manager_delete(RTC_Manager *manager)
 /*
 
 */
-RTC_RtcBase *
+RTC_RtcBase
 RTC_Manager_createComponent(RTC_Manager *manager, const char *name)
 {
-  RTC_RtcBase *res;
+  RTC_RtcBase res;
   res = RTC_DataFlowComponentBase_create(manager);
 
   return res;
@@ -253,8 +253,8 @@ RTC_Manager_configure(int argc, char **argv)
   int n;
   RTC_Properties *res = NULL;
 
-/*
+
   n = Properties_setDafaults(res, argv, argc);
- */ 
+
   return res;
 }
