@@ -33,6 +33,7 @@ MyModuleInit(RTC_Manager *manager)
   clearEnvironment(&env);
 
   comp = RTC_Manager_createComponent(manager, "ConsoleIn");
+
   fprintf(stdout,  "succeed.\n");
 
   prof = RTC_RTObject_get_component_profile(comp, &env);
@@ -69,7 +70,7 @@ MyModuleInit(RTC_Manager *manager)
     int j;
     const char* pol;
 
-    port = &(CORBA_sequence_elementAt(portlist,i));
+    port = CORBA_sequence_elementAt(portlist,i);
     port_profile = RTC_PortService_get_port_profile(port, &env);
 
     fprintf(stdout, "=================================================\n");
@@ -114,13 +115,12 @@ main(int argc, char** argv)
   ECMode_t mode = RTC_MGR_NON_BLOCKING;
 
   manager = RTC_Manager_init(argc, argv);
+
   RTC_Manager_setModuleInitProc(manager, MyModuleInit);
 
   RTC_Manager_activateManager(manager);
 
-#if 0
   RTC_Manager_runManager(manager, mode);
-#endif
   return 0;
 }
 

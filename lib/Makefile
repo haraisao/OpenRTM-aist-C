@@ -4,7 +4,7 @@
 #
 
 UNAME := $(shell uname -s)
-RTORB_DIR  = $(HOME)/src/RtORB-1.0/trunk
+RTORB_DIR  = $(HOME)/src/RtORB-dev/trunk
 
 CFLAGS  = -I$(RTORB_DIR)/include -I. -I../include
 CFLAGS  += -g

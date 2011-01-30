@@ -27,7 +27,7 @@ typedef struct Properties_struct {
 RTC_Properties *Properties__new();
 void Properties_leaf_append(RTC_Properties *crr, RTC_Properties *next);
 RTC_Properties *Properties_has_key(RTC_Properties *crr, char *key);
-char * Properties_setDafault(RTC_Properties *prop, char *key,  char *value);
+char * Properties_setDefault(RTC_Properties *prop, char *key,  char *value);
 char **split_string(char *key, const char delim,  int *n_keys);
 
 

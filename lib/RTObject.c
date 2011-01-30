@@ -46,3 +46,34 @@ RTC_OutPort_write( OpenRTM_OutPortCdr *port )
 {
   return;
 }
+
+/*
+
+*/
+void
+RTC_RTObject_configureComponent(RTC_RtcBase comp, RTC_Manager *manager)
+{
+
+  return;
+}
+
+/*
+
+*/
+void
+RTC_RTObject_initialize(RTC_RtcBase comp)
+{
+
+  return;
+}
+
+/*
+
+*/
+void
+RTC_RTObject_registerComponent(RTC_RtcBase comp)
+{
+
+  return;
+}
+
