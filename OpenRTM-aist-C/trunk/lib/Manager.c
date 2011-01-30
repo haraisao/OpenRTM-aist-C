@@ -118,6 +118,14 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *name)
   RTC_RtcBase res;
   res = RTC_DataFlowComponentBase_create(manager);
 
+#if 1
+  RTC_RTObject_configureComponent(res, manager);
+
+  RTC_RTObject_RTObject_initialize(res);  
+
+  RTC_RTObject_registerComponent(res);
+#endif
+
   return res;
 }
 
@@ -126,10 +134,14 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *name)
 */
 
 void
-RTC_Manager_registerFactory(RTC_Manager *manager, RTC_Properties *profile,
-                            void *(*creat_func)(RTC_Manager *manager),
+RTC_Manager_registerFactory(RTC_Manager *manager, char **profile,
+                            void *(*create_func)(RTC_Manager *manager),
 			    void (*delete_func)(void **obj))
 {
+  manager->ModuleCreateProc = create_func;
+  manager->ModuleDeleteProc = delete_func;
+
+  manager->ModuleProfile = profile;
 
   return;
 }
@@ -144,6 +156,15 @@ RTC_Manager_initManager(RTC_Manager *mgr, int argc, char **argv)
   mgr->argv = argv;
   
   mgr->m_config = RTC_Manager_configure(argc, argv);
+ 
+#if 0
+  Properties_setProperty(mgr->m_config, "logger.file_name", 
+    formatString(Properties_getProperty(mgr->m_config, "logger.file_name"),
+                 mgr->m_config));
+
+  mgr->m_module = ModuleManager__new(mgr->m_config);
+  mgr->m_terminator = Terminator__new(mgr);
+#endif
 
   return;
 }
@@ -200,7 +221,9 @@ RTC_Manager_initNaming(RTC_Manager *mgr)
 void
 RTC_Manager_initFactories(RTC_Manager *mgr)
 {
-
+#if 0
+  RTC_FacoryInit();
+#endif
   return;
 }
 
@@ -210,6 +233,11 @@ RTC_Manager_initFactories(RTC_Manager *mgr)
 void
 RTC_Manager_initExecContext(RTC_Manager *mgr)
 {
+#if 0
+  RTC_PeriodicExecutionContextInit(mgr);
+  RTC_ExtTrigExecutionContextInit(mgr);
+  RTC_OpenHRPExecutionContextInit(mgr);
+#endif
 
   return;
 }
@@ -220,6 +248,9 @@ RTC_Manager_initExecContext(RTC_Manager *mgr)
 void
 RTC_Manager_initComposite(RTC_Manager *mgr)
 {
+#if 0
+  RTC_PeriodicECSharedCompositeInit(mgr);
+#endif
 
   return;
 }
@@ -230,7 +261,6 @@ RTC_Manager_initComposite(RTC_Manager *mgr)
 void
 RTC_Manager_initTimer(RTC_Manager *mgr)
 {
-
   return;
 }
 
@@ -253,8 +283,7 @@ RTC_Manager_configure(int argc, char **argv)
   int n;
   RTC_Properties *res = NULL;
 
-
-  n = Properties_setDafaults(res, argv, argc);
+  n = Properties_setDefaults(res, argv, argc);
 
   return res;
 }

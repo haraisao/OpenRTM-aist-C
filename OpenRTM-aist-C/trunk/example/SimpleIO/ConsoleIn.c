@@ -122,8 +122,8 @@ ConsoleIn_onExecute(ConsoleIn *obj, RTC_UniqueIdentifier ec_id)
 void
 ConsoleInInit(RTC_Manager* manager)
 {
-    RTC_Properties *profile = consolein_spec;
-    RTC_Manager_registerFactory(manager, profile, ConsoleIn_create, ConsoleIn_delete);
+  RTC_Manager_registerFactory(manager, consolein_spec,
+         ConsoleIn_create, ConsoleIn_delete);
 }
   
 

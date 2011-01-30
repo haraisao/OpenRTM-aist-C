@@ -24,6 +24,8 @@ typedef struct RTC_Manager_struct{
   ECMode_t mode;
   int32_t status;
 
+  char **ModuleProfile;
+
   int argc;
   char **argv;
 
@@ -38,6 +40,10 @@ typedef struct RTC_Manager_struct{
   PortableServer_POAManager m_pPOAManager;
 
   RTC_ReturnCode_t (*ModuleInitProc)(struct RTC_Manager_struct *);
+
+  void *(*ModuleCreateProc)(struct RTC_Manager_struct *manager);
+
+  void (*ModuleDeleteProc)(void **obj);
 
 }RTC_Manager;
 
@@ -54,7 +60,7 @@ void RTC_Manager_delete(RTC_Manager *manager);
 CORBA_RTC_RTObject RTC_Manager_createComponent(RTC_Manager *manager, const char *name);
 
 
-void RTC_Manager_registerFactory(RTC_Manager *manager, RTC_Properties *profile,
+void RTC_Manager_registerFactory(RTC_Manager *manager, char **profile,
       void *(*creat_func)(RTC_Manager *manager),void (*delete_func)(void **obj));
 
 void RTC_Manager_initManager(RTC_Manager *mgr, int argc, char **argv);

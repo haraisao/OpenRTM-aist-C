@@ -4,8 +4,11 @@
 #
 
 UNAME := $(shell uname -s)
-RTORB_DIR  = $(HOME)/src/RtORB-1.0/trunk
-RTM_DIR  = $(HOME)/src/RtORB-1.0/OpenRTM-aist-C/trunk
+RTORB_DIR  = $(HOME)/src/RtORB-dev/trunk
+RTM_DIR  = $(HOME)/src/RtORB-dev/OpenRTM-aist-C/trunk
+
+RTORB_DIR  = $(HOME)/src/RtORB-dev/trunk
+RTM_DIR  = $(HOME)/src/RtORB-dev/OpenRTM-aist-C/trunk
 
 CFLAGS  = -I$(RTORB_DIR)/include -I. -I$(RTM_DIR)/include
 CFLAGS  += -g

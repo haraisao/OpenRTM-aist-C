@@ -48,7 +48,7 @@ Properties_has_key(RTC_Properties *crr, char *key)
 }
 
 char *
-Properties_setDafault(RTC_Properties *prop, char *key, char *value)
+Properties_setDefault(RTC_Properties *prop, char *key, char *value)
 {
   RTC_Properties *crr, *next;
   char **keys;
@@ -56,14 +56,15 @@ Properties_setDafault(RTC_Properties *prop, char *key, char *value)
   int n_keys=1;
 
   keys = split_string(key, '.', &n_keys);
+
   if(n_keys > 0){
+
     if(prop == NULL){
        prop = Properties__new();
     }
 
     crr = prop;
     for(i=0; i<n_keys;i++){
-      fprintf(stderr, "key = %s\n", keys[i]);
       next = Properties_has_key(crr, keys[i]);
       if(next == NULL){
         next = Properties__new();
@@ -74,7 +75,7 @@ Properties_setDafault(RTC_Properties *prop, char *key, char *value)
     }
     crr->default_value = value;
   }else{
-    fprintf(stderr, "Invalid key found: key = %s\n", key);
+    fprintf(stderr, "!!!!Invalid key found: key = %s\n", key);
   }
   return value;
 }
@@ -90,20 +91,25 @@ free_string_array(char **str, int n)
 }
 
 int
-Properties_setDafaults(RTC_Properties *prop, char **str, int n)
+Properties_setDefaults(RTC_Properties *prop, char **str, int n)
 {
-  int i, n_prop;
+  int i, j,n_prop;
   int count=0;
-  char **vals = split_string(str, ':', &n_prop);
 
-  for(i=0; i<n_prop; i++){
-    if(n_prop == 2){
-      Properties_setDafault(prop, vals[0], vals[1]);
-      count++;
+
+  for(j=1;j<n;j++){
+
+  char **vals = split_string(str[j], ':', &n_prop);
+
+    for(i=0; i<n_prop; i++){
+      if(n_prop == 2){
+        Properties_setDefault(prop, vals[0], vals[1]);
+        count++;
+      }
+      //free_string_array(vals, n_prop);
     }
-//    free_string_array(vals, n_prop);
   }
-  return;
+  return count;
 }
 
 char **
@@ -133,15 +139,17 @@ split_string(char *key, const char delim,  int *n_keys)
       }
 
       res[*n_keys] = new_key;
-      *n_keys++;
+     
+      *n_keys += 1;
       s1 = 0;
       len_s1 = 0;
-    }
-    if(s1 == 0){
-      s1 = &key[i];
-      len_s1 = 1;
     }else{
-      len_s1++;
+      if(s1 == 0){
+        s1 = &key[i];
+        len_s1 = 1;
+      }else{
+        len_s1++;
+      }
     }
   }
   if(len_s1 > 0){
@@ -153,6 +161,8 @@ split_string(char *key, const char delim,  int *n_keys)
     }else{
       res = (char **)realloc(res, (*n_keys+1) * sizeof(char *));
     }
+    res[*n_keys] = new_key;
+    *n_keys += 1;
   }
   return res;
 }
