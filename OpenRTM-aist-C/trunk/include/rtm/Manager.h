@@ -35,6 +35,8 @@ typedef struct RTC_Manager_struct{
 // Timer *m_timer;
 // Logger *m_logger;
 
+  RTM_Manager *m_mgrservant;
+
   CORBA_ORB m_pORB;
   PortableServer_POA m_pPOA;
   PortableServer_POAManager m_pPOAManager;
@@ -74,6 +76,9 @@ void RTC_Manager_initTimer(RTC_Manager *mgr);
 void RTC_Manager_initManagerServant(RTC_Manager *mgr);
 
 RTC_Properties * RTC_Manager_configure(int argc, char **argv);
+
+void RTC_Manager_configureComponent(RTC_Manager *mgr, CORBA_RTC_RTObject comp, RTC_Properties *prop);
+void RTC_Manager_registerComponent(RTC_Manager *mgr, CORBA_RTC_RTObject comp);
 
 
 
