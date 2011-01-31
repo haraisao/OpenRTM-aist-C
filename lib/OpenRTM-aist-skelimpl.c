@@ -4,6 +4,7 @@
 /* specific code between markers. */
 
 #include "OpenRTM-aist-skelimpl.h"
+#include <rtm/PortAdmin.h>
 
 /*** epv structures ***/
 static PortableServer_ServantBase__epv impl_SDOPackage_SDOSystemElement_base_epv = {
@@ -2741,9 +2742,18 @@ impl_RTC_RTObject_get_component_profile(
   RTC_ComponentProfile* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
-fprintf(stderr, "Call impl_RTC_RTObject_get_component_profile...\n");
+
+  fprintf(stderr, "Call impl_RTC_RTObject_get_component_profile...\n");
   retval = RTC_ComponentProfile__alloc();
-//  retval = RTC_ComponentProfileList__alloc();
+
+  retval->instance_name = Properties_getProperty(servant->m_properties, "instance_name");
+  retval->type_name     = Properties_getProperty(servant->m_properties,"type_name");
+  retval->description   = Properties_getProperty(servant->m_properties,"description");
+  retval->version       = Properties_getProperty(servant->m_properties,"version");
+  retval->vendor        = Properties_getProperty(servant->m_properties,"vendor");
+  retval->category      = Properties_getProperty(servant->m_properties,"category");
+
+  retval->port_profiles = PortAdmin_getPortProfileList(servant->m_portAdmin);
 
     /* ------ ---------- end ------------ ------ */
 
