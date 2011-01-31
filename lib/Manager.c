@@ -4,6 +4,7 @@
 */
 
 #include <rtm/OpenRTM.h>
+#include <rtm/DefaultConfig.h>
 
 
 /*
@@ -218,6 +219,8 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
 
   RTC_Manager_configureComponent(manager, res, prop);
 
+  Properties_dumpProperties(prop, 0);
+
   clearEnvironment(&env);
   if (RTC_RTObject_initialize(res, &env) != RTC_RTC_OK){
 #if 0
@@ -398,8 +401,21 @@ RTC_Manager_configure(int argc, char **argv)
 {
   int n;
   RTC_Properties *res = NULL;
+  char *val;
+  int i;
+
+  val = default_config[0];
+
+  if( val[0] != '\0'){ res = Properties__new(); }
+
+  for(i=0; val[0] != '\0'; i+=2){
+    Properties_setDefault(res, val, default_config[i+1]);
+    val = default_config[i+2];
+  }
+  Properties_dumpProperties(res, 0);
 
   n = Properties_setDefaults(res, argv, argc);
+
 
   return res;
 }
@@ -418,6 +434,18 @@ RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Propertie
   char *type_conf[128];
   char *name_conf[128];
 
+  if(category == NULL){
+   fprintf(stderr, "ERROR: category not found\n");
+   return ;
+  }
+  if(type_name == NULL){
+   fprintf(stderr, "ERROR: type_name not found\n");
+   return ;
+  }
+  if(inst_name == NULL){
+   fprintf(stderr, "ERROR: inst_name not found\n");
+   return ;
+  }
   sprintf(type_conf, "%s.%s,config_file", category, type_name);
   sprintf(name_conf, "%s.%s,config_file", category, inst_name);
 

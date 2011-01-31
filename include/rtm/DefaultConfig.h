@@ -7,9 +7,9 @@
 #ifndef RTM_DEFAULT_CONFIG_H
 #define RTM_DEFAULT_CONFIG_H
 
-char *openrtm_version = "1.0";
-char *openrtm_name = "OpenRTM-aist-C-1.0";
-char *corba_name = "RtORB-1.0";
+static const char openrtm_version[] = "1.0";
+static const char openrtm_name[] = "OpenRTM-aist-C-1.0";
+static const char corba_name[] = "RtORB-1.0";
 
 static const char* default_config[] =
 {
