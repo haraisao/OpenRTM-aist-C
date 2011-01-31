@@ -53,8 +53,11 @@ Properties_setDefault(RTC_Properties *prop, char *key, char *value)
   RTC_Properties *crr, *next;
   char **keys;
   int i;
-  int n_keys=1;
+  int n_keys=0;
 
+  if(key == NULL) return NULL;
+
+  n_keys=1;
   keys = split_string(key, '.', &n_keys);
 
   if(n_keys > 0){
@@ -120,10 +123,15 @@ split_string(char *key, const char delim,  int *n_keys)
   int i;
   char *s1;
   int len_s1;
-
-  int len = strlen(key);
+  int len = 0;
 
   *n_keys = 0;
+
+  if(key == NULL) {
+    return NULL;
+  }
+
+  len = strlen(key);
 
   for(i=0; i<len;i++){
 
@@ -186,4 +194,72 @@ trim_string(char *key)
     }
   }
   return res;
+}
+
+/*
+
+*/
+char *
+Properties_getProperty(RTC_Properties *prop, char *name)
+{
+
+  return NULL;
+}
+
+/*
+
+*/
+int
+Properties_setProperty(RTC_Properties *prop, char *name, char *value)
+{
+
+  return 0;
+}
+
+/*
+
+*/
+RTC_Properties *
+Properties_getNode(RTC_Properties *prop, char *name)
+{
+
+  return NULL;
+}
+
+/*
+
+*/
+char *
+Properties_formatString(char *format, RTC_Properties *prop)
+{
+
+  return 0;
+}
+/*
+
+*/
+int
+Properties_load(RTC_Properties *prop, char *fname)
+{
+
+  return 0;
+}
+/*
+
+*/
+int
+Properties_appendProperty(RTC_Properties *prop, char *fname, char *value)
+{
+
+  return 0;
+}
+
+/*
+
+*/
+int
+Properties_appendProperties(RTC_Properties *prop, RTC_Properties *aprop)
+{
+
+  return 0;
 }

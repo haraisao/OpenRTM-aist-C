@@ -41,6 +41,7 @@ LIB_SOURCES += NVUtil.c
 LIB_SOURCES += Manager.c
 LIB_SOURCES += RTObject.c
 LIB_SOURCES += PortAdmin.c
+LIB_SOURCES += NamingManager.c
 
 LIBOBJS = $(LIB_SOURCES:.c=.o)
 
