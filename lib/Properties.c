@@ -17,7 +17,6 @@ void
 Properties_leaf_append(RTC_Properties *crr, RTC_Properties *next)
 {
 
-  fprintf(stderr, "APPEND: %s -> %s\n", crr->name, next->name);
   if(crr->n_leaf == 0){
     crr->leaf = (RTC_Properties **)malloc(sizeof(RTC_Properties *));
     crr->leaf[0] = next;
@@ -28,6 +27,7 @@ Properties_leaf_append(RTC_Properties *crr, RTC_Properties *next)
       fprintf(stderr, "ERROR; Properties_leaf_append\n");
       return;
     }
+    crr->leaf = res;
     crr->leaf[crr->n_leaf] = next;
   }
   
@@ -42,6 +42,7 @@ Properties_has_key(RTC_Properties *crr, char *key)
   int i;
   
   if(crr == NULL) { return NULL; }
+
   for(i=0; i< crr->n_leaf; i++){
     if(crr->leaf[i]->name != 0){
       if(strcmp( crr->leaf[i]->name, key) == 0){
@@ -50,9 +51,14 @@ Properties_has_key(RTC_Properties *crr, char *key)
       }
     }
   }
+
   return res;
 }
 
+/*
+
+
+*/
 char *
 Properties_setDefault(RTC_Properties *prop, char *key, char *value)
 {
@@ -87,6 +93,40 @@ Properties_setDefault(RTC_Properties *prop, char *key, char *value)
     crr->value = value;
   }else{
     fprintf(stderr, "!!!!Invalid key found: key = %s\n", key);
+  }
+  return value;
+}
+
+/*
+
+
+*/
+char *
+Properties_setProperty_force(RTC_Properties *prop, char **keys, int n_keys, char *value)
+{
+  RTC_Properties *crr, *next;
+  int i;
+
+  if(keys == NULL) return NULL;
+  if(prop == NULL){
+    fprintf(stderr, "ERROR: Invalid Properties\n");
+  }
+
+  if(n_keys > 0){
+    crr = prop;
+    for(i=0; i<n_keys;i++){
+      next = Properties_has_key(crr, keys[i]);
+      if(next == NULL){
+        next = Properties__new();
+        next->name = keys[i];
+        next->root = crr;
+        Properties_leaf_append(crr, next);
+      }
+      crr = next;
+    }
+    crr->value = value;
+  }else{
+    fprintf(stderr, "!!!!Invalid key found\n");
   }
   return value;
 }
@@ -181,13 +221,6 @@ split_string(char *key, const char delim,  int *n_keys)
     *n_keys += 1;
   }
 
-#if 0
-  fprintf(stderr, "SPLIT: %s: ", key);
-  for(i=0;i< *n_keys; i++){
-   fprintf(stderr, "%s,", res[i]);
-  }
-  fprintf(stderr, "\n");
-#endif
   return res;
 }
 
@@ -229,7 +262,7 @@ Properties_findProperties(RTC_Properties *prop, char *name)
 
 
   for(i=0; i< n_keys; i++){
-    crr = Properties_has_key(crr, name);
+    crr = Properties_has_key(crr, keys[i]);
     if(crr == NULL){ break; }
   }
 
@@ -248,8 +281,15 @@ Properties_getProperty(RTC_Properties *prop, char *name)
 
   if(crr != NULL){
      res = crr->value; 
+     if(res == NULL){
+       res = crr->default_value; 
+     }
   }
-
+#if 0
+  if(res == NULL){
+    fprintf(stderr, "no property in %s\n",name);
+  }
+#endif
   return res;
 }
 /*
@@ -259,12 +299,23 @@ int
 Properties_setProperty(RTC_Properties *prop, char *name, char *value)
 {
   int res = 0;
+#if 0
   RTC_Properties *crr = Properties_findProperties(prop, name);
 
   if(crr != NULL){
      crr->value = value; 
      res = 1;
   }
+#else
+  char **keys;
+  int n_keys;
+
+  if(value != NULL){
+    keys = split_string(name, '.', &n_keys);
+    Properties_setProperty_force(prop,  keys, n_keys, value);
+    res = 1;
+  }
+#endif
 
   return res;
 }
@@ -330,6 +381,9 @@ Properties_dumpProperties(RTC_Properties *prop, int idx)
      fprintf(stderr, "No Properties\n");
      return;
   }
+  if(idx == 0) {
+    fprintf(stderr, "========= DUMP ============\n");
+  }
   fprintf(stderr, "%s: %s\n", prop->name, prop->value);
 
   for(i=0;i<prop->n_leaf;i++){
@@ -344,7 +398,7 @@ void print_index(int idx)
 {
   int i;
   for(i=0;i<idx;i++){
-    fprintf(stderr, " ");
+    fprintf(stderr, "  ");
   }
 
   return; 
