@@ -19,9 +19,10 @@ char * RTC_RTObject_getTypeName(CORBA_RTC_RTObject obj);
 char * RTC_RTObject_getInstanceName(CORBA_RTC_RTObject obj);
 int RTC_RTObject_setProperty(CORBA_RTC_RTObject obj, char *name, char *value);
 int RTC_RTObject_appendProperty(CORBA_RTC_RTObject obj, char *name, char *value);
+
 char * RTC_RTObject_getProperty(CORBA_RTC_RTObject obj, char *name);
 int RTC_RTObject_registerProperty(CORBA_RTC_RTObject obj, RTC_Properties *prop);
-int RTC_RTObject_appendProperties(CORBA_RTC_RTObject obj, RTC_Properties *prop);
+RTC_Properties * RTC_RTObject_appendProperties(CORBA_RTC_RTObject obj, RTC_Properties *prop);
 char ** RTC_RTObject_getNamingNames(CORBA_RTC_RTObject obj, int *len);
 
 #endif /* RTM_RTOBJECT_H */

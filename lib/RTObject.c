@@ -112,13 +112,13 @@ RTC_RTObject_registerProperty(CORBA_RTC_RTObject obj, RTC_Properties *prop)
   return 1;
 }
 
-int
+RTC_Properties *
 RTC_RTObject_appendProperties(CORBA_RTC_RTObject obj, RTC_Properties *prop)
 {
   impl_POA_RTC_RTObject  *implobj=(impl_POA_RTC_RTObject *)obj->servant;
-  Properties_appendProperties(implobj->m_properties, prop);
+  implobj->m_properties = Properties_appendProperties(implobj->m_properties, prop);
   
-  return 1;
+  return implobj->m_properties;
 }
 
 char **
@@ -131,4 +131,3 @@ RTC_RTObject_getNamingNames(CORBA_RTC_RTObject obj, int *len)
 
   return NULL;
 }
-

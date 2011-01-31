@@ -230,7 +230,7 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
       } 
     }
 
-  Properties_dumpProperties(prop, 0);
+//  Properties_dumpProperties(prop, 0);
   res = RTC_DataFlowComponentBase_create(manager);
 
 #endif
@@ -455,6 +455,7 @@ RTC_Manager_configure(int argc, char **argv)
 void
 RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Properties *prop)
 {
+  RTC_Properties *type_prop, *name_prop;
 
   char *category  = RTC_RTObject_getCategory(comp);
   char *type_name = RTC_RTObject_getTypeName(comp);
@@ -463,6 +464,7 @@ RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Propertie
   char type_conf[128];
   char name_conf[128];
 
+#if 0
   if(category == NULL){
    fprintf(stderr, "ERROR: category not found\n");
    return ;
@@ -475,10 +477,10 @@ RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Propertie
    fprintf(stderr, "ERROR: inst_name not found\n");
    return ;
   }
+
   sprintf(type_conf, "%s.%s,config_file", category, type_name);
   sprintf(name_conf, "%s.%s,config_file", category, inst_name);
 
-  RTC_Properties *type_prop, *name_prop;
 
   char *conf_file  = Properties_getProperty(mgr->m_config, name_conf);
   if(conf_file != NULL){
@@ -489,9 +491,13 @@ RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Propertie
   if(type_file != NULL){
     Properties_load(type_prop, type_file);
   }
-  
+#endif 
+
   RTC_RTObject_appendProperties(comp, prop);
 
+  Properties_dumpProperties(RTC_RTObject_getProperties(comp), 0);
+
+#if 0
   Properties_appendProperties(type_prop, name_prop);
   RTC_RTObject_appendProperties(comp, type_prop);
  
@@ -505,7 +511,7 @@ RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Propertie
 
   RTC_RTObject_setProperty(comp, "naming.formats", strdup(naming_formats));
   RTC_RTObject_setProperty(comp, "naming.names", naming_name);
-
+#endif
   return;
 }
 

@@ -41,7 +41,7 @@ char * Properties_formatString(char *format, RTC_Properties *prop);
 int Properties_load(RTC_Properties *prop, char *fname);
 
 int Properties_appendProperty(RTC_Properties *prop, char *fname, char *value);
-int Properties_appendProperties(RTC_Properties *prop, RTC_Properties *aprop);
+RTC_Properties * Properties_appendProperties(RTC_Properties *prop, RTC_Properties *aprop);
 void Properties_dumpProperties(RTC_Properties *prop, int idx);
 void print_index(int idx);
 
