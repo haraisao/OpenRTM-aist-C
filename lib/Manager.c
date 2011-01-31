@@ -226,7 +226,7 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
     fprintf(stderr, "ERROR: Fail to initialize a cmponent.\n");
   }  
 
-  RTC_RTObject_registerComponent(res);
+  RTC_Manager_registerComponent(manager, res);
 
   return res;
 }
@@ -444,7 +444,7 @@ RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Propertie
 
   sprintf(naming_formats, "%s, %s", Properties_getProperty(mgr->m_config, "namig_formats"),
                                     RTC_RTObject_getProperty(comp, "namig_formats"));
-  Propertties_formatString(naming_formats, RTC_RTObject_getProperties(comp));
+  Properties_formatString(naming_formats, RTC_RTObject_getProperties(comp));
 
   RTC_RTObject_setProperty(comp, "naming.formats", strdup(naming_formats));
   RTC_RTObject_setProperty(comp, "naming.names", naming_name);
