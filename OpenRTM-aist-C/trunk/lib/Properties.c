@@ -362,11 +362,11 @@ Properties_appendProperty(RTC_Properties *prop, char *fname, char *value)
 /*
 
 */
-int
+RTC_Properties *
 Properties_appendProperties(RTC_Properties *prop, RTC_Properties *aprop)
 {
-
-  return 0;
+  prop = aprop;
+  return prop;
 }
 
 /*
