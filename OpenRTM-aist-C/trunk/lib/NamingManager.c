@@ -25,7 +25,7 @@ RTC_NamingManager_registerNameServer(const char *method, const char *name_server
 }
 
 void
-RTC_NamingManager_bindObject(const char *name, const RTC_RTObject *name_server)
+RTC_NamingManager_bindObject(const char *name, const RTC_RTObject name_server)
 {
 
 }

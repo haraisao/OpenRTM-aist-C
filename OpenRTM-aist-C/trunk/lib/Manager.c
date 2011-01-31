@@ -130,18 +130,18 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
   RTC_Properties *id;
   RTC_Properties *conf;
   RTC_Properties *prop;
+  int i;
 
   if(RTC_Manager_procComponentArgs(args, id, conf) != 1){
     return NULL;
    }
-
 
 #if 0
   if(Properties_findNode("exported_ports") != 0){
     char *exported_ports_str = "";
     char *exported_ports_val;
     char **exported_ports;
-    int i, len;
+    int len;
 
     exported_ports_val = Propertirs_getProperty(conf, "exported_ports");
     exported_ports = split_string(exported_ports_val, ',', &len );
@@ -182,8 +182,6 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
   }
 #endif 
 
-
-
 #if 0
   prop = factory->profile;
   prop = Properties_appendProperties(prop, conf);
@@ -196,7 +194,6 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
       "logger.log_level",
       "naming.enable",
       "naming.type",
-      "naming.formats",
       ""
     };
 
@@ -210,16 +207,42 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
   res = (factory->create)(manager);
 #else
   prop = conf;
+  prop = Properties__new();
+
+//  prop = Properties_appendProperties(prop, conf);
+  const char *inherit_prop[] = {
+      "exec_cxt.periodic.type",
+      "exec_cxt.periodic.rate",
+      "exec_cxt.evdriven.type",
+      "naming.formats",
+      "logger.enable",
+      "logger.log_level",
+      "naming.enable",
+      "naming.type",
+      ""
+    };
+
+//  Properties_dumpProperties(manager->m_config, 0);
+    for(i=0; inherit_prop[i][0] != '\0' ; i++){
+      if(Properties_getProperty(prop,inherit_prop[i]) == NULL){
+        Properties_setProperty(prop, inherit_prop[i],
+          Properties_getProperty(manager->m_config, inherit_prop[i]));
+      } 
+    }
+
+  Properties_dumpProperties(prop, 0);
   res = RTC_DataFlowComponentBase_create(manager);
+
 #endif
+
   if(res == NULL){
-    fprintf(stderr, "ERROR: Fail to create a cmponent.\n");
+    fprintf(stderr, "ERROR: Fail to create a component.\n");
     return;
   }
 
   RTC_Manager_configureComponent(manager, res, prop);
 
-  Properties_dumpProperties(prop, 0);
+//  Properties_dumpProperties(prop, 0);
 
   clearEnvironment(&env);
   if (RTC_RTObject_initialize(res, &env) != RTC_RTC_OK){
@@ -261,6 +284,10 @@ RTC_Manager_initManager(RTC_Manager *mgr, int argc, char **argv)
   mgr->argv = argv;
   
   mgr->m_config = RTC_Manager_configure(argc, argv);
+
+#if 0
+  Properties_dumpProperties(mgr->m_config, 0);
+#endif
  
 #if 0
   mgr->m_module = ModuleManager__new(mgr->m_config);
@@ -380,8 +407,12 @@ RTC_Manager_initManagerServant(RTC_Manager *mgr)
   mgr->m_mgrservant = impl_RTM_Manager__create(mgr->m_pPOA, &ev);
 
   prop = Properties_getNode(mgr->m_config,"manager");
-  names = split_string(Properties_getProperty(prop,"naming_formats"), ',', &len);
 
+  char *value = Properties_getProperty(prop,"naming_formats");
+
+  if(value == NULL){
+    names = split_string(value, ',', &len);
+  }
   char *is_master = Properties_getProperty(prop,"is_master");
   if(is_master != NULL &&  strcmp(is_master, "YES") == 0){
     for(i=0;i<len;i++){
@@ -401,7 +432,7 @@ RTC_Manager_configure(int argc, char **argv)
 {
   int n;
   RTC_Properties *res = NULL;
-  char *val;
+  const char *val;
   int i;
 
   val = default_config[0];
@@ -409,13 +440,11 @@ RTC_Manager_configure(int argc, char **argv)
   if( val[0] != '\0'){ res = Properties__new(); }
 
   for(i=0; val[0] != '\0'; i+=2){
-    Properties_setDefault(res, val, default_config[i+1]);
+    Properties_setDefault(res, (char *)val, (char *)default_config[i+1]);
     val = default_config[i+2];
   }
-  Properties_dumpProperties(res, 0);
 
   n = Properties_setDefaults(res, argv, argc);
-
 
   return res;
 }
@@ -431,8 +460,8 @@ RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Propertie
   char *type_name = RTC_RTObject_getTypeName(comp);
   char *inst_name = RTC_RTObject_getInstanceName(comp);
  
-  char *type_conf[128];
-  char *name_conf[128];
+  char type_conf[128];
+  char name_conf[128];
 
   if(category == NULL){
    fprintf(stderr, "ERROR: category not found\n");

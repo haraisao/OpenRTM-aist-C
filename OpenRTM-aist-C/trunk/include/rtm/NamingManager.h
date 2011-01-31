@@ -7,8 +7,6 @@
 #ifndef RTC_NAMING_MANAGER_H
 #define RTC_NAMING_MANAGER_H
 
-#include <rtm/Manager.h>
-
 typedef struct {
   char *name;
   RTC_RTObject rtobj;
@@ -27,6 +25,10 @@ typedef struct {
 
 
 /*******  ******/
-
+void RTC_NamingManager_registerNameServer(const char *method, const char *name_server);
+void RTC_NamingManager_bindObject(const char *name, const RTC_RTObject name_server);
+void RTC_NamingManager_update();
+void RTC_NamingManager_unbindObject(const char *name);
+void RTC_NamingManager_unbindAll();
 
 #endif /* RTC_NAMING_MANAGER_H */
