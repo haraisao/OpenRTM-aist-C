@@ -1776,6 +1776,8 @@ impl_RTC_LightweightRTObject_initialize(
   RTC_ReturnCode_t retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+ fprintf(stderr, "CALL  impl_RTC_LightweightRTObject_initialize\n");
+  retval = RTC_RTC_OK;
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -2892,6 +2894,8 @@ impl_RTC_RTObject_initialize(
   memset(ev, 0, sizeof(CORBA_Environment));
   RTC_ReturnCode_t retval;
     /* ------   insert method code here  (6) ------ */
+fprintf(stderr, "CALL RTC_RTObject_initialize\n");
+  retval = RTC_RTC_OK;
     /* ------ ---------- end ------------ ------ */
 
   return retval;

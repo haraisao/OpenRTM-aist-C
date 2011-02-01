@@ -263,7 +263,7 @@ Properties_getProperty(RTC_Properties *prop, char *name)
        res = crr->default_value; 
      }
   }
-#if 1
+#if 0
   if(res == NULL){
     fprintf(stderr, "no property in %s\n",name);
   }
@@ -313,7 +313,6 @@ Properties_formatString(char *format, RTC_Properties *prop)
     int i, current, count;
     int len = MIN(strlen(format), MAX_STRBUF);
 
-  fprintf(stderr, "START format: %s\n", format);
 
     memset(str, 0, MAX_STRBUF);
     count = 0;
@@ -394,7 +393,6 @@ Properties_formatString(char *format, RTC_Properties *prop)
       }
     }
     res = strdup(str);
-    fprintf(stderr, "END format: %s\n", str);
   }
 
   return res;

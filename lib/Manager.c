@@ -245,12 +245,12 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
   RTC_Manager_configureComponent(manager, res, prop);
 
   clearEnvironment(&env);
-  if (RTC_RTObject_initialize(res, &env) != RTC_RTC_OK){
+  if ( RTC_RTObject_initialize(res, &env) != RTC_RTC_OK){
 #if 0
     (res->exit)();
 #endif
-    fprintf(stderr, "ERROR: Fail to initialize a cmponent.\n");
-  }  
+    fprintf(stderr, "ERROR: Fail to initialize a component.\n");
+  }
 
   RTC_Manager_registerComponent(manager, res);
 
@@ -468,10 +468,12 @@ RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Propertie
    fprintf(stderr, "ERROR: category not found\n");
    return ;
   }
+
   if(type_name == NULL){
    fprintf(stderr, "ERROR: type_name not found\n");
    return ;
   }
+
   if(inst_name == NULL){
    fprintf(stderr, "ERROR: inst_name not found\n");
    return ;
@@ -534,6 +536,7 @@ RTC_Manager_registerComponent(RTC_Manager *mgr, RTC_RtcBase comp)
   names = RTC_RTObject_getNamingNames(comp, &len);
 
   for (i = 0; i < len; ++i){
+   fprintf(stderr, "NAME = %s\n",names[i]);
     RTC_NamingManager_bindObject(names[i], comp);
   }
 
