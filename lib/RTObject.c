@@ -77,7 +77,6 @@ RTC_RTObject_getInstanceName(CORBA_RTC_RTObject obj)
 {
   impl_POA_RTC_RTObject  *implobj=(impl_POA_RTC_RTObject *)obj->servant;
   return Properties_getProperty(implobj->m_properties, "instance_name");
-
 }
 
 

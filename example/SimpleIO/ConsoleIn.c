@@ -21,7 +21,7 @@ static const char* consolein_spec[] =
     "max_instance",      "10",
     "language",          "C++",
     "lang_type",         "compile",
-    ""
+    NULL, NULL
   };
 // </rtc-template>
 

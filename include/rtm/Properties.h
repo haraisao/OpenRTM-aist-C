@@ -24,6 +24,7 @@ typedef struct Properties_struct {
 /************************/
 RTC_Properties *Properties__new(char *name);
 RTC_Properties * Properties_make_system_default();
+RTC_Properties * Properties_createDefaultProperties(const char **spec);
 void Properties_delete(RTC_Properties *prop);
 
 int Properties_leaf_append(RTC_Properties *crr, RTC_Properties *next);
