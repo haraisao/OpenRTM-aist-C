@@ -257,7 +257,6 @@ Properties_setProperty(RTC_Properties *prop, char *name, char *value)
       crr->value = strdup(value); 
     }
   }
-
   return prop;
 }
 
@@ -267,7 +266,6 @@ Properties_setProperty(RTC_Properties *prop, char *name, char *value)
 RTC_Properties *
 Properties_getNode(RTC_Properties *prop, char *name)
 {
-
   RTC_Properties *crr = Properties_findProperties(prop, name);
   return crr;
 }
@@ -295,9 +293,50 @@ Properties_load(RTC_Properties *prop, char *fname)
 
 */
 RTC_Properties *
+Properties_duplicate(RTC_Properties *prop)
+{
+  RTC_Properties *res = NULL;
+  int i;
+
+  if(prop != NULL){
+    res = Properties__new(prop->name);
+    res->n_leaf = prop->n_leaf; 
+    if( prop->value != NULL){ res->value = strdup(prop->value); }
+    if( prop->default_value != NULL){ res->default_value = strdup(prop->default_value); }
+
+    if(prop->n_leaf > 0){
+      res->leaf =  malloc(sizeof(RTC_Properties *) * prop->n_leaf );
+      for(i=0;i<prop->n_leaf;i++){
+        res->leaf[i] = Properties_duplicate(prop->leaf[i]);
+      }
+    }
+  }
+  return res;
+}
+
+/*
+
+*/
+RTC_Properties *
 Properties_appendProperties(RTC_Properties *prop, RTC_Properties *aprop)
 {
-  prop = aprop;
+  int i;
+  if(prop == NULL){
+    prop = Properties__new("root");
+  }
+
+  for(i=0; i<aprop->n_leaf; i++){
+    RTC_Properties *leaf = aprop->leaf[i];
+    char *name = leaf->name;
+    RTC_Properties *crr = Properties_findProperties(prop, name);
+
+    if(crr == NULL){
+       Properties_leaf_append(prop, Properties_duplicate(leaf));
+    }else{
+      if(leaf->value != NULL){ crr->value = strdup(leaf->value); }
+      Properties_appendProperties(crr, leaf);
+    }
+  }
   return prop;
 }
 
