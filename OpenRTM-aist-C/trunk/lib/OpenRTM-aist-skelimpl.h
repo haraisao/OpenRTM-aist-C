@@ -5,6 +5,7 @@
 
 #ifndef OPENRTM_AIST_SKELIMPL_H
 #define OPENRTM_AIST_SKELIMPL_H
+
 #include "OpenRTM-aist.h"
 #include <rtm/Properties.h>
 #include <rtm/PortAdmin.h>

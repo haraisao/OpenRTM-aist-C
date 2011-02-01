@@ -38,6 +38,7 @@ LIB_SOURCES = \
         $(IDL_SKELIMPL)
 LIB_SOURCES += Properties.c
 LIB_SOURCES += NVUtil.c
+LIB_SOURCES += Utils.c
 LIB_SOURCES += Manager.c
 LIB_SOURCES += RTObject.c
 LIB_SOURCES += PortAdmin.c

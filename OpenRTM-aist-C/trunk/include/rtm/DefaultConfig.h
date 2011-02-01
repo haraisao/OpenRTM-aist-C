@@ -74,7 +74,7 @@ static const char* default_config[] =
   "manager.modules.Java.profile_cmd",   "rtcprof_java",
   "manager.modules.Java.suffixes",      "class",
   "manager.modules.Java.load_paths",    "./",
-  ""
+  NULL, NULL
 };
 
 

@@ -140,24 +140,24 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
   if(Properties_findNode("exported_ports") != 0){
     char *exported_ports_str = "";
     char *exported_ports_val;
-    char **exported_ports;
-    int len;
+    string_sequence *exported_ports;
 
     exported_ports_val = Propertirs_getProperty(conf, "exported_ports");
-    exported_ports = split_string(exported_ports_val, ',', &len );
-    for(i=0; i<len;++i){
-      char **keyvals;
+    exported_ports = split_string(exported_ports_val, ',', 0);
+
+    for(i=0; i<exported_ports->length;++i){
+      string_sequence *keyvals;
       int key_len;
-      keyvals =  split_string(exported_ports[i], '.', &key_len);
-      if(key_len > 2){
-        append_string(exported_ports_str, keyvals[0]);
+      keyvals =  split_string(exported_ports->buffer[i], '.', 0);
+      if(keyvals->length > 2){
+        append_string(exported_ports_str, keyvals->buffer[0]);
         append_string(exported_ports_str, ","); 
-        append_string(exported_ports_str, keyvals[len -1]);
+        append_string(exported_ports_str, keyvals->buffer[keyvals->length -1]);
       }else{
-        append_string(exported_ports_str, exported_ports[i]);
+        append_string(exported_ports_str, exported_ports->buffer[i]);
       }
 
-      if( i != len -1){
+      if( i != kexported_poets->length -1){
         append_string(exported_ports_str, ",");
       }
     }
@@ -207,7 +207,7 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
   res = (factory->create)(manager);
 #else
   prop = conf;
-  prop = Properties__new();
+  prop = Properties__new("root");
 
 //  prop = Properties_appendProperties(prop, conf);
   const char *inherit_prop[] = {
@@ -222,15 +222,13 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
       ""
     };
 
-//  Properties_dumpProperties(manager->m_config, 0);
     for(i=0; inherit_prop[i][0] != '\0' ; i++){
-      if(Properties_getProperty(prop,inherit_prop[i]) == NULL){
-        Properties_setProperty(prop, inherit_prop[i],
-          Properties_getProperty(manager->m_config, inherit_prop[i]));
+      if(Properties_getProperty(prop,(char *)inherit_prop[i]) == NULL){
+        Properties_setProperty(prop, (char *)inherit_prop[i],
+          Properties_getProperty(manager->m_config, (char *)inherit_prop[i]));
       } 
     }
 
-//  Properties_dumpProperties(prop, 0);
   res = RTC_DataFlowComponentBase_create(manager);
 
 #endif
@@ -241,8 +239,6 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
   }
 
   RTC_Manager_configureComponent(manager, res, prop);
-
-//  Properties_dumpProperties(prop, 0);
 
   clearEnvironment(&env);
   if (RTC_RTObject_initialize(res, &env) != RTC_RTC_OK){
@@ -402,7 +398,7 @@ RTC_Manager_initManagerServant(RTC_Manager *mgr)
   CORBA_Environment ev;
   int i, len;
   RTC_Properties *prop;
-  char **names;
+  string_sequence *names;
 
   mgr->m_mgrservant = impl_RTM_Manager__create(mgr->m_pPOA, &ev);
 
@@ -411,12 +407,14 @@ RTC_Manager_initManagerServant(RTC_Manager *mgr)
   char *value = Properties_getProperty(prop,"naming_formats");
 
   if(value == NULL){
-    names = split_string(value, ',', &len);
+    names = split_string(value, ',', 0);
   }
+
   char *is_master = Properties_getProperty(prop,"is_master");
+
   if(is_master != NULL &&  strcmp(is_master, "YES") == 0){
-    for(i=0;i<len;i++){
-      char *mgr_name = Properties_formatString(names[i], prop);
+    for(i=0;i<names->length;i++){
+      char *mgr_name = Properties_formatString(names->buffer[i], prop);
       RTC_NamingManager_bindObject(mgr_name, mgr->m_mgrservant);
     }
   }
@@ -435,16 +433,13 @@ RTC_Manager_configure(int argc, char **argv)
   const char *val;
   int i;
 
-  val = default_config[0];
+#if 0
+  res = Properties__new("root");
+#else
+  res = Properties_make_system_default();
+#endif
 
-  if( val[0] != '\0'){ res = Properties__new(); }
-
-  for(i=0; val[0] != '\0'; i+=2){
-    Properties_setDefault(res, (char *)val, (char *)default_config[i+1]);
-    val = default_config[i+2];
-  }
-
-  n = Properties_setDefaults(res, argv, argc);
+  res = Properties_setDefaults(res, argv, argc);
 
   return res;
 }
