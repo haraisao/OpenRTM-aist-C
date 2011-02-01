@@ -5,8 +5,14 @@
 */
 
 #include <rtm/Utils.h>
+
+#ifndef MAX_STRBUF
 #define MAX_STRBUF		256
+#endif
+
+#ifndef MIN
 #define MIN(a,b)		((a) < (b) ? (a) : (b))
+#endif
 
 
 /*

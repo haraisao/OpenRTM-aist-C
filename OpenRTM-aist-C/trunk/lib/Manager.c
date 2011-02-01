@@ -114,8 +114,10 @@ RTC_Manager_delete(RTC_Manager *manager)
     decompose(arg): args -> id?key0=value0&key1=value1....
 */
 int
-RTC_Manager_procComponentArgs(const char *args, RTC_Properties *id, RTC_Properties *conf)
+RTC_Manager_procComponentArgs(RTC_Manager *mgr, const char *args,
+    RTC_Properties **id, RTC_Properties **conf)
 {
+  *conf = Properties_createDefaultProperties(mgr->ModuleProfile);
   return 1;
 }
 /*
@@ -127,12 +129,12 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
   RTC_RtcBase res;
   CORBA_Environment env;
  
-  RTC_Properties *id;
-  RTC_Properties *conf;
-  RTC_Properties *prop;
+  RTC_Properties *id=NULL;
+  RTC_Properties *conf=NULL;
+  RTC_Properties *prop=NULL;
   int i;
 
-  if(RTC_Manager_procComponentArgs(args, id, conf) != 1){
+  if(RTC_Manager_procComponentArgs(manager, args, &id, &conf) != 1){
     return NULL;
    }
 
@@ -206,10 +208,12 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
 
   res = (factory->create)(manager);
 #else
-  prop = conf;
-  prop = Properties__new("root");
 
-//  prop = Properties_appendProperties(prop, conf);
+  prop = Properties__new("root");
+  prop = Properties_appendProperties(prop, conf);
+
+//  Properties_dumpProperties(conf, 0);
+
   const char *inherit_prop[] = {
       "exec_cxt.periodic.type",
       "exec_cxt.periodic.rate",
@@ -490,23 +494,27 @@ RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Propertie
 
   RTC_RTObject_appendProperties(comp, prop);
 
+#if 0
   Properties_dumpProperties(RTC_RTObject_getProperties(comp), 0);
+#endif
 
 #if 0
   Properties_appendProperties(type_prop, name_prop);
   RTC_RTObject_appendProperties(comp, type_prop);
+#endif
  
   /** create component's name for NameService **/
   char naming_formats[256];
   char *naming_name;
 
-  sprintf(naming_formats, "%s, %s", Properties_getProperty(mgr->m_config, "namig_formats"),
-                                    RTC_RTObject_getProperty(comp, "namig_formats"));
-  Properties_formatString(naming_formats, RTC_RTObject_getProperties(comp));
+  sprintf(naming_formats, "%s, %s", Properties_getProperty(mgr->m_config, "naming.formats"),
+                                    RTC_RTObject_getProperty(comp, "naming.formats"));
+
+  naming_name = Properties_formatString(naming_formats, RTC_RTObject_getProperties(comp));
 
   RTC_RTObject_setProperty(comp, "naming.formats", strdup(naming_formats));
   RTC_RTObject_setProperty(comp, "naming.names", naming_name);
-#endif
+
   return;
 }
 

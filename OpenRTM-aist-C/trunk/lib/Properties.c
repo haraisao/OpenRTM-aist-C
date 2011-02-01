@@ -5,6 +5,15 @@
 
 #include <rtm/Properties.h>
 #include <rtm/DefaultConfig.h>
+
+#ifndef MAX_STRBUF
+#define MAX_STRBUF	256
+#endif
+
+#ifndef MIN
+#define MIN(a,b)		((a) < (b) ? (a) : (b))
+#endif
+
 /*
   GLOBAL Variable
 */
@@ -45,6 +54,27 @@ Properties_make_system_default()
   }
 
   return Default_Config;
+}
+
+/*
+
+*/
+RTC_Properties *
+Properties_createDefaultProperties(const char **spec)
+{
+  RTC_Properties *res;
+  const char *val;
+  int i;
+
+  res = Properties__new("root");
+  val = spec[0];
+
+  for(i=0; val != NULL; i+=2){
+    Properties_setDefault(res, (char *)val, (char *)spec[i+1]);
+    val = spec[i+2];
+  }
+
+  return res;
 }
 
 /*
@@ -233,7 +263,7 @@ Properties_getProperty(RTC_Properties *prop, char *name)
        res = crr->default_value; 
      }
   }
-#if 0
+#if 1
   if(res == NULL){
     fprintf(stderr, "no property in %s\n",name);
   }
@@ -276,8 +306,98 @@ Properties_getNode(RTC_Properties *prop, char *name)
 char *
 Properties_formatString(char *format, RTC_Properties *prop)
 {
+  char *res = NULL;
 
-  return 0;
+  if(format != NULL && prop != NULL){
+    char str[MAX_STRBUF];
+    int i, current, count;
+    int len = MIN(strlen(format), MAX_STRBUF);
+
+  fprintf(stderr, "START format: %s\n", format);
+
+    memset(str, 0, MAX_STRBUF);
+    count = 0;
+    current = 0;
+
+    for(i=0; i<len;i++){
+      char c = format[i];
+      if(c == '%'){
+        count += 1;
+        if( (count % 2) == 0 ){
+          str[current] = c;
+          current += 1;
+        }
+      }else if(c == '$'){
+        count = 0;
+        i += 1;
+        c = format[i];
+        if(c == '{'  || c == '(' ){
+          i += 1;
+          c = format[i];
+          char env[MAX_STRBUF];
+          int j = 0;
+          memset(env,0, MAX_STRBUF);
+          for( ; i<len && c != '}' && c != ')' ;i++){
+            c = format[i+1];
+            env[j]=c;
+            j += 1;
+          }
+          char *envval = getenv(env);
+          if(envval != NULL){
+            int len2 = strlen(envval);
+            strncpy(&str[current], envval, len2);
+            current += len2;
+          }
+        }else{
+         str[current] = c;
+         current += 1;
+        }
+      }else{
+        if( (count > 0) && ((count % 2) == 1)){
+          count = 0;
+          char *val=NULL;
+          int len2;
+
+          if( c == 'n'){
+            val = Properties_getProperty(prop,"instance_name");
+          }else if( c == 't'){
+            val = Properties_getProperty(prop,"type_name");
+          }else if( c == 'm'){
+            val = Properties_getProperty(prop,"type_name");
+          }else if( c == 'v'){
+            val = Properties_getProperty(prop,"version");
+          }else if( c == 'V'){
+            val = Properties_getProperty(prop,"vendor");
+          }else if( c == 'c'){
+            val = Properties_getProperty(prop,"category");
+          }else if( c == 'h'){
+            val = Properties_getProperty(prop,"manager.os.hostname");
+          }else if( c == 'M'){
+            val = Properties_getProperty(prop,"manager.name");
+          }else if( c == 'p'){
+            val = Properties_getProperty(prop,"manager.pid");
+          }else{
+          }
+          if(val != NULL){
+            len2 = strlen(val);
+            strncpy(&str[current], val, len2);
+            current += len2;
+          }else{
+            str[current] = c;
+            current += 1;
+          }
+        }else{
+          count = 0;
+          str[current] = c;
+          current += 1;
+        }
+      }
+    }
+    res = strdup(str);
+    fprintf(stderr, "END format: %s\n", str);
+  }
+
+  return res;
 }
 /*
 
