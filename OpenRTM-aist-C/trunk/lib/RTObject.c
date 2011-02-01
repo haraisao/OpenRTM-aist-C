@@ -115,10 +115,8 @@ RTC_RTObject_appendProperties(CORBA_RTC_RTObject obj, RTC_Properties *prop)
 char **
 RTC_RTObject_getNamingNames(CORBA_RTC_RTObject obj, int *len)
 {
-  len = 0;
+  *len = 0;
   impl_POA_RTC_RTObject  *implobj=(impl_POA_RTC_RTObject *)obj->servant;
-
-
 
   return NULL;
 }
