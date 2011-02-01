@@ -89,14 +89,6 @@ RTC_RTObject_setProperty(CORBA_RTC_RTObject obj, char *name, char *value)
   return 1;
 }
 
-int
-RTC_RTObject_appendProperty(CORBA_RTC_RTObject obj, char *name, char *value)
-{
-  impl_POA_RTC_RTObject  *implobj=(impl_POA_RTC_RTObject *)obj->servant;
-  Properties_appendProperty(implobj->m_properties, name, value);
-  return 1;
-}
-
 char *
 RTC_RTObject_getProperty(CORBA_RTC_RTObject obj, char *name)
 {
