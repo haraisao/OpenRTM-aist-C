@@ -79,6 +79,13 @@ RTC_RTObject_getInstanceName(CORBA_RTC_RTObject obj)
   return Properties_getProperty(implobj->m_properties, "instance_name");
 }
 
+int
+RTC_RTObject_setInstanceName(CORBA_RTC_RTObject obj, char *name)
+{
+  impl_POA_RTC_RTObject  *implobj=(impl_POA_RTC_RTObject *)obj->servant;
+  implobj->m_properties = Properties_setProperty(implobj->m_properties, "instance_name", name);
+  return 1;
+}
 
 int
 RTC_RTObject_setProperty(CORBA_RTC_RTObject obj, char *name, char *value)
@@ -107,16 +114,22 @@ RTC_Properties *
 RTC_RTObject_appendProperties(CORBA_RTC_RTObject obj, RTC_Properties *prop)
 {
   impl_POA_RTC_RTObject  *implobj=(impl_POA_RTC_RTObject *)obj->servant;
-  implobj->m_properties = Properties_appendProperties(implobj->m_properties, prop);
-  
+  if(prop != NULL){
+    implobj->m_properties = Properties_appendProperties(implobj->m_properties, prop);
+  }
   return implobj->m_properties;
 }
 
 char **
 RTC_RTObject_getNamingNames(CORBA_RTC_RTObject obj, int *len)
 {
-  *len = 0;
   impl_POA_RTC_RTObject  *implobj=(impl_POA_RTC_RTObject *)obj->servant;
+  char *names = Properties_getProperty(implobj->m_properties, "naming.names");
 
-  return NULL;
+  string_sequence *tmp = split_string(names, ',', 0);
+  *len = tmp->length;
+  char **res = tmp->buffer;
+
+  free(tmp);
+  return res;
 }

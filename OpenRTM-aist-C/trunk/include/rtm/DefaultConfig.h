@@ -43,7 +43,7 @@ static const char* default_config[] =
   "corba.args",                         "",
   "corba.endpoint",                     "",  /*:port_number */
   "corba.id",                           corba_name,
-  "corba.nameservers",                  "localhost",
+  "corba.nameservers",                  "localhost:2809",
   "corba.master_manager",               "localhost:2810",
   "corba.nameservice.replace_endpoint", "NO",
   "exec_cxt.periodic.type",             "PeriodicExecutionContext",

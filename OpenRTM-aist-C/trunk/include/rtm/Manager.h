@@ -22,6 +22,8 @@ typedef struct RTC_Manager_struct{
   void *private;
   PortableServer_POA poa;
   ECMode_t mode;
+  int32_t m_counter;
+
   int32_t status;
 
   char **ModuleProfile;
@@ -42,9 +44,7 @@ typedef struct RTC_Manager_struct{
   PortableServer_POAManager m_pPOAManager;
 
   RTC_ReturnCode_t (*ModuleInitProc)(struct RTC_Manager_struct *);
-
   void *(*ModuleCreateProc)(struct RTC_Manager_struct *manager);
-
   void (*ModuleDeleteProc)(void **obj);
 
 }RTC_Manager;

@@ -5,7 +5,9 @@
 
 #include <rtm/OpenRTM.h>
 #include <rtm/DefaultConfig.h>
+#include <sys/utsname.h>
 
+#define STR_BUFSIZE	256
 
 /*
  Create RTC_Manager and initialize...
@@ -79,9 +81,11 @@ RTC_Manager_activateManager(RTC_Manager *manager)
 void 
 RTC_Manager_runManager(RTC_Manager *manager, ECMode_t mode)
 {
-
+  CORBA_Environment env;
   if(manager != NULL){
     manager->status = RTC_RUNNING;
+    clearEnvironment(&env);
+    CORBA_ORB_run(manager->m_pORB, &env);
   }else{
     fprintf(stderr, "ERROR in RTC_Manager_runManager: no manager\n");
   }
@@ -111,13 +115,83 @@ RTC_Manager_delete(RTC_Manager *manager)
 }
 
 /*
+
+*/
+RTC_Properties *
+RTC_Manager_setSystemInformation(RTC_Properties *prop)
+{
+    char pidc[8];
+    struct utsname sysinfo;
+    uname(&sysinfo);
+    sprintf(pidc, "%d", getpid());
+
+    prop = Properties_setProperty(prop, "manager.os.name",     sysinfo.sysname);
+    prop = Properties_setProperty(prop, "manager.os.release",  sysinfo.release);
+    prop = Properties_setProperty(prop, "manager.os.version",  sysinfo.version);
+    prop = Properties_setProperty(prop, "manager.os.arch",     sysinfo.machine);
+    prop = Properties_setProperty(prop, "manager.os.hostname", sysinfo.nodename);
+    prop = Properties_setProperty(prop, "manager.pid",         pidc);
+
+  return prop;
+}
+/*
     decompose(arg): args -> id?key0=value0&key1=value1....
 */
 int
 RTC_Manager_procComponentArgs(RTC_Manager *mgr, const char *args,
     RTC_Properties **id, RTC_Properties **conf)
 {
-  *conf = Properties_createDefaultProperties(mgr->ModuleProfile);
+  int n;
+  string_sequence *id_and_conf;
+
+  id_and_conf = split_string((char *)args, '?', 0);
+
+  if(id_and_conf->length > 2){
+    fprintf(stderr, "Invalid arguments. Too more '?' in arg: %s\n", args);
+    free_string_sequence(id_and_conf);
+    return 0;
+  }
+
+  n = count_delim(id_and_conf->buffer[0], ':');
+
+  if(n == 0){
+    *id = Properties_setProperty(NULL, "RTC", "RTC");
+    *id = Properties_setProperty(NULL, "vendor", "");
+    *id = Properties_setProperty(NULL, "category", "");
+    *id = Properties_setProperty(NULL, "implementation_id", id_and_conf->buffer[0]);
+    *id = Properties_setProperty(NULL, "version", "");
+  }else if(n == 4){
+    string_sequence *id_prop;
+    id_prop = split_string((char *)args, ':', 0);
+    *id = Properties_setProperty(NULL, "RTC", id_prop->buffer[0]);
+    *id = Properties_setProperty(NULL, "vendor", id_prop->buffer[1]);
+    *id = Properties_setProperty(NULL, "category", id_prop->buffer[2]);
+    *id = Properties_setProperty(NULL, "implementation_id", id_prop->buffer[3]);
+    *id = Properties_setProperty(NULL, "version", id_prop->buffer[4]);
+    free_string_sequence(id_prop);
+  }else{
+    fprintf(stderr, "Invalid id type: %s\n", id_and_conf->buffer[0]);
+    free_string_sequence(id_and_conf);
+    return 0;
+  }
+
+  *conf = Properties_createDefaultProperties((const char **)mgr->ModuleProfile);
+
+  if(id_and_conf->length == 2){
+    int i;
+    string_sequence *confs = split_string(id_and_conf->buffer[1],'&',0);
+    
+    for(i=0; i<confs->length; i++){
+      string_sequence *keyval = split_string(confs->buffer[i], '=', 0);
+      if(keyval->length == 2){
+         *conf = Properties_setProperty(*conf, keyval->buffer[0], keyval->buffer[2]);
+      }
+      free_string_sequence(keyval);
+    }
+    free_string_sequence(confs);
+  }
+
+  free_string_sequence(id_and_conf);
   return 1;
 }
 /*
@@ -211,8 +285,11 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
 
   prop = Properties__new("root");
   prop = Properties_appendProperties(prop, conf);
+  prop = RTC_Manager_setSystemInformation(prop);
 
-//  Properties_dumpProperties(conf, 0);
+#if 0
+  Properties_dumpProperties(conf, 0);
+#endif
 
   const char *inherit_prop[] = {
       "exec_cxt.periodic.type",
@@ -234,13 +311,17 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
     }
 
   res = RTC_DataFlowComponentBase_create(manager);
-
 #endif
 
   if(res == NULL){
     fprintf(stderr, "ERROR: Fail to create a component.\n");
     return;
   }
+  RTC_RTObject_appendProperties(res, prop);
+  char inst_name[STR_BUFSIZE];
+  sprintf(inst_name, "%s%d",  RTC_RTObject_getTypeName(res), manager->m_counter);
+  manager->m_counter += 1;
+  RTC_RTObject_setInstanceName(res,inst_name);
 
   RTC_Manager_configureComponent(manager, res, prop);
 
@@ -274,6 +355,7 @@ RTC_Manager_registerFactory(RTC_Manager *manager, char **profile,
   return;
 }
 
+
 /*
   Initialize RTC Manager
 */
@@ -282,13 +364,11 @@ RTC_Manager_initManager(RTC_Manager *mgr, int argc, char **argv)
 {
   mgr->argc = argc;
   mgr->argv = argv;
+  mgr->m_counter = 0;
   
   mgr->m_config = RTC_Manager_configure(argc, argv);
+  mgr->m_config = RTC_Manager_setSystemInformation(mgr->m_config);
 
-#if 0
-  Properties_dumpProperties(mgr->m_config, 0);
-#endif
- 
 #if 0
   mgr->m_module = ModuleManager__new(mgr->m_config);
   mgr->m_terminator = Terminator__new(mgr);
@@ -339,20 +419,40 @@ RTC_Manager_initORB(RTC_Manager *mgr)
 void
 RTC_Manager_initNaming(RTC_Manager *mgr)
 {
+  char *type;
+
   mgr->m_namingManager = RTC_NamingManager__new(mgr);
 
+  type = Properties_getProperty(mgr->m_config, "naming.type");
+  if(type == NULL){
+    fprintf(stderr, "Invalid naming.type\n");
+  }else{
+    int i;
+    string_sequence *meth = split_string(type, ',', 0);
+    for(i=0; i<meth->length;i++){
+      char ns[STR_BUFSIZE];
+      char *nss;
+      int j;
+      sprintf(ns, "%s.nameservers", meth->buffer[i]);
+      nss = Properties_getProperty(mgr->m_config, ns);
+      string_sequence *names = split_string(nss, ',', 0);
+      
+      for(j=0;j<names->length;j++){
+        RTC_NamingManager_registerNameServer(mgr->m_namingManager, meth->buffer[i], names->buffer[j]);
+      }
+      free_string_sequence(names);
+    }
+    free_string_sequence(meth);
+  }
   return;
 }
 
 /*
-
+   Not supported
 */
 void
 RTC_Manager_initFactories(RTC_Manager *mgr)
 {
-#if 0
-  RTC_FacoryInit();
-#endif
   return;
 }
 
@@ -385,7 +485,7 @@ RTC_Manager_initComposite(RTC_Manager *mgr)
 }
 
 /*
-
+  Not supported
 */
 void
 RTC_Manager_initTimer(RTC_Manager *mgr)
@@ -419,7 +519,7 @@ RTC_Manager_initManagerServant(RTC_Manager *mgr)
   if(is_master != NULL &&  strcmp(is_master, "YES") == 0){
     for(i=0;i<names->length;i++){
       char *mgr_name = Properties_formatString(names->buffer[i], prop);
-      RTC_NamingManager_bindObject(mgr_name, mgr->m_mgrservant);
+      RTC_NamingManager_bindObject(mgr->m_namingManager, mgr_name, mgr->m_mgrservant);
     }
   }
 
@@ -454,7 +554,7 @@ RTC_Manager_configure(int argc, char **argv)
 void
 RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Properties *prop)
 {
-  RTC_Properties *type_prop, *name_prop;
+  RTC_Properties *type_prop=NULL, *name_prop=NULL;
 
   char *category  = RTC_RTObject_getCategory(comp);
   char *type_name = RTC_RTObject_getTypeName(comp);
@@ -463,7 +563,6 @@ RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Propertie
   char type_conf[128];
   char name_conf[128];
 
-#if 0
   if(category == NULL){
    fprintf(stderr, "ERROR: category not found\n");
    return ;
@@ -492,21 +591,18 @@ RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Propertie
   if(type_file != NULL){
     Properties_load(type_prop, type_file);
   }
-#endif 
-
-  RTC_RTObject_appendProperties(comp, prop);
 
 #if 0
   Properties_dumpProperties(RTC_RTObject_getProperties(comp), 0);
 #endif
 
-#if 0
+
   Properties_appendProperties(type_prop, name_prop);
   RTC_RTObject_appendProperties(comp, type_prop);
-#endif
+
  
   /** create component's name for NameService **/
-  char naming_formats[256];
+  char naming_formats[STR_BUFSIZE];
   char *naming_name;
 
   sprintf(naming_formats, "%s, %s", Properties_getProperty(mgr->m_config, "naming.formats"),
@@ -516,6 +612,7 @@ RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Propertie
 
   RTC_RTObject_setProperty(comp, "naming.formats", strdup(naming_formats));
   RTC_RTObject_setProperty(comp, "naming.names", naming_name);
+  free(naming_name);
 
   return;
 }
@@ -536,8 +633,7 @@ RTC_Manager_registerComponent(RTC_Manager *mgr, RTC_RtcBase comp)
   names = RTC_RTObject_getNamingNames(comp, &len);
 
   for (i = 0; i < len; ++i){
-   fprintf(stderr, "NAME = %s\n",names[i]);
-    RTC_NamingManager_bindObject(names[i], comp);
+    RTC_NamingManager_bindObject(mgr->m_namingManager, names[i], comp);
   }
 
   return;

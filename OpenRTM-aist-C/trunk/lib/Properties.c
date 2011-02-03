@@ -124,7 +124,9 @@ Properties_clearLeaf(RTC_Properties *prop)
 int
 Properties_leaf_append(RTC_Properties *crr, RTC_Properties *next)
 {
-
+  if(crr == NULL || next == NULL){
+    return 0;
+  }
   if(crr->n_leaf == 0){
     crr->leaf = (RTC_Properties **)malloc(sizeof(RTC_Properties *));
   }else{
@@ -439,6 +441,9 @@ RTC_Properties *
 Properties_appendProperties(RTC_Properties *prop, RTC_Properties *aprop)
 {
   int i;
+
+  if(aprop == NULL){ return 0; }
+
   if(prop == NULL){
     prop = Properties__new("root");
   }
