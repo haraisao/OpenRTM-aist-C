@@ -23,8 +23,8 @@ typedef struct PortAdmin_struct {
 /************************/
 RTC_PortAdmin *PortAdmin__new();
 
-RTC_PortServiceList PortAdmin_getPortServiceList(RTC_PortAdmin *admin);
-RTC_PortProfileList PortAdmin_getPortProfileList(RTC_PortAdmin *admin);
+RTC_PortServiceList * PortAdmin_getPortServiceList(RTC_PortAdmin *admin);
+RTC_PortProfileList * PortAdmin_getPortProfileList(RTC_PortAdmin *admin, RTC_PortProfileList *ppl);
 RTC_PortService PortAdmin_getPortRef(RTC_PortAdmin *admin, char *port_name);
 
 RTC_PortService PortAdmin_getPort(RTC_PortAdmin *admin, char *port_name);

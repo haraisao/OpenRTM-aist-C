@@ -8,6 +8,8 @@
 #include <rtm/OpenRTM-aist.h>
 
 
+SDOPackage_NVList * NVUtil_new();
+
 void NVUtil_dump(SDOPackage_NVList nv);
 
 

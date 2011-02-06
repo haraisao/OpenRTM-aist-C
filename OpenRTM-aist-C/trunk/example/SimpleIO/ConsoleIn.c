@@ -45,6 +45,13 @@ ConsoleIn_create(RTC_Manager *manager)
   // Set CORBA Service Ports
   
   // </rtc-template>
+
+ /// register Event Handler
+#if 0
+  RTC_Component_registerHandler(res, "initialize", ConsoleIn_onInitialize);
+  RTC_Component_registerHandler(res, "execution", ConsoleIn_onExecution);
+#endif
+
   return res;
 }
 
@@ -58,6 +65,9 @@ ConsoleIn_delete(ConsoleIn *obj)
 RTC_ReturnCode_t
 ConsoleIn_onInitialize(ConsoleIn *obj)
 {
+
+    RTC_RTObject_addOutPort(obj, "out", obj->m_outOut);
+
   /*
     add Event Listener : DataListener
    */
@@ -122,8 +132,10 @@ ConsoleIn_onExecute(ConsoleIn *obj, RTC_UniqueIdentifier ec_id)
 void
 ConsoleInInit(RTC_Manager* manager)
 {
-  RTC_Manager_registerFactory(manager, consolein_spec,
-         ConsoleIn_create, ConsoleIn_delete);
+  RTC_Manager_registerFactory(manager,
+     consolein_spec,
+     ConsoleIn_create,
+     ConsoleIn_delete);
 }
   
 
