@@ -133,3 +133,51 @@ RTC_RTObject_getNamingNames(CORBA_RTC_RTObject obj, int *len)
   free(tmp);
   return res;
 }
+
+/*
+
+*/
+int
+RTObject_get_owned_contexts(impl_POA_RTC_RTObject *servant, RTC_ExecutionContextList *ec)
+{
+  int res = -1;
+  if(ec == NULL){
+   fprintf(stderr, "Invalid ExecutionContextList\n");
+  }else{
+    ec->_maximum = ec->_length = 0;
+    ec->_release = 0;
+    ec->_buffer = NULL;
+
+    res = ec->_length;
+  }
+  return res;
+}
+
+/*
+
+*/
+int
+RTObject_get_participating_contexts(impl_POA_RTC_RTObject *servant, RTC_ExecutionContextList *ec)
+{
+  int res = -1;
+  if(ec == NULL){
+   fprintf(stderr, "Invalid ExecutionContextList\n");
+  }else{
+    ec->_maximum = ec->_length = 0;
+    ec->_release = 0;
+    ec->_buffer = NULL;
+
+    res = ec->_length;
+  }
+  return res;
+}
+
+/*
+
+*/
+void 
+RTC_RTObject_addOutPort(RTC_RTObject *obj, char *typ, OpenRTM_OutPortCdr port)
+{
+  fprintf(stderr, "Call RTC_RTObject_addOutPort\n");
+
+}

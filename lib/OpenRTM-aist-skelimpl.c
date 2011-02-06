@@ -640,6 +640,13 @@ impl_SDOPackage_SDOSystemElement_get_owned_organizations(
   SDOPackage_OrganizationList* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  fprintf(stderr, " impl_SDOPackage_SDOSystemElement_get_owned_organizations( \n");
+  retval=SDOPackage_OrganizationList__alloc();
+  retval->_maximum=0;
+  retval->_length=0;
+  retval->_release=0;
+  retval->_buffer=NULL;
+  
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -847,11 +854,14 @@ impl_SDOPackage_SDO_get_configuration(
   SDOPackage_Configuration retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  retval = NULL;
+  fprintf(stderr, " impl_SDOPackage_SDO_get_configuration\n");
     /* ------ ---------- end ------------ ------ */
 
   return retval;
 }
 
+#if 0
 SDOPackage_OrganizationList*
 impl_SDOPackage_SDO_get_owned_organizations(
     impl_POA_SDOPackage_SDO *servant,
@@ -860,10 +870,13 @@ impl_SDOPackage_SDO_get_owned_organizations(
   memset(ev, 0, sizeof(CORBA_Environment));
   SDOPackage_OrganizationList* retval;
     /* ------   insert method code here  (6) ------ */
+  retval=NULL;
+  fprintf(stderr, " impl_SDOPackage_SDO_get_owned_organizations( \n");
     /* ------ ---------- end ------------ ------ */
 
   return retval;
 }
+#endif
 
 CORBA_SDOPackage_Configuration 
 impl_SDOPackage_Configuration__create(PortableServer_POA poa, CORBA_Environment *ev)
@@ -1004,6 +1017,8 @@ impl_SDOPackage_Configuration_get_configuration_parameters(
   SDOPackage_ParameterList* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  retval = NULL;
+  fprintf(stderr, "impl_SDOPackage_Configuration_get_configuration_parameters\n");
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -1017,6 +1032,8 @@ impl_SDOPackage_Configuration_get_configuration_parameter_values(
   SDOPackage_NVList* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  retval = NULL;
+  fprintf(stderr, "impl_SDOPackage_Configuration_get_configuration_parameter_values\n");
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -1031,6 +1048,8 @@ impl_SDOPackage_Configuration_get_configuration_parameter_value(
   CORBA_any* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  retval = NULL;
+  fprintf(stderr, "impl_SDOPackage_Configuration_get_configuration_parameter_value\n");
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -1046,6 +1065,8 @@ impl_SDOPackage_Configuration_set_configuration_parameter(
   CORBA_boolean retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  retval = 0;
+  fprintf(stderr, "impl_SDOPackage_Configuration_get_configuration_parameter\n");
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -1060,6 +1081,8 @@ impl_SDOPackage_Configuration_get_configuration_set(
   SDOPackage_ConfigurationSet* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  retval = NULL;
+  fprintf(stderr, "impl_SDOPackage_Configuration_get_configuration_set\n");
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -1074,6 +1097,8 @@ impl_SDOPackage_Configuration_set_configuration_set_values(
   CORBA_boolean retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  retval = 0;
+  fprintf(stderr, "impl_SDOPackage_Configuration_get_configuration_set_value\n");
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -1115,6 +1140,7 @@ impl_SDOPackage_Configuration_get_configuration_sets(
   SDOPackage_ConfigurationSetList* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  retval = NULL;
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -1873,6 +1899,11 @@ impl_RTC_LightweightRTObject_get_owned_contexts(
   RTC_ExecutionContextList* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  fprintf(stderr, "impl_RTC_LightweightRTObject_get_owned_contexts \n");
+  retval = RTC_ExecutionContextList__alloc();
+  
+  RTObject_get_owned_contexts(servant, retval);
+ 
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -1886,6 +1917,9 @@ impl_RTC_LightweightRTObject_get_participating_contexts(
   RTC_ExecutionContextList* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  fprintf(stderr, "impl_RTC_LightweightRTObject_get_paticipating_contexts \n");
+  retval = RTC_ExecutionContextList__alloc();
+  RTObject_get_participating_contexts(servant, retval);
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -1900,6 +1934,7 @@ impl_RTC_LightweightRTObject_get_context_handle(
   RTC_ExecutionContextHandle_t retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  retval = 0;
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -2675,6 +2710,9 @@ impl_RTC_RTObject__create(PortableServer_POA poa, CORBA_Environment *ev)
     * private attributes must be initialized.  */
 
    /* ------ init private attributes here ------ */
+    newservant->m_properties = NULL;
+    newservant->m_portAdmin = NULL;
+    
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
@@ -2728,9 +2766,12 @@ impl_RTC_RTObject_get_ports(
 {
   RTC_PortServiceList* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
+
     /* ------   insert method code here (2)  ------ */
- fprintf(stderr, "CALL impl_RTC_RTObject_get_ports \n");
-  retval = RTC_PortServiceList__alloc();
+  fprintf(stderr, "CALL impl_RTC_RTObject_get_ports \n");
+  retval = PortAdmin_getPortServiceList(servant->m_portAdmin);
+  //retval = RTC_PortServiceList__alloc();
+  
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -2748,14 +2789,29 @@ impl_RTC_RTObject_get_component_profile(
   fprintf(stderr, "Call impl_RTC_RTObject_get_component_profile...\n");
   retval = RTC_ComponentProfile__alloc();
 
-  retval->instance_name = Properties_getProperty(servant->m_properties, "instance_name");
-  retval->type_name     = Properties_getProperty(servant->m_properties,"type_name");
-  retval->description   = Properties_getProperty(servant->m_properties,"description");
-  retval->version       = Properties_getProperty(servant->m_properties,"version");
-  retval->vendor        = Properties_getProperty(servant->m_properties,"vendor");
-  retval->category      = Properties_getProperty(servant->m_properties,"category");
+  retval->instance_name = strdup(Properties_getProperty(servant->m_properties, "instance_name"));
+  retval->type_name     = strdup(Properties_getProperty(servant->m_properties,"type_name"));
+  retval->description   = strdup(Properties_getProperty(servant->m_properties,"description"));
+  retval->version       = strdup(Properties_getProperty(servant->m_properties,"version"));
+  retval->vendor        = strdup(Properties_getProperty(servant->m_properties,"vendor"));
+  retval->category      = strdup(Properties_getProperty(servant->m_properties,"category"));
 
-  retval->port_profiles = PortAdmin_getPortProfileList(servant->m_portAdmin);
+
+  PortAdmin_getPortProfileList(servant->m_portAdmin, &retval->port_profiles);
+#if 0
+  retval->port_profiles._maximum = 0;
+  retval->port_profiles._length = 0;
+  retval->port_profiles._buffer = NULL;
+  retval->port_profiles._release = 0;
+#endif
+  retval->parent = NULL;
+  /*  CORBA_sequence_SDOPackage_NameValue_allocbuf(0); */
+  retval->properties._maximum=0;
+  retval->properties._length=0;
+  retval->properties._buffer=NULL;
+  retval->properties._release=0;
+
+  fprintf(stderr, "End impl_RTC_RTObject_get_component_profile...\n");
 
     /* ------ ---------- end ------------ ------ */
 
@@ -2983,6 +3039,7 @@ impl_RTC_RTObject_get_context(
   return retval;
 }
 
+#if 0
 RTC_ExecutionContextList*
 impl_RTC_RTObject_get_owned_contexts(
     impl_POA_RTC_RTObject *servant,
@@ -2991,10 +3048,13 @@ impl_RTC_RTObject_get_owned_contexts(
   memset(ev, 0, sizeof(CORBA_Environment));
   RTC_ExecutionContextList* retval;
     /* ------   insert method code here  (6) ------ */
+  retval = NULL;
+  fprintf(stderr, "impl_RTC_RTObject_get_owned_contexts \n");
     /* ------ ---------- end ------------ ------ */
 
   return retval;
 }
+#endif
 
 RTC_ExecutionContextList*
 impl_RTC_RTObject_get_participating_contexts(
@@ -3023,6 +3083,7 @@ impl_RTC_RTObject_get_context_handle(
   return retval;
 }
 
+#if 0
 SDOPackage_OrganizationList*
 impl_RTC_RTObject_get_owned_organizations(
     impl_POA_RTC_RTObject *servant,
@@ -3031,10 +3092,13 @@ impl_RTC_RTObject_get_owned_organizations(
   memset(ev, 0, sizeof(CORBA_Environment));
   SDOPackage_OrganizationList* retval;
     /* ------   insert method code here  (6) ------ */
+  retval=NULL;
+  fprintf(stderr, " impl_RTC_RTObjec_get_owned_organizations \n");
     /* ------ ---------- end ------------ ------ */
 
   return retval;
 }
+#endif
 
 SDOPackage_UniqueIdentifier
 impl_RTC_RTObject_get_sdo_id(
@@ -3169,6 +3233,7 @@ impl_RTC_RTObject_get_status(
   return retval;
 }
 
+#if 0
 SDOPackage_Configuration
 impl_RTC_RTObject_get_configuration(
     impl_POA_RTC_RTObject *servant,
@@ -3177,10 +3242,13 @@ impl_RTC_RTObject_get_configuration(
   memset(ev, 0, sizeof(CORBA_Environment));
   SDOPackage_Configuration retval;
     /* ------   insert method code here  (6) ------ */
+  retval = NULL;
+  fprintf(stderr, " impl_RTC_RTObject_get_configuration\n");
     /* ------ ---------- end ------------ ------ */
 
   return retval;
 }
+#endif
 
 CORBA_RTC_DataFlowComponentAction 
 impl_RTC_DataFlowComponentAction__create(PortableServer_POA poa, CORBA_Environment *ev)
@@ -3915,6 +3983,9 @@ impl_RTM_Manager_get_component_profiles(
   RTC_ComponentProfileList* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  retval=NULL;
+
+  fprintf(stderr,"CALL impl_RTM_Manager_get_component_profiles\n");
     /* ------ ---------- end ------------ ------ */
 
   return retval;
@@ -3941,6 +4012,8 @@ impl_RTM_Manager_get_configuration(
   RTM_NVList* retval;
   memset(ev, 0, sizeof(CORBA_Environment));
     /* ------   insert method code here (2)  ------ */
+  retval=NULL;
+  fprintf(stderr, " impl_RTM_Manager_get_configuration\n");
     /* ------ ---------- end ------------ ------ */
 
   return retval;
