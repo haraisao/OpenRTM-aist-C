@@ -90,7 +90,7 @@ split_string(char *str, const char delim, int max)
     if(max < 2){
       count = count_delim(str, delim);
     }else{
-      count = max;
+      count = max-1;
     }
     len = strlen(str);
     res = new_string_sequence(count+1);
@@ -144,7 +144,7 @@ trim_string(char *key)
       tmp = &key[i];
       count = 1;
     }else{
-      if(isblank(key[i]) != 0){
+      if(isblank(key[i]) != 0 || key[i] == '\n'){
         res = (char *)malloc(count + 1);
         strncpy(res,tmp, count);
         res[count] = '\0';

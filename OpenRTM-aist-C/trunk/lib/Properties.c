@@ -402,11 +402,38 @@ Properties_formatString(char *format, RTC_Properties *prop)
 /*
 
 */
-int
+RTC_Properties *
 Properties_load(RTC_Properties *prop, char *fname)
 {
+  FILE *fp;
+  char line[1024];
 
-  return 0;
+  fp = fopen(fname,"r");
+  if(fp != NULL){
+    char *res;
+    res = fgets(line, 1024, fp);
+    do {
+      char *comment = index(line, '#');
+      if(comment != NULL){
+        *comment = '\0';
+      }
+      int n = count_delim(line, ':');
+      if(n > 0){
+        string_sequence *seq = split_string(line, ':', 2);
+        if(strlen(seq->buffer[0]) > 0 && strlen(seq->buffer[1]) > 0){
+          prop = Properties_setProperty(prop, seq->buffer[0], seq->buffer[1]);
+        }
+        free_string_sequence(seq);
+      }
+      res = fgets(line, 1024, fp);
+    
+    } while(res != NULL);
+    fclose(fp);
+  }else{
+    fprintf(stderr," Fail to access a configureation file : %s\n", fname);
+  }
+
+  return prop;
 }
 
 /*

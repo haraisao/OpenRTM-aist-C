@@ -8,6 +8,7 @@ RTORB_DIR  = $(HOME)/src/RtORB-dev/trunk
 
 CFLAGS  = -I$(RTORB_DIR)/include -I. -I../include
 CFLAGS  += -g
+CFLAGS  += -02
 
 IDL_COMP  = $(RTORB_DIR)/bin/rtorb-idl
 IDL_FLAGS = -DORBIT2_IDL -I. -Iidl --nocpp-defs
@@ -43,6 +44,7 @@ LIB_SOURCES += Manager.c
 LIB_SOURCES += RTObject.c
 LIB_SOURCES += PortAdmin.c
 LIB_SOURCES += NamingManager.c
+LIB_SOURCES += ExecutionContext.c
 
 LIBOBJS = $(LIB_SOURCES:.c=.o)
 

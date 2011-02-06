@@ -98,7 +98,6 @@ RTC_Manager_runManager(RTC_Manager *manager, ECMode_t mode)
 void 
 RTC_Manager_stopManager(RTC_Manager *manager)
 {
-
   manager->status = RTC_ACTIVE;
   return;
 }
@@ -287,10 +286,6 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *args)
   prop = Properties_appendProperties(prop, conf);
   prop = RTC_Manager_setSystemInformation(prop);
 
-#if 0
-  Properties_dumpProperties(conf, 0);
-#endif
-
   const char *inherit_prop[] = {
       "exec_cxt.periodic.type",
       "exec_cxt.periodic.rate",
@@ -367,7 +362,6 @@ RTC_Manager_initManager(RTC_Manager *mgr, int argc, char **argv)
   mgr->m_counter = 0;
   
   mgr->m_config = RTC_Manager_configure(argc, argv);
-  mgr->m_config = RTC_Manager_setSystemInformation(mgr->m_config);
 
 #if 0
   mgr->m_module = ModuleManager__new(mgr->m_config);
@@ -395,16 +389,16 @@ RTC_Manager_initORB(RTC_Manager *mgr)
 {
   CORBA_Environment env;
 
-  // ORB initialization
+  /* ORB initialization */
   mgr->m_pORB = (CORBA_ORB)CORBA_ORB_init(&mgr->argc, mgr->argv, 0, &env);
 
-  // Get the RootPOA
+  /* Get the RootPOA */
   CORBA_Object poa_obj = CORBA_ORB_resolve_initial_references(mgr->m_pORB, "RootPOA", &env);
   mgr->m_pPOA = poa_obj->poa;
 
   catchDefaultException(&env);
 
-  // Get the POAManager
+  /* Get the POAManager */
   mgr->m_pPOAManager =
          (PortableServer_POAManager)PortableServer_POA__get_the_POAManager(mgr->m_pPOA, &env);
 
@@ -462,11 +456,9 @@ RTC_Manager_initFactories(RTC_Manager *mgr)
 void
 RTC_Manager_initExecContext(RTC_Manager *mgr)
 {
-#if 0
   RTC_PeriodicExecutionContextInit(mgr);
   RTC_ExtTrigExecutionContextInit(mgr);
   RTC_OpenHRPExecutionContextInit(mgr);
-#endif
 
   return;
 }
@@ -477,9 +469,7 @@ RTC_Manager_initExecContext(RTC_Manager *mgr)
 void
 RTC_Manager_initComposite(RTC_Manager *mgr)
 {
-#if 0
   RTC_PeriodicECSharedCompositeInit(mgr);
-#endif
 
   return;
 }
@@ -535,6 +525,7 @@ RTC_Manager_configure(int argc, char **argv)
   int n;
   RTC_Properties *res = NULL;
   const char *val;
+  char *fname = "rtc.conf";
   int i;
 
 #if 0
@@ -542,8 +533,18 @@ RTC_Manager_configure(int argc, char **argv)
 #else
   res = Properties_make_system_default();
 #endif
+  res = RTC_Manager_setSystemInformation(res);
 
+#if 0
+/*** parse argument and set options **/
   res = Properties_setDefaults(res, argv, argc);
+/*** ***/
+#endif
+
+  res = Properties_load(res, fname);
+#if 0
+  Properties_dumpProperties(res, 0);
+#endif
 
   return res;
 }
@@ -592,14 +593,8 @@ RTC_Manager_configureComponent(RTC_Manager *mgr, RTC_RtcBase comp, RTC_Propertie
     Properties_load(type_prop, type_file);
   }
 
-#if 0
-  Properties_dumpProperties(RTC_RTObject_getProperties(comp), 0);
-#endif
-
-
   Properties_appendProperties(type_prop, name_prop);
   RTC_RTObject_appendProperties(comp, type_prop);
-
  
   /** create component's name for NameService **/
   char naming_formats[STR_BUFSIZE];

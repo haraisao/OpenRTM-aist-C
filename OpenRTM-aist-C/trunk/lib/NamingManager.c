@@ -18,6 +18,9 @@ RTC_NamingManager__new(RTC_Manager *mgr)
   return res;
 }
 
+/*
+
+*/
 void
 RTC_NamingManager_appendNamingBase(RTC_NamingManager *mgr, RTC_Name *name)
 {
@@ -34,6 +37,9 @@ RTC_NamingManager_appendNamingBase(RTC_NamingManager *mgr, RTC_Name *name)
   return;
 }
 
+/*
+
+*/
 RTC_Name *
 RTC_Name__new(char *method, char *name_server, RTC_NamingBase *name)
 {
@@ -45,6 +51,9 @@ RTC_Name__new(char *method, char *name_server, RTC_NamingBase *name)
   return res;
 }
 
+/*
+
+*/
 void
 RTC_NamingManager_registerNameServer(RTC_NamingManager *mgr, 
         const char *method, const char *name_server)
@@ -60,6 +69,9 @@ RTC_NamingManager_registerNameServer(RTC_NamingManager *mgr,
   return;
 }
 
+/*
+
+*/
 void
 RTC_NamingManager_bindObject(RTC_NamingManager *mgr, const char *name, const RTC_RTObject rtobj)
 {
@@ -77,24 +89,36 @@ RTC_NamingManager_bindObject(RTC_NamingManager *mgr, const char *name, const RTC
 #endif
 }
 
+/*
+
+*/
 void
 RTC_NamingManager_update(RTC_NamingManager *mgr)
 {
   return;
 }
 
+/*
+
+*/
 void
 RTC_NamingManager_unbindObject(RTC_NamingManager *mgr, const char *name)
 {
   return;
 }
 
+/*
+
+*/
 void
 RTC_NamingManager_unbindAll(RTC_NamingManager *mgr)
 {
   return;
 }
 
+/*
+
+*/
 RTC_NamingBase *
 NamingOnCorba__new(CORBA_ORB orb, char *name_server)
 {
@@ -105,6 +129,9 @@ NamingOnCorba__new(CORBA_ORB orb, char *name_server)
   return res;
 }
 
+/*
+
+*/
 void
 NamingOnCorba_delete(RTC_NamingBase *nb)
 {
@@ -113,8 +140,11 @@ NamingOnCorba_delete(RTC_NamingBase *nb)
   return;
 }
 
+/*
+
+*/
 int
-NamingOnCorba_connect(RTC_NamingBase *nb)
+NamingOnCorba_resolve(RTC_NamingBase *nb)
 {
   int res = -1;
   char loc[256];
@@ -133,6 +163,9 @@ NamingOnCorba_connect(RTC_NamingBase *nb)
   return res;
 }
 
+/*
+
+*/
 RTC_NamingBase *
 RTC_NamingBase_createNamingObj(RTC_NamingManager *nm, char *method, char *name_server)
 {
@@ -143,7 +176,7 @@ RTC_NamingBase_createNamingObj(RTC_NamingManager *nm, char *method, char *name_s
     if(res == NULL){
       fprintf(stderr, "ERROR in creta NamingOnCorba: (%s)\n", name_server);
     }else{
-      if(NamingOnCorba_connect(res) == 0){
+      if(NamingOnCorba_resolve(res) == 0){
         fprintf(stderr, "=== NameServer resolve suceeded:%s/%s ===\n", method, name_server);
       }else{
         fprintf(stderr, "=== NameServer resolve fail:%s/%s ===\n", method, name_server);
@@ -157,6 +190,9 @@ RTC_NamingBase_createNamingObj(RTC_NamingManager *nm, char *method, char *name_s
   return res;
 }
 
+/*
+
+*/
 RTC_NamingBase_bindObject(RTC_NamingBase *nb, char *name, CORBA_Object obj)
 {
   CosNaming_Name *namingName;

@@ -97,6 +97,9 @@ typedef struct {
     PortableServer_POA poa;
 
     /* ------ add private attributes here ------ */
+
+    char *m_name;
+
     /* ------ ---------- end ------------ ------ */
 
 } impl_POA_RTC_PortService;
