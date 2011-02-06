@@ -40,7 +40,7 @@ char * Properties_getProperty(RTC_Properties *prop, char *name);
 RTC_Properties * Properties_setProperty(RTC_Properties *prop, char *name, char *value);
 RTC_Properties * Properties_getNode(RTC_Properties *prop, char *name);
 char * Properties_formatString(char *format, RTC_Properties *prop);
-int Properties_load(RTC_Properties *prop, char *fname);
+RTC_Properties * Properties_load(RTC_Properties *prop, char *fname);
 
 RTC_Properties * Properties_appendProperties(RTC_Properties *prop, RTC_Properties *aprop);
 void Properties_dumpProperties(RTC_Properties *prop, int idx);
