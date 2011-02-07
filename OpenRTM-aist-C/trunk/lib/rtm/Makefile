@@ -4,13 +4,13 @@
 #
 
 UNAME := $(shell uname -s)
-RTORB_DIR  = $(HOME)/src/RtORB-dev/trunk
+TOP_DIR  = ../..
 
-CFLAGS  = -I$(RTORB_DIR)/include -I. -I../include
+CFLAGS  = -I$(TOP_DIR)/include -I. -I../include
 CFLAGS  += -g
 CFLAGS  += -02
 
-IDL_COMP  = $(RTORB_DIR)/bin/rtorb-idl
+IDL_COMP  = $(TOP_DIR)/idl-compiler/rtorb-idl
 IDL_FLAGS = -DORBIT2_IDL -I. -Iidl --nocpp-defs
 #IDL_FLAGS += --skeleton-impl
 
@@ -48,7 +48,7 @@ LIB_SOURCES += ExecutionContext.c
 
 LIBOBJS = $(LIB_SOURCES:.c=.o)
 
-LINK_LIBS = -L$(RTORB_DIR)/lib -lRtORB
+LINK_LIBS = -L$(TOP_DIR)/lib/orb -lRtORB
 LIBRTM = libRTM.so
 
 all:

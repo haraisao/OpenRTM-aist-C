@@ -13,36 +13,28 @@ ifneq (,$(findstring CYGWIN, $(UNAME)))
 	UNAME = Cygwin
 endif
 
-#CFLAG_OS = -D$(UNAME)
-
 CFLAG_DEBUG = -Wall
-CFLAG_DEBUG += -g
+#CFLAG_DEBUG += -g
 #CFLAG_DEBUG += -DDEBUG
 #CFLAG_DEBUG += -DDEBUG_MALLOC 
 #CFLAG_DEBUG += -DHASH_DEBUG
 #CFLAG_DEBUG += -DDEBUG_GIOP 
-CFLAG_DEBUG += -DMETHOD_LOG
-
-CFLAG_THREAD =
-#CFLAG_THREAD = -DUSE_THREAD -D_REENTRANT
-
-#CFLAGS_UUID =
-#CFLAGS_UUID = -DUSE_UUID
+#CFLAG_DEBUG += -DMETHOD_LOG
 
 ifeq ($(UNAME),Cygwin)
-CFLAGS = $(INCLUDE) $(CFLAG_DEBUG) $(CFLAG_THREAD) $(CFLAGS_UUID)
+CFLAGS = $(INCLUDE) $(CFLAG_DEBUG)
 UUID_LIB = -L/usr/lib/e2fsprogs -luuid
 else
-CFLAGS = -fpic $(INCLUDE) $(CFLAG_DEBUG) $(CFLAG_OS) $(CFLAG_THREAD) $(CFLAG_UUID)
+CFLAGS = -fpic $(INCLUDE) $(CFLAG_DEBUG) $(CFLAG_OS)
 endif
 CFLAGS += -O2
 #CFLAGS += -ansi
 
-TOP_DIR=..
+TOP_DIR=../..
 IDL_SRC = CosNaming
 IDL_SOURCE = $(TOP_DIR)/idl/$(IDL_SRC).idl
 
-INCLUDE = -I. -I../include -I./CosName 
+INCLUDE = -I. -I$(TOP_DIR)/include # -I./CosName 
 
 NAMING_SRCS = CosName/CosNaming-common.c CosName/CosNaming-skels.c CosName/CosNaming-stubs.c CosName/NameService_impl.c
 NAMING_OBJ = $(NAMING_SRCS:.c=.o)
@@ -81,7 +73,7 @@ all:
 
 CosName:
 	if [ ! -L CosName ]; then \
-		ln -s ../CosName ./; \
+		ln -s ../../CosName ./; \
 	fi;
 	
 CosNaming: CosName $(IDL_SOURCE)
@@ -95,11 +87,9 @@ $(LIBORB_A): $(LIBOBJS) $(NAMING_HEADER) $(NAMING_SRCS)
 	$(RANLIB)  $@
 
 clean:
-	$(MAKE) -C CXX clean 
-	rm -f *~  $(LIBOBJS)  $(NAMING_HEADER)
+	rm -f *~  $(LIBOBJS)  $(NAMING_HEADER) $(LIBORB) $(LIBORB_A)
 
 allclean:
-	rm -f *.o *~ $(LIBORB)
+	rm -f *.o *~ $(LIBORB) $(NAMING_HEADER) $(LIBORB) $(LIBORB_A)
 	cd CosName && $(MAKE) allclean
-	cd CXX && $(MAKE) allclean
 

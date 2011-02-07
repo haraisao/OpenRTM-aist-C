@@ -1,1 +1,1 @@
-../../lib/OpenRTM-aist-decls.h
+../../lib/rtm/OpenRTM-aist-decls.h

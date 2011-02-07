@@ -3,242 +3,7 @@
 /* User must edit this file, inserting servant  */
 /* specific code between markers. */
 
-#include "CosNaming.h"
-
-/*** App-specific servant structures ***/
-typedef struct {
-    POA_CosNaming_NamingContext servant;
-    PortableServer_POA poa;
-
-    /* ------ add private attributes here ------ */
-#if __cplusplus
-    CORBA::Object_var impl_obj;
-#endif /* __cplusplus */
-    /* ------ ---------- end ------------ ------ */
-
-} impl_POA_CosNaming_NamingContext;
-
-typedef struct {
-    POA_CosNaming_BindingIterator servant;
-    PortableServer_POA poa;
-
-    /* ------ add private attributes here ------ */
-#if __cplusplus
-    CORBA::Object_var impl_obj;
-#endif /* __cplusplus */
-    /* ------ ---------- end ------------ ------ */
-
-} impl_POA_CosNaming_BindingIterator;
-
-typedef struct {
-    POA_CosNaming_NamingContextExt servant;
-    PortableServer_POA poa;
-
-    /* ------ add private attributes here ------ */
-#if __cplusplus
-    CORBA::Object_var impl_obj;
-#endif /* __cplusplus */
-    /* ------ ---------- end ------------ ------ */
-
-} impl_POA_CosNaming_NamingContextExt;
-
-
-/*** Implementation stub prototypes ***/
-static void impl_CosNaming_NamingContext__destroy(
-  impl_POA_CosNaming_NamingContext *servant,
-  CORBA_Environment *ev);
-
-static CORBA_boolean
-impl_CosNaming_NamingContext__is_a(
-  impl_POA_CosNaming_NamingContext *servant,
-  const CORBA_char * id,
-  CORBA_Environment *ev);
-
-static void
-impl_CosNaming_NamingContext_bind(
-  impl_POA_CosNaming_NamingContext *servant,
-  CosNaming_Name* n,
-  CORBA_Object obj,
-  CORBA_Environment *ev);
-
-static void
-impl_CosNaming_NamingContext_rebind(
-  impl_POA_CosNaming_NamingContext *servant,
-  CosNaming_Name* n,
-  CORBA_Object obj,
-  CORBA_Environment *ev);
-
-static void
-impl_CosNaming_NamingContext_bind_context(
-  impl_POA_CosNaming_NamingContext *servant,
-  CosNaming_Name* n,
-  CosNaming_NamingContext nc,
-  CORBA_Environment *ev);
-
-static void
-impl_CosNaming_NamingContext_rebind_context(
-  impl_POA_CosNaming_NamingContext *servant,
-  CosNaming_Name* n,
-  CosNaming_NamingContext nc,
-  CORBA_Environment *ev);
-
-static CORBA_Object
-impl_CosNaming_NamingContext_resolve(
-  impl_POA_CosNaming_NamingContext *servant,
-  CosNaming_Name* n,
-  CORBA_Environment *ev);
-
-static void
-impl_CosNaming_NamingContext_unbind(
-  impl_POA_CosNaming_NamingContext *servant,
-  CosNaming_Name* n,
-  CORBA_Environment *ev);
-
-static CosNaming_NamingContext
-impl_CosNaming_NamingContext_new_context(
-  impl_POA_CosNaming_NamingContext *servant,
-  CORBA_Environment *ev);
-
-static CosNaming_NamingContext
-impl_CosNaming_NamingContext_bind_new_context(
-  impl_POA_CosNaming_NamingContext *servant,
-  CosNaming_Name* n,
-  CORBA_Environment *ev);
-
-static void
-impl_CosNaming_NamingContext_destroy(
-  impl_POA_CosNaming_NamingContext *servant,
-  CORBA_Environment *ev);
-
-static void
-impl_CosNaming_NamingContext_list(
-  impl_POA_CosNaming_NamingContext *servant,
-  CORBA_unsigned_long how_many,
-  CosNaming_BindingList** bl,
-  CosNaming_BindingIterator* bi,
-  CORBA_Environment *ev);
-
-static void impl_CosNaming_BindingIterator__destroy(
-  impl_POA_CosNaming_BindingIterator *servant,
-  CORBA_Environment *ev);
-
-static CORBA_boolean
-impl_CosNaming_BindingIterator_next_one(
-  impl_POA_CosNaming_BindingIterator *servant,
-  CosNaming_Binding** b,
-  CORBA_Environment *ev);
-
-static CORBA_boolean
-impl_CosNaming_BindingIterator_next_n(
-  impl_POA_CosNaming_BindingIterator *servant,
-  CORBA_unsigned_long how_many,
-  CosNaming_BindingList** bl,
-  CORBA_Environment *ev);
-
-static void
-impl_CosNaming_BindingIterator_destroy(
-  impl_POA_CosNaming_BindingIterator *servant,
-  CORBA_Environment *ev);
-
-static void impl_CosNaming_NamingContextExt__destroy(
-  impl_POA_CosNaming_NamingContextExt *servant,
-  CORBA_Environment *ev);
-
-static CosNaming_NamingContextExt_StringName
-impl_CosNaming_NamingContextExt_to_string(
-  impl_POA_CosNaming_NamingContextExt *servant,
-  CosNaming_Name* n,
-  CORBA_Environment *ev);
-
-static CosNaming_Name*
-impl_CosNaming_NamingContextExt_to_name(
-  impl_POA_CosNaming_NamingContextExt *servant,
-  const CORBA_char * sn,
-  CORBA_Environment *ev);
-
-static CosNaming_NamingContextExt_URLString
-impl_CosNaming_NamingContextExt_to_url(
-  impl_POA_CosNaming_NamingContextExt *servant,
-  const CORBA_char * addr,
-  const CORBA_char * sn,
-  CORBA_Environment *ev);
-
-static CORBA_Object
-impl_CosNaming_NamingContextExt_resolve_str(
-  impl_POA_CosNaming_NamingContextExt *servant,
-  const CORBA_char * n,
-  CORBA_Environment *ev);
-
-static CORBA_boolean
-impl_CosNaming_NamingContextExt__is_a(
-    impl_POA_CosNaming_NamingContextExt *servant,
-    const CORBA_char * id,
-    CORBA_Environment *ev);
-
-static void
-impl_CosNaming_NamingContextExt_bind(
-    impl_POA_CosNaming_NamingContextExt *servant,
-    CosNaming_Name* n,
-    CORBA_Object obj,
-    CORBA_Environment *ev);
-
-static void
-impl_CosNaming_NamingContextExt_rebind(
-    impl_POA_CosNaming_NamingContextExt *servant,
-    CosNaming_Name* n,
-    CORBA_Object obj,
-    CORBA_Environment *ev);
-
-static void
-impl_CosNaming_NamingContextExt_bind_context(
-    impl_POA_CosNaming_NamingContextExt *servant,
-    CosNaming_Name* n,
-    CosNaming_NamingContext nc,
-    CORBA_Environment *ev);
-
-static void
-impl_CosNaming_NamingContextExt_rebind_context(
-    impl_POA_CosNaming_NamingContextExt *servant,
-    CosNaming_Name* n,
-    CosNaming_NamingContext nc,
-    CORBA_Environment *ev);
-
-static CORBA_Object
-impl_CosNaming_NamingContextExt_resolve(
-    impl_POA_CosNaming_NamingContextExt *servant,
-    CosNaming_Name* n,
-    CORBA_Environment *ev);
-
-static void
-impl_CosNaming_NamingContextExt_unbind(
-    impl_POA_CosNaming_NamingContextExt *servant,
-    CosNaming_Name* n,
-    CORBA_Environment *ev);
-
-static CosNaming_NamingContext
-impl_CosNaming_NamingContextExt_new_context(
-    impl_POA_CosNaming_NamingContextExt *servant,
-    CORBA_Environment *ev);
-
-static CosNaming_NamingContext
-impl_CosNaming_NamingContextExt_bind_new_context(
-    impl_POA_CosNaming_NamingContextExt *servant,
-    CosNaming_Name* n,
-    CORBA_Environment *ev);
-
-static void
-impl_CosNaming_NamingContextExt_destroy(
-    impl_POA_CosNaming_NamingContextExt *servant,
-    CORBA_Environment *ev);
-
-static void
-impl_CosNaming_NamingContextExt_list(
-    impl_POA_CosNaming_NamingContextExt *servant,
-    CORBA_unsigned_long how_many,
-    CosNaming_BindingList** bl,
-    CosNaming_BindingIterator* bi,
-    CORBA_Environment *ev);
-
+#include "CosNaming-skelimpl.h"
 
 /*** epv structures ***/
 static PortableServer_ServantBase__epv impl_CosNaming_NamingContext_base_epv = {
@@ -349,7 +114,7 @@ impl_CosNaming_NamingContext__create(PortableServer_POA poa, CORBA_Environment *
   return retval;
 }
 
-static void
+void
 impl_CosNaming_NamingContext__destroy(impl_POA_CosNaming_NamingContext *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -370,9 +135,7 @@ impl_CosNaming_NamingContext__destroy(impl_POA_CosNaming_NamingContext *servant,
 impl_POA_ServantBase * 
 impl_CosNaming_NamingContext__create_servant(PortableServer_POA poa, CORBA_Environment *ev)
 {
-  CORBA_CosNaming_NamingContext retval;
   impl_POA_CosNaming_NamingContext *newservant;
-  PortableServer_ObjectId objid;
 
   newservant = (impl_POA_CosNaming_NamingContext *)RtORB_calloc(1, sizeof(impl_POA_CosNaming_NamingContext), "  create_servant");
   newservant->servant.vepv = &impl_CosNaming_NamingContext_vepv;
@@ -388,13 +151,14 @@ impl_CosNaming_NamingContext__create_servant(PortableServer_POA poa, CORBA_Envir
   return (impl_POA_ServantBase*)newservant;
 }
 
-static CORBA_boolean
+CORBA_boolean
 impl_CosNaming_NamingContext__is_a(
   impl_POA_CosNaming_NamingContext *servant,
   const CORBA_char * id,
   CORBA_Environment *ev)
 {
   CORBA_boolean retval;
+  memset(ev, 0, sizeof(CORBA_Environment));
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
     CORBA::Object *obj_ = reinterpret_cast<CORBA::Object*>(object->impl_obj);
@@ -404,13 +168,13 @@ impl_CosNaming_NamingContext__is_a(
     retval = var;
     ev->_cpp_flag = 1;
 #else /*  C  */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (1) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;
 }
 
-static void
+void
 impl_CosNaming_NamingContext_bind(
   impl_POA_CosNaming_NamingContext *servant,
   CosNaming_Name* n,
@@ -423,12 +187,12 @@ impl_CosNaming_NamingContext_bind(
     CosNaming::NamingContext__impl *impl = dynamic_cast<CosNaming::NamingContext__impl *>(obj_);
     impl->bind(CosNaming::Name_CInArg(n ), CORBA::Object_CInArg(obj ));
 #else /* C */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (3) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /*__cplusplus */
 }
 
-static void
+void
 impl_CosNaming_NamingContext_rebind(
   impl_POA_CosNaming_NamingContext *servant,
   CosNaming_Name* n,
@@ -441,12 +205,12 @@ impl_CosNaming_NamingContext_rebind(
     CosNaming::NamingContext__impl *impl = dynamic_cast<CosNaming::NamingContext__impl *>(obj_);
     impl->rebind(CosNaming::Name_CInArg(n ), CORBA::Object_CInArg(obj ));
 #else /* C */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (3) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /*__cplusplus */
 }
 
-static void
+void
 impl_CosNaming_NamingContext_bind_context(
   impl_POA_CosNaming_NamingContext *servant,
   CosNaming_Name* n,
@@ -459,12 +223,12 @@ impl_CosNaming_NamingContext_bind_context(
     CosNaming::NamingContext__impl *impl = dynamic_cast<CosNaming::NamingContext__impl *>(obj_);
     impl->bind_context(CosNaming::Name_CInArg(n ), CosNaming::NamingContext_CInArg(nc ));
 #else /* C */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (3) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /*__cplusplus */
 }
 
-static void
+void
 impl_CosNaming_NamingContext_rebind_context(
   impl_POA_CosNaming_NamingContext *servant,
   CosNaming_Name* n,
@@ -477,18 +241,19 @@ impl_CosNaming_NamingContext_rebind_context(
     CosNaming::NamingContext__impl *impl = dynamic_cast<CosNaming::NamingContext__impl *>(obj_);
     impl->rebind_context(CosNaming::Name_CInArg(n ), CosNaming::NamingContext_CInArg(nc ));
 #else /* C */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (3) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /*__cplusplus */
 }
 
-static CORBA_Object
+CORBA_Object
 impl_CosNaming_NamingContext_resolve(
   impl_POA_CosNaming_NamingContext *servant,
   CosNaming_Name* n,
   CORBA_Environment *ev)
 {
   CORBA_Object retval;
+  memset(ev, 0, sizeof(CORBA_Environment));
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
     CORBA::Object *obj_ = reinterpret_cast<CORBA::Object*>(object->impl_obj);
@@ -497,13 +262,13 @@ impl_CosNaming_NamingContext_resolve(
     retval = var->_impl;
     ev->_cpp_flag = 1;
 #else /*  C  */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (1) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;
 }
 
-static void
+void
 impl_CosNaming_NamingContext_unbind(
   impl_POA_CosNaming_NamingContext *servant,
   CosNaming_Name* n,
@@ -515,17 +280,18 @@ impl_CosNaming_NamingContext_unbind(
     CosNaming::NamingContext__impl *impl = dynamic_cast<CosNaming::NamingContext__impl *>(obj_);
     impl->unbind(CosNaming::Name_CInArg(n ));
 #else /* C */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (3) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /*__cplusplus */
 }
 
-static CosNaming_NamingContext
+CosNaming_NamingContext
 impl_CosNaming_NamingContext_new_context(
   impl_POA_CosNaming_NamingContext *servant,
   CORBA_Environment *ev)
 {
   CosNaming_NamingContext retval;
+  memset(ev, 0, sizeof(CORBA_Environment));
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
     CORBA::Object *obj_ = reinterpret_cast<CORBA::Object*>(object->impl_obj);
@@ -534,19 +300,20 @@ impl_CosNaming_NamingContext_new_context(
     retval = var.impl();
     ev->_cpp_flag = 1;
 #else /*  C  */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (1) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;
 }
 
-static CosNaming_NamingContext
+CosNaming_NamingContext
 impl_CosNaming_NamingContext_bind_new_context(
   impl_POA_CosNaming_NamingContext *servant,
   CosNaming_Name* n,
   CORBA_Environment *ev)
 {
   CosNaming_NamingContext retval;
+  memset(ev, 0, sizeof(CORBA_Environment));
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
     CORBA::Object *obj_ = reinterpret_cast<CORBA::Object*>(object->impl_obj);
@@ -555,13 +322,13 @@ impl_CosNaming_NamingContext_bind_new_context(
     retval = var.impl();
     ev->_cpp_flag = 1;
 #else /*  C  */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (1) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;
 }
 
-static void
+void
 impl_CosNaming_NamingContext_destroy(
   impl_POA_CosNaming_NamingContext *servant,
   CORBA_Environment *ev)
@@ -572,12 +339,12 @@ impl_CosNaming_NamingContext_destroy(
     CosNaming::NamingContext__impl *impl = dynamic_cast<CosNaming::NamingContext__impl *>(obj_);
     impl->destroy();
 #else /* C */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (3) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /*__cplusplus */
 }
 
-static void
+void
 impl_CosNaming_NamingContext_list(
   impl_POA_CosNaming_NamingContext *servant,
   CORBA_unsigned_long how_many,
@@ -591,7 +358,7 @@ impl_CosNaming_NamingContext_list(
     CosNaming::NamingContext__impl *impl = dynamic_cast<CosNaming::NamingContext__impl *>(obj_);
     impl->list(CORBA::ULong_CInArg(how_many ), CosNaming::BindingList_COutArg(bl ), CosNaming::BindingIterator_COutArg(bi ));
 #else /* C */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (3) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /*__cplusplus */
 }
@@ -620,7 +387,7 @@ impl_CosNaming_BindingIterator__create(PortableServer_POA poa, CORBA_Environment
   return retval;
 }
 
-static void
+void
 impl_CosNaming_BindingIterator__destroy(impl_POA_CosNaming_BindingIterator *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -641,9 +408,7 @@ impl_CosNaming_BindingIterator__destroy(impl_POA_CosNaming_BindingIterator *serv
 impl_POA_ServantBase * 
 impl_CosNaming_BindingIterator__create_servant(PortableServer_POA poa, CORBA_Environment *ev)
 {
-  CORBA_CosNaming_BindingIterator retval;
   impl_POA_CosNaming_BindingIterator *newservant;
-  PortableServer_ObjectId objid;
 
   newservant = (impl_POA_CosNaming_BindingIterator *)RtORB_calloc(1, sizeof(impl_POA_CosNaming_BindingIterator), "  create_servant");
   newservant->servant.vepv = &impl_CosNaming_BindingIterator_vepv;
@@ -659,13 +424,14 @@ impl_CosNaming_BindingIterator__create_servant(PortableServer_POA poa, CORBA_Env
   return (impl_POA_ServantBase*)newservant;
 }
 
-static CORBA_boolean
+CORBA_boolean
 impl_CosNaming_BindingIterator_next_one(
   impl_POA_CosNaming_BindingIterator *servant,
   CosNaming_Binding** b,
   CORBA_Environment *ev)
 {
   CORBA_boolean retval;
+  memset(ev, 0, sizeof(CORBA_Environment));
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
     CORBA::Object *obj_ = reinterpret_cast<CORBA::Object*>(object->impl_obj);
@@ -675,13 +441,13 @@ impl_CosNaming_BindingIterator_next_one(
     retval = var;
     ev->_cpp_flag = 1;
 #else /*  C  */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (1) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;
 }
 
-static CORBA_boolean
+CORBA_boolean
 impl_CosNaming_BindingIterator_next_n(
   impl_POA_CosNaming_BindingIterator *servant,
   CORBA_unsigned_long how_many,
@@ -689,6 +455,7 @@ impl_CosNaming_BindingIterator_next_n(
   CORBA_Environment *ev)
 {
   CORBA_boolean retval;
+  memset(ev, 0, sizeof(CORBA_Environment));
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
     CORBA::Object *obj_ = reinterpret_cast<CORBA::Object*>(object->impl_obj);
@@ -698,13 +465,13 @@ impl_CosNaming_BindingIterator_next_n(
     retval = var;
     ev->_cpp_flag = 1;
 #else /*  C  */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (1) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;
 }
 
-static void
+void
 impl_CosNaming_BindingIterator_destroy(
   impl_POA_CosNaming_BindingIterator *servant,
   CORBA_Environment *ev)
@@ -715,7 +482,7 @@ impl_CosNaming_BindingIterator_destroy(
     CosNaming::BindingIterator__impl *impl = dynamic_cast<CosNaming::BindingIterator__impl *>(obj_);
     impl->destroy();
 #else /* C */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (3) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /*__cplusplus */
 }
@@ -744,7 +511,7 @@ impl_CosNaming_NamingContextExt__create(PortableServer_POA poa, CORBA_Environmen
   return retval;
 }
 
-static void
+void
 impl_CosNaming_NamingContextExt__destroy(impl_POA_CosNaming_NamingContextExt *servant, CORBA_Environment *ev)
 {
     CORBA_Object_release ((CORBA_Object) servant->poa, ev);
@@ -765,9 +532,7 @@ impl_CosNaming_NamingContextExt__destroy(impl_POA_CosNaming_NamingContextExt *se
 impl_POA_ServantBase * 
 impl_CosNaming_NamingContextExt__create_servant(PortableServer_POA poa, CORBA_Environment *ev)
 {
-  CORBA_CosNaming_NamingContextExt retval;
   impl_POA_CosNaming_NamingContextExt *newservant;
-  PortableServer_ObjectId objid;
 
   newservant = (impl_POA_CosNaming_NamingContextExt *)RtORB_calloc(1, sizeof(impl_POA_CosNaming_NamingContextExt), "  create_servant");
   newservant->servant.vepv = &impl_CosNaming_NamingContextExt_vepv;
@@ -783,13 +548,14 @@ impl_CosNaming_NamingContextExt__create_servant(PortableServer_POA poa, CORBA_En
   return (impl_POA_ServantBase*)newservant;
 }
 
-static CosNaming_NamingContextExt_StringName
+CosNaming_NamingContextExt_StringName
 impl_CosNaming_NamingContextExt_to_string(
   impl_POA_CosNaming_NamingContextExt *servant,
   CosNaming_Name* n,
   CORBA_Environment *ev)
 {
   CosNaming_NamingContextExt_StringName retval;
+  memset(ev, 0, sizeof(CORBA_Environment));
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
     CORBA::Object *obj_ = reinterpret_cast<CORBA::Object*>(object->impl_obj);
@@ -799,19 +565,20 @@ impl_CosNaming_NamingContextExt_to_string(
     retval = var;
     ev->_cpp_flag = 1;
 #else /*  C  */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (1) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;
 }
 
-static CosNaming_Name*
+CosNaming_Name*
 impl_CosNaming_NamingContextExt_to_name(
   impl_POA_CosNaming_NamingContextExt *servant,
   const CORBA_char * sn,
   CORBA_Environment *ev)
 {
   CosNaming_Name* retval;
+  memset(ev, 0, sizeof(CORBA_Environment));
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
     CORBA::Object *obj_ = reinterpret_cast<CORBA::Object*>(object->impl_obj);
@@ -820,13 +587,13 @@ impl_CosNaming_NamingContextExt_to_name(
     retval = var->_retn();
     ev->_cpp_flag = 1;
 #else /*  C  */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (1) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;
 }
 
-static CosNaming_NamingContextExt_URLString
+CosNaming_NamingContextExt_URLString
 impl_CosNaming_NamingContextExt_to_url(
   impl_POA_CosNaming_NamingContextExt *servant,
   const CORBA_char * addr,
@@ -834,6 +601,7 @@ impl_CosNaming_NamingContextExt_to_url(
   CORBA_Environment *ev)
 {
   CosNaming_NamingContextExt_URLString retval;
+  memset(ev, 0, sizeof(CORBA_Environment));
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
     CORBA::Object *obj_ = reinterpret_cast<CORBA::Object*>(object->impl_obj);
@@ -843,19 +611,20 @@ impl_CosNaming_NamingContextExt_to_url(
     retval = var;
     ev->_cpp_flag = 1;
 #else /*  C  */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (1) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;
 }
 
-static CORBA_Object
+CORBA_Object
 impl_CosNaming_NamingContextExt_resolve_str(
   impl_POA_CosNaming_NamingContextExt *servant,
   const CORBA_char * n,
   CORBA_Environment *ev)
 {
   CORBA_Object retval;
+  memset(ev, 0, sizeof(CORBA_Environment));
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
     CORBA::Object *obj_ = reinterpret_cast<CORBA::Object*>(object->impl_obj);
@@ -864,18 +633,19 @@ impl_CosNaming_NamingContextExt_resolve_str(
     retval = var->_impl;
     ev->_cpp_flag = 1;
 #else /*  C  */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here  (1) ------ */
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;
 }
 
-static CORBA_boolean
+CORBA_boolean
 impl_CosNaming_NamingContextExt__is_a(
     impl_POA_CosNaming_NamingContextExt *servant,
     const CORBA_char * id,
     CORBA_Environment *ev)
 {
+  memset(ev, 0, sizeof(CORBA_Environment));
   CORBA_boolean retval;
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
@@ -885,62 +655,67 @@ impl_CosNaming_NamingContextExt__is_a(
   retval = var;
   ev->_cpp_flag = 1;
 #else /*  C  */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here   (5)------ */
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;
 }
 
-static void
+void
 impl_CosNaming_NamingContextExt_bind(
     impl_POA_CosNaming_NamingContextExt *servant,
     CosNaming_Name* n,
     CORBA_Object obj,
     CORBA_Environment *ev)
 {
-    /* ------   insert method code here   ------ */
+  memset(ev, 0, sizeof(CORBA_Environment));
+    /* ------   insert method code here   (7)------ */
     /* ------ ---------- end ------------ ------ */
 }
 
-static void
+void
 impl_CosNaming_NamingContextExt_rebind(
     impl_POA_CosNaming_NamingContextExt *servant,
     CosNaming_Name* n,
     CORBA_Object obj,
     CORBA_Environment *ev)
 {
-    /* ------   insert method code here   ------ */
+  memset(ev, 0, sizeof(CORBA_Environment));
+    /* ------   insert method code here   (7)------ */
     /* ------ ---------- end ------------ ------ */
 }
 
-static void
+void
 impl_CosNaming_NamingContextExt_bind_context(
     impl_POA_CosNaming_NamingContextExt *servant,
     CosNaming_Name* n,
     CosNaming_NamingContext nc,
     CORBA_Environment *ev)
 {
-    /* ------   insert method code here   ------ */
+  memset(ev, 0, sizeof(CORBA_Environment));
+    /* ------   insert method code here   (7)------ */
     /* ------ ---------- end ------------ ------ */
 }
 
-static void
+void
 impl_CosNaming_NamingContextExt_rebind_context(
     impl_POA_CosNaming_NamingContextExt *servant,
     CosNaming_Name* n,
     CosNaming_NamingContext nc,
     CORBA_Environment *ev)
 {
-    /* ------   insert method code here   ------ */
+  memset(ev, 0, sizeof(CORBA_Environment));
+    /* ------   insert method code here   (7)------ */
     /* ------ ---------- end ------------ ------ */
 }
 
-static CORBA_Object
+CORBA_Object
 impl_CosNaming_NamingContextExt_resolve(
     impl_POA_CosNaming_NamingContextExt *servant,
     CosNaming_Name* n,
     CORBA_Environment *ev)
 {
+  memset(ev, 0, sizeof(CORBA_Environment));
   CORBA_Object retval;
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
@@ -950,27 +725,29 @@ impl_CosNaming_NamingContextExt_resolve(
   retval = var->_impl;
   ev->_cpp_flag = 1;
 #else /*  C  */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here   (5)------ */
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;
 }
 
-static void
+void
 impl_CosNaming_NamingContextExt_unbind(
     impl_POA_CosNaming_NamingContextExt *servant,
     CosNaming_Name* n,
     CORBA_Environment *ev)
 {
-    /* ------   insert method code here   ------ */
+  memset(ev, 0, sizeof(CORBA_Environment));
+    /* ------   insert method code here   (7)------ */
     /* ------ ---------- end ------------ ------ */
 }
 
-static CosNaming_NamingContext
+CosNaming_NamingContext
 impl_CosNaming_NamingContextExt_new_context(
     impl_POA_CosNaming_NamingContextExt *servant,
     CORBA_Environment *ev)
 {
+  memset(ev, 0, sizeof(CORBA_Environment));
   CosNaming_NamingContext retval;
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
@@ -980,18 +757,19 @@ impl_CosNaming_NamingContextExt_new_context(
   retval = var.impl();
   ev->_cpp_flag = 1;
 #else /*  C  */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here   (5)------ */
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;
 }
 
-static CosNaming_NamingContext
+CosNaming_NamingContext
 impl_CosNaming_NamingContextExt_bind_new_context(
     impl_POA_CosNaming_NamingContextExt *servant,
     CosNaming_Name* n,
     CORBA_Environment *ev)
 {
+  memset(ev, 0, sizeof(CORBA_Environment));
   CosNaming_NamingContext retval;
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
@@ -1001,22 +779,23 @@ impl_CosNaming_NamingContextExt_bind_new_context(
   retval = var.impl();
   ev->_cpp_flag = 1;
 #else /*  C  */
-    /* ------   insert method code here   ------ */
+    /* ------   insert method code here   (5)------ */
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;
 }
 
-static void
+void
 impl_CosNaming_NamingContextExt_destroy(
     impl_POA_CosNaming_NamingContextExt *servant,
     CORBA_Environment *ev)
 {
-    /* ------   insert method code here   ------ */
+  memset(ev, 0, sizeof(CORBA_Environment));
+    /* ------   insert method code here   (7)------ */
     /* ------ ---------- end ------------ ------ */
 }
 
-static void
+void
 impl_CosNaming_NamingContextExt_list(
     impl_POA_CosNaming_NamingContextExt *servant,
     CORBA_unsigned_long how_many,
@@ -1024,7 +803,8 @@ impl_CosNaming_NamingContextExt_list(
     CosNaming_BindingIterator* bi,
     CORBA_Environment *ev)
 {
-    /* ------   insert method code here   ------ */
+  memset(ev, 0, sizeof(CORBA_Environment));
+    /* ------   insert method code here   (7)------ */
     /* ------ ---------- end ------------ ------ */
 }
 
