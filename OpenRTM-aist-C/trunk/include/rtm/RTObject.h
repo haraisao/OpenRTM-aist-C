@@ -26,10 +26,8 @@ int RTC_RTObject_registerProperty(CORBA_RTC_RTObject obj, RTC_Properties *prop);
 RTC_Properties * RTC_RTObject_appendProperties(CORBA_RTC_RTObject obj, RTC_Properties *prop);
 char ** RTC_RTObject_getNamingNames(CORBA_RTC_RTObject obj, int *len);
 
-#if 1
 int RTObject_get_owned_contexts(impl_POA_RTC_RTObject *servant, RTC_ExecutionContextList *ec);
 int RTObject_get_participating_contexts(impl_POA_RTC_RTObject *servant, RTC_ExecutionContextList *ec);
-#endif
 
 
 void RTC_RTObject_addOutPort(RTC_RTObject *obj, char *typ, OpenRTM_OutPortCdr port);
