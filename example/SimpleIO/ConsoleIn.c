@@ -24,12 +24,16 @@ static const char* consolein_spec[] =
     NULL, NULL
   };
 // </rtc-template>
+RTC_ReturnCode_t ConsoleIn_onInitialize(ConsoleIn *obj);
+RTC_ReturnCode_t ConsoleIn_onExecute(ConsoleIn *obj, RTC_UniqueIdentifier ec_id);
 
 ConsoleIn *
 ConsoleIn_create(RTC_Manager *manager)
 {
-  ConsoleIn *res = (ConsoleIn *)RtORB_calloc(sizeof(ConsoleIn), 1, "Create ConsoleIn");
-  res->parent = RTC_DataFlowComponentBase_create(manager);
+  fprintf(stderr, "====== Call ConsoleIn_create =====\n");
+  ConsoleIn *res = (ConsoleIn *)RtORB_calloc(1, sizeof(ConsoleIn), "Create ConsoleIn");
+  CORBA_RTC_RTObject rtobj = RTC_DataFlowComponentBase_create(manager);
+  res->rtobj = rtobj;
   res->m_outOut = RTC_OutPort_create(manager, "out", res->m_out);
 
   // Registration: InPort/OutPort/Service
@@ -47,10 +51,13 @@ ConsoleIn_create(RTC_Manager *manager)
   // </rtc-template>
 
  /// register Event Handler
-#if 0
-  RTC_Component_registerHandler(res, "initialize", ConsoleIn_onInitialize);
-  RTC_Component_registerHandler(res, "execution", ConsoleIn_onExecution);
+#if 1
+  res->on_initialize = ConsoleIn_onInitialize;
+  res->on_Execute = ConsoleIn_onExecute;
 #endif
+
+  fprintf(stderr, "%s\n", rtobj->typedId);
+  rtobj->impl_obj = (void *)res;
 
   return res;
 }

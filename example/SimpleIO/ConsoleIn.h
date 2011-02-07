@@ -88,8 +88,7 @@ ConnectorListener_operator(ConnectorListener *obj, const ConnectorInfo *info)
 
 typedef struct ConsoleIn_Object
 {
-  //RTC_DataFlowComponentBase  *parent;
-  void  *parent;
+  CORBA_RTC_RTObject  *rtobj;
 
   RTC_ReturnCode_t (*on_initialize)(struct ConsoleIn_Object * obj);
 
