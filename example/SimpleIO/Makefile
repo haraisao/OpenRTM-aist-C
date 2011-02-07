@@ -4,18 +4,15 @@
 #
 
 UNAME := $(shell uname -s)
-RTORB_DIR  = $(HOME)/src/RtORB-dev/trunk
-RTM_DIR  = $(HOME)/src/RtORB-dev/OpenRTM-aist-C/trunk
 
-RTORB_DIR  = $(HOME)/src/RtORB-dev/trunk
-RTM_DIR  = $(HOME)/src/RtORB-dev/OpenRTM-aist-C/trunk
+TOP_DIR  = ../..
 
-CFLAGS  = -I$(RTORB_DIR)/include -I. -I$(RTM_DIR)/include
+CFLAGS  = -I$(TOP_DIR)/include -I. 
 CFLAGS  += -g
 
 CIN_OBJS = ConsoleInComp.o ConsoleIn.o
 
-LINK_LIBS = -L$(RTM_DIR)/lib -lRTM -L$(RTORB_DIR)/lib -lRtORB
+LINK_LIBS = -L$(TOP_DIR)/lib/rtm -lRTM -L$(TOP_DIR)/lib/orb -lRtORB
 
 TARGETS = ConsoleInComp
 
@@ -28,4 +25,4 @@ ConsoleInComp: $(CIN_OBJS)
 	$(CC) -o $@ $(CIN_OBJS) $(LINK_LIBS)
 
 clean:
-	rm *.o
+	rm *.o $(TARGETS)

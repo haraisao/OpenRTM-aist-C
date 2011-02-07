@@ -1,1 +1,1 @@
-../../lib/OpenRTM-aist-skelimpl.h
+../../lib/rtm/OpenRTM-aist-skelimpl.h

@@ -1,1 +1,1 @@
-../../lib/OpenRTM-aist.h
+../../lib/rtm/OpenRTM-aist.h
