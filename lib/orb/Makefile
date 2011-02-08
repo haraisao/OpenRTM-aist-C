@@ -14,7 +14,7 @@ ifneq (,$(findstring CYGWIN, $(UNAME)))
 endif
 
 CFLAG_DEBUG = -Wall
-#CFLAG_DEBUG += -g
+CFLAG_DEBUG += -g
 #CFLAG_DEBUG += -DDEBUG
 #CFLAG_DEBUG += -DDEBUG_MALLOC 
 #CFLAG_DEBUG += -DHASH_DEBUG

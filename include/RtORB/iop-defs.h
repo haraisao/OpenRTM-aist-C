@@ -327,8 +327,8 @@ typedef struct {
   uint32_t object_key_len;
   uint32_t flags;
   uint32_t location_flags;
-  char *_ior_string;
-  int32_t _ior_string_len;
+  octet *_ior_octet;
+  int32_t _ior_octet_len;
 } CORBA_URL;
 
 

@@ -172,215 +172,7 @@ typedef union
 typedef struct CORBA_any {
   struct CORBA_TypeCode_struct *_type;
   CORBA_any_val *_val;
-/*
-  CORBA_boolean _release;
-*/
   CORBA_unsigned_long _release;
-
-#ifdef __cplusplus
-  CORBA_any();
-/*!
- * @brief (TODO)
- */
-  CORBA_any(const CORBA_any &o);
-  ~CORBA_any();
-
-/*!
- * @brief (TODO)
- */
-  CORBA_boolean hasData(struct CORBA_TypeCode_struct *) const;
-
-/*!
- * @brief (TODO)
- */
-  void setData(struct CORBA_TypeCode_struct *tc, char *data, int len);
-/*!
- * @brief (TODO)
- */
-  void copy_val(CORBA_TypeCode_struct *, CORBA_any_val *);
-/*!
- * @brief (TODO)
- */
-  void set_val(CORBA_TypeCode_struct *, CORBA_any_val *);
-
-/*!
- * @brief (TODO)
- */	
-  void alloc(CORBA_TypeCode_struct *);
-/*!
- * @brief (TODO)
- */
-  void free_();
-
-/*!
- * @brief (TODO)
- */  
-  CORBA_any & operator=(const CORBA_any &o);
-
-/*!
- * @brief (TODO)
- */
-  CORBA_any * duplicate();
-
-/*!
- * @brief (TODO)
- */
-  CORBA_TypeCode_struct * type() { return _type; }
-
-/*!
- * @brief (TODO)
- */		
-  struct from_char {
-    from_char(CORBA_char v) : val(v) {};
-    CORBA_char val;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct from_boolean {
-    from_boolean(CORBA_boolean v) : val(v) {};
-    CORBA_boolean val;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct from_octet {
-    from_octet(CORBA_octet v) : val(v) {};
-    CORBA_octet val;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct from_string {
-    from_string(const char *v) : val(v) {}
-    const char *val;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct from_object {
-    from_object(CORBA::Object_ptr &ptr_);
-    CORBA::Object_ptr &ptr;
-  };
-
-/*!
- * @brief (TODO)
- */  
-  struct from_any {
-    from_any(CORBA_any *v) : val(v) {}
-    CORBA_any * val;
-  };
-
-/*!
- * @brief (TODO)
- */
-  void operator<<=(from_char);
-/*!
- * @brief (TODO)
- */
-  void operator<<=(from_boolean);
-/*!
- * @brief (TODO)
- */
-  void operator<<=(from_octet);
-/*!
- * @brief (TODO)
- */
-  void operator<<=(from_string);
-/*!
- * @brief (TODO)
- */
-  void operator<<=(from_object);
-/*!
- * @brief (TODO)
- */
-  void operator<<=(from_any);
-/*!
- * @brief (TODO)
- */
-  void operator<<=(CORBA_unsigned_long);
-
-/*!
- * @brief (TODO)
- */
-  struct to_char {
-    to_char(CORBA_char &buf_) : buf(buf_){}
-    CORBA_char &buf;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct to_octet {
-    to_octet(CORBA_octet &buf_) : buf(buf_){}
-    CORBA_octet &buf;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct to_boolean {
-    to_boolean(CORBA_boolean &buf_) : buf(buf_){}
-    CORBA_boolean &buf;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct to_string {
-    to_string(char *& buf_) : buf(buf_){}
-    to_string(const char *& buf_) : buf((char *&)buf_){}
-    char * & buf;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct to_object {
-    to_object(CORBA::Object_ptr &ptr_) : ptr(ptr_) {}
-    CORBA::Object_ptr &ptr;
-  };
-
-/*!
- * @brief (TODO)
- */	
-  CORBA_boolean operator>>=(to_char o) const;
-
-/*!
- * @brief (TODO)
- */
-  CORBA_boolean operator>>=(to_boolean o) const;
-
-/*!
- * @brief (TODO)
- */
-  CORBA_boolean operator>>=(to_octet o) const;
-
-/*!
- * @brief (TODO)
- */
-  CORBA_boolean operator>>=(to_string o) const;
-
-/*!
- * @brief (TODO)
- */
-  CORBA_boolean operator>>=(to_object o) const;
-
-/*!
- * @brief (TODO)
- */
-  CORBA_boolean operator>>=(CORBA_any &o) const;
-
-/*!
- * @brief (TODO)
- */
-  CORBA_boolean operator>>=(CORBA_unsigned_long &n) const;
-
-#endif
 } CORBA_any ;
 
 /*!
@@ -839,16 +631,16 @@ typedef struct{
  */
 typedef struct CORBA_ORB_struct{
   unsigned char *_id;
-  PtrArray *_threads;
+//  PtrArray *_threads;
   PtrArray *_adapters;
   hashtable *_object_table;
-  CORBA_PolicyList *_policies;
+//  CORBA_PolicyList *_policies;
 
   char *hostname;
 
   uint32_t request_id;
 
-  struct PortableServer_POAManagerFactory_struct *poa_mgr_factory;
+//  struct PortableServer_POAManagerFactory_struct *poa_mgr_factory;
 
   CORBA_Config cfg;
 
