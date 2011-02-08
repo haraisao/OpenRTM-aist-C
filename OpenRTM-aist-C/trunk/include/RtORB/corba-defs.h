@@ -636,9 +636,9 @@ typedef struct CORBA_ORB_struct{
   hashtable *_object_table;
 //  CORBA_PolicyList *_policies;
 
-  char *hostname;
+//  char *hostname;
 
-  uint32_t request_id;
+//  uint32_t request_id;
 
   struct PortableServer_POAManagerFactory_struct *poa_mgr_factory;
 
