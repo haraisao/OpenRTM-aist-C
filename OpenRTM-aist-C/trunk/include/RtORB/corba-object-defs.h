@@ -89,11 +89,7 @@ typedef struct CORBA_Object_struct{
   unsigned char num_urls;
   unsigned char *_ior_string;
   GIOP_Connection *connection;
-  CORBA_InterfaceDef *interface;
-  uint32_t *repository_id;
   uint32_t ref;
-  CORBA_Policy *policy;
-  CORBA_PolicyList *_policies;
   void *impl;
   void *impl_obj;
   int32_t release;
