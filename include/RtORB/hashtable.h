@@ -69,9 +69,6 @@ typedef struct hashtableItem{
 typedef struct hashtable{
   hashtableItem *items;
   int32_t size;
-/*
-  int32_t deleted;
-*/
   int32_t n_items;
   int32_t (*cmp_func)(char*, char*);
   uint32_t (*hash_func)(const unsigned char*);

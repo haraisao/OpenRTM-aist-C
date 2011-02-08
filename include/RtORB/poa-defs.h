@@ -50,12 +50,14 @@ extern "C"
  * @param type type
  * @param id id
  */
+#if 0
 typedef struct PortableServer_POA_Policy_struct{
   uint32_t  type;
   uint32_t  id;
 } PortableServer_POA_Policy_struct;
 
 typedef PortableServer_POA_Policy_struct * PortableServer_POA_Policy;
+#endif
 
 /* POAManagerFactory */
 /*!
@@ -119,15 +121,15 @@ typedef struct PortableServer_POA_struct{
   PortableServer_POAManager manager;
 
 /*  struct PortableServer_POA_struct *children;   */
+#if 0
   PtrArray *children;
   struct PortableServer_ServantManager_struct *servant_mgr;
+#endif
 
 /*  PtrArray *servants;   */
   hashtable *object_map;
 
   PtrList *requests;
-
-/*  uint32_t status;  */
 
 }PortableServer_POA_struct;
 
@@ -187,7 +189,9 @@ typedef struct {
   PortableServer_POA (*default_POA)(PortableServer_Servant, CORBA_Environment *);
   void (*add_ref)(PortableServer_Servant, CORBA_Environment *);
   void (*remove_ref)(PortableServer_Servant, CORBA_Environment *);
+#if 0
   CORBA_InterfaceDef *(*get_interface)(PortableServer_Servant, CORBA_Environment *);
+#endif
   CORBA_boolean (*is_a)(PortableServer_Servant, const char *, CORBA_Environment *);
   CORBA_boolean (*non_existent)(PortableServer_Servant, CORBA_Environment *);
 } PortableServer_ServantBase__epv ;

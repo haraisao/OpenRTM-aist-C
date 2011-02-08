@@ -86,26 +86,20 @@ typedef struct CORBA_Object_struct{
   unsigned char *object_key;
   CORBA_URL *_url;
   unsigned char num_urls;
-/*
-  uint32_t _length_ior_string;
-*/
   unsigned char *_ior_string;
-/*
-  GIOP_Connection connection;
-*/
   GIOP_Connection *connection;
+#if 0
   CORBA_InterfaceDef *interface;
   uint32_t *repository_id;
+#endif
   uint32_t ref;
+#if 0
   CORBA_Policy *policy;
   CORBA_PolicyList *_policies;
+#endif
   void *impl;
   void *impl_obj;
   int32_t release;
-#ifdef __cplusplus
-  CORBA_boolean _is_equivalent(CORBA_Object_struct*);
-  CORBA_Object_struct & operator=(const CORBA_Object_struct &o);
-#endif
 
 }CORBA_Object_struct;
 

@@ -31,11 +31,13 @@
 
 #ifndef CORBA_POLICY_ERROR_CODE
 #define CORBA_POLICY_ERROR_CODE	1
+#if 0
 const CORBA_PolicyErrorCode BAD_POLICY = 0;
 const CORBA_PolicyErrorCode UNSUPPORTED_POLICY = 1;
 const CORBA_PolicyErrorCode BAD_POLICY_TYPE = 2;
 const CORBA_PolicyErrorCode BAD_POLICY_VALUE = 3;
 const CORBA_PolicyErrorCode UNSUPPORTED_POLICY_VALUE = 4;
+#endif
 #endif
 CORBA_ORB  _ORB_;
 #ifdef USE_THREAD
@@ -240,13 +242,20 @@ CORBA_ORB_init(int *argc, char **argv, char orb_id, CORBA_Environment *env){
 
   /* RootPOA */
   orb->poa_mgr_factory = (PortableServer_POAManagerFactory)PortableServer_POAManagerFactory_new(orb);
+#if 0
   PortableServer_POAManagerFactory_create_POAManager(orb->poa_mgr_factory, "RootPOAManager", env);
 
   PortableServer_POA RootPOA = (PortableServer_POA)PortableServer_POA_new("RootPOA", orb->cfg.port);
   RootPOA->manager = (PortableServer_POAManager)PtrArray_get(orb->poa_mgr_factory->poa_mgr, 0);
+#else
+  PortableServer_POA RootPOA = (PortableServer_POA)PortableServer_POA_new("RootPOA", orb->cfg.port);
+  RootPOA->manager = PortableServer_POAManagerFactory_create_POAManager(orb->poa_mgr_factory, "RootPOAManager", env);
+#endif
   RootPOA->orb = orb;
 
+#if 1
   PtrArray_add(RootPOA->manager->poa, RootPOA);
+#endif
   PtrArray_add(orb->_adapters, (void *)RootPOA);
 
   obj = new_CORBA_Object("RootPOA");
@@ -388,15 +397,14 @@ void delete_CORBA_Object(CORBA_Object obj){
   if(obj->orb) RtORB_free(obj->orb, "CORBA_ORB");
 */
 
-/*
-  if(obj->connection.parent) RtORB_free(obj->connection.parent,
-		  "GIOP_Connection.parent");
-*/
-
+#if 0
   if(obj->interface) RtORB_free(obj->interface,"CORBA_InterfaceDef");
   if(obj->repository_id) RtORB_free(obj->repository_id, "repository_id");
+#endif
+#if 0
   if(obj->policy) RtORB_free(obj->policy, "CORBA_Policy");
   if(obj->_policies) RtORB_free(obj->_policies, "CORBA_PolicyList");
+#endif
 
   if(obj->connection) RtORB_free(obj->connection,"GIOP_Connection");
 #if 0
@@ -573,23 +581,26 @@ CORBA_ORB_destroy(CORBA_ORB orb, CORBA_Environment *env){
   return;
 }
 
+#if 0
 uint32_t 
 CORBA_ORB_get_next_request_id(CORBA_ORB orb, CORBA_Environment *env){
    orb->request_id++ ;
    return orb->request_id;
 }
-
+#endif
 /******** Object *********/
-
+#if 0
 CORBA_InterfaceDef *
 CORBA_Object_get_interface(CORBA_Object object, CORBA_Environment *env){
   return object->interface;
 }
-
+#endif
+#if 0
 uint32_t *
 CORBA_Object_repository_id(CORBA_Object object, CORBA_Environment *env){
   return object->repository_id;
 }
+#endif
 
 CORBA_Object 
 CORBA_Object_duplicate(CORBA_Object object, CORBA_Environment *env){
@@ -618,7 +629,9 @@ CORBA_Object_is_a(CORBA_Object object,
 		unsigned char *logical_type_id,
 		CORBA_Environment *env)
 {
+#if 0
   if(!strcmp((char *)object->repository_id, (const char *)logical_type_id)) return TRUE;
+#endif
   if(!strcmp((char *)logical_type_id, "IDL:omg.org/CORBA/Object:1.0")) return TRUE;
   return FALSE;
 }
@@ -658,6 +671,7 @@ CORBA_Object_is_equivalent(CORBA_Object object,
   return FALSE;
 }
 
+#if 0
 CORBA_Policy *
 CORBA_Object_get_policy(CORBA_Object object,
 		CORBA_PolicyType policy_type,
@@ -705,6 +719,7 @@ CORBA_Object_get_domain_managers(CORBA_Object object,
 {
   return NULL;
 }
+#endif
 
 CORBA_Object
 CORBA_Object_get_component( CORBA_Object object,
@@ -737,6 +752,7 @@ CORBA_Object_get_orb( CORBA_Object object,
 */
 
 /*    Policy  */
+#if 0
 CORBA_Policy 
 new_CORBA_Policy()
 {
@@ -773,3 +789,4 @@ CORBA_ORB_create_policy(CORBA_ORB orb,
    policy->state = val;
    return  policy;
 }
+#endif

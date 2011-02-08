@@ -88,12 +88,6 @@ struct sockport_profile{
    Global variable for socket FD
  */
 extern  struct sockport_profile  SockProfile[FD_SETSIZE];
-/*
-  2007/10/08 yoshi@msi.co.jp
-
-  This causes compile error.
-*/
-/* extern  fd_set main_socket_bits;*/
 
 #ifdef __cplusplus
 }
