@@ -236,7 +236,9 @@ CORBA_ORB_init(int *argc, char **argv, char orb_id, CORBA_Environment *env){
   orb->_threads = (PtrArray *)new_PtrArray();
 #endif
 
+#if 0
   orb->hostname = (char *)Get_IP_Address();
+#endif
 
   /* RootPOA */
   orb->poa_mgr_factory = (PortableServer_POAManagerFactory)PortableServer_POAManagerFactory_new(orb);
@@ -536,16 +538,18 @@ CORBA_ORB_destroy(CORBA_ORB orb, CORBA_Environment *env){
   destroy_PtrArray(orb->_threads);
 #endif
 //  PortableServer_POAManagerFactory_destroy(orb->poa_mgr_factory, env);
-  RtORB_free(orb->hostname, "destroy_hostname");
+//  RtORB_free(orb->hostname, "destroy_hostname");
   RtORB_free(orb, "CORBA_ORB_destory");
   return;
 }
 
+#if 0
 uint32_t 
 CORBA_ORB_get_next_request_id(CORBA_ORB orb, CORBA_Environment *env){
    orb->request_id++ ;
    return orb->request_id;
 }
+#endif
 
 /******** Object *********/
 

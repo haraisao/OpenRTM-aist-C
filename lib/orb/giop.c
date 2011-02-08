@@ -52,11 +52,15 @@ GIOP_Connection__create(){
 		 "GIOP_Connection__alloc" );
   memset(conn, 0, sizeof(GIOP_Connection));
 
+#if 0
   if(_ORB_){
     conn->hostname = (unsigned char *)RtORB_strdup(_ORB_->hostname, "GIOP_Connection__create");
   }else{ 
+#endif
     conn->hostname = (unsigned char *)Get_IP_Address();
+#if 0
   }
+#endif
   conn->activate = FALSE;
 
 #if USE_THREAD

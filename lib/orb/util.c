@@ -392,9 +392,11 @@ RtORB_strlen(char *str){
 }
 
 char *Get_IP_Address(){
+#if 0
   if(_ORB_){
     return RtORB_strdup(_ORB_->hostname, "Get_IP_Address");
   }else{
+#endif
     char *addr;
 
     int fd = socket(AF_INET,SOCK_STREAM, 0);
@@ -402,5 +404,7 @@ char *Get_IP_Address(){
     close(fd);
 
     return addr;
+#if 0
   }
+#endif
 }
