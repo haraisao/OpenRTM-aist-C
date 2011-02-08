@@ -30,13 +30,12 @@
 #include <RtORB/corba.h>
 #include <RtORB/sockport.h>
 
-#if 1
 /*
     PortableServer::POAManageFactory
 */
 PortableServer_POAManagerFactory
 PortableServer_POAManagerFactory_new(CORBA_ORB orb){
-//  if(orb->poa_mgr_factory) return orb->poa_mgr_factory;
+  if(orb->poa_mgr_factory) return orb->poa_mgr_factory;
 
   PortableServer_POAManagerFactory factory =
 	  (PortableServer_POAManagerFactory)RtORB_calloc(sizeof(PortableServer_POAManagerFactory_struct), 1, "PortableServer_POAManagerFactory_new");
@@ -44,7 +43,7 @@ PortableServer_POAManagerFactory_new(CORBA_ORB orb){
   factory->poa_mgr = (PtrArray *)new_PtrArray();
   factory->orb = orb;
 
-//  orb->poa_mgr_factory = factory;
+  orb->poa_mgr_factory = factory;
   
   return factory;
 }
@@ -103,22 +102,16 @@ PortableServer_POAManagerFactory_list(PortableServer_POAManagerFactory factory,
   return factory->poa_mgr;
 }
 
-#endif
 /*  create_POAManager */
 PortableServer_POAManager
 PortableServer_POAManagerFactory_create_POAManager(
-#if 1
 		PortableServer_POAManagerFactory factory,
-#else
-		void *factory,
-#endif
 		char *id, CORBA_Environment *env)
 {
 
   int i;
   if(!id) return (PortableServer_POAManager)NULL;
 
-#if 1
   for(i=0; i<factory->poa_mgr->length; i++){
       PortableServer_POAManager mgr = (PortableServer_POAManager)PtrArray_get(factory->poa_mgr, i);
       if(!strcmp(mgr->id, id)){
@@ -126,7 +119,6 @@ PortableServer_POAManagerFactory_create_POAManager(
          return (PortableServer_POAManager)NULL;
       }
   }
-#endif
 
   PortableServer_POAManager poa_mgr = (PortableServer_POAManager)RtORB_calloc(sizeof(PortableServer_POAManager_struct), 1, "PortableServer_POAManagerFactory_create_POAManager");
 
@@ -137,10 +129,8 @@ PortableServer_POAManagerFactory_create_POAManager(
   }
   poa_mgr->status = POA_HOLDING;
 
-#if 1
   PtrArray_add(factory->poa_mgr, poa_mgr);
-#endif 
-
+  
   return poa_mgr;
 }
 
@@ -245,7 +235,6 @@ PortableServer_POAManager_discars_requests(PortableServer_POAManager poa_mgr,
    return;
 }
 
-#if 0 
 /*
  hold_requests
 */
@@ -276,12 +265,11 @@ PortableServer_POAManager_hold_requests(PortableServer_POAManager poa_mgr,
 
    return;
 }
-#endif
+
 
 /*
  shutdown
 */
-#if 1
 void 
 PortableServer_POAManager_shutdown(PortableServer_POAManager poa_mgr, CORBA_Environment *env) {
    int i;
@@ -298,6 +286,7 @@ PortableServer_POAManager_shutdown(PortableServer_POAManager poa_mgr, CORBA_Envi
 
    return;
 }
+
 /*
  destory
 */
@@ -332,7 +321,6 @@ char *
 PortableServer_POAManager_get_id(PortableServer_POAManager poa_mgr, CORBA_Environment *env){
    return poa_mgr->id;
 }
-#endif
 
 /*
  *
@@ -361,7 +349,7 @@ PortableServer_POA_new(char *id, unsigned short port){
 /*
   poa->_server->parent = poa;
 */
-  poa->requests = NULL;
+  poa->requests = 0;
 
   set_SockProfile_arg(poa->_server->sock, poa);
 
@@ -376,9 +364,7 @@ PortableServer_POA
 PortableServer_POA_createPOA(PortableServer_POA ppoa,
 		char *id, 
 		PortableServer_POAManager mgr, 
-#if 0 
 		PortableServer_POA_Policy *policies, 
-#endif
 		CORBA_Environment *env){
   char mgr_id[256];
 
@@ -393,7 +379,7 @@ PortableServer_POA_createPOA(PortableServer_POA ppoa,
     poa->manager = mgr;
   }
 
-//  if(ppoa) PtrArray_add(ppoa->children, poa);
+  if(ppoa) PtrArray_add(ppoa->children, poa);
 
   PtrArray_add(poa->manager->poa, poa);
 
@@ -413,12 +399,10 @@ PortableServer_POA_destory(PortableServer_POA poa, CORBA_Environment *env) {
 }
 
 
-#if 1
 PortableServer_POAManager
 PortableServer_POA__get_the_POAManager(PortableServer_POA poa, CORBA_Environment *env){
   return poa->manager;
 }
-#endif
 
 /* change for shmc */
 int PortableServer_enqueue_request(GIOP_ConnectionHandler *h){
@@ -438,9 +422,20 @@ int PortableServer_enqueue_request(GIOP_ConnectionHandler *h){
 
 
 void PortableServer_execute_request(void *arg){
+  int i;
+
   PortableServer_POA poa = (PortableServer_POA)arg;
 
   poa->requests = (PtrList *)GIOP_execute_request(poa, poa->requests);
+
+#if 0
+  if(poa->children){
+    for(i=0;i<poa->children->length;i++){
+      PortableServer_POA cpoa = (PortableServer_POA)PtrArray_get(poa->children, i);
+      PortableServer_execute_request(cpoa);
+    }
+  }
+#endif
 
   return;
 }

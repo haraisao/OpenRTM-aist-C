@@ -43,7 +43,6 @@ extern "C"
 #define POA_DISCARDING 	3  /*!< DISCARDING Status of POA Manager (request --> Destroy) */
 #define POA_INACTIVE  	4  /*!< INACTIVE Status of POA Manager   (request --> Deny) */
 
-#if 0
 /* POA_Policy */
 /*!
  * @struct PortableServer_POA_Policy_struct
@@ -58,7 +57,6 @@ typedef struct PortableServer_POA_Policy_struct{
 
 typedef PortableServer_POA_Policy_struct * PortableServer_POA_Policy;
 
-#endif
 /* POAManagerFactory */
 /*!
  * @struct PortableServer_POAManagerFactory_struct
@@ -97,7 +95,6 @@ typedef struct PortableServer_POAManager_struct{
 
 typedef PortableServer_POAManager_struct * PortableServer_POAManager;
 
-
 /* POA   */
 /*!
  * @struct PortableServer_POA_struct
@@ -118,12 +115,12 @@ typedef struct PortableServer_POA_struct{
 
   struct GIOP_Connection *_server;
 
-//  PortableServer_POAManagerFactory mgr_factory;
+  PortableServer_POAManagerFactory mgr_factory;
   PortableServer_POAManager manager;
 
 /*  struct PortableServer_POA_struct *children;   */
-//  PtrArray *children;
-//  struct PortableServer_ServantManager_struct *servant_mgr;
+  PtrArray *children;
+  struct PortableServer_ServantManager_struct *servant_mgr;
 
 /*  PtrArray *servants;   */
   hashtable *object_map;
@@ -136,7 +133,6 @@ typedef struct PortableServer_POA_struct{
 
 typedef PortableServer_POA_struct * PortableServer_POA;
 
-#if 0
 /* ServantManager   */
 /*!
  * @struct PortableServer_ServantManager_struct
@@ -154,7 +150,7 @@ typedef struct PortableServer_ServantManager_struct{
 }PortableServer_ServantManager_struct;
 
 typedef PortableServer_ServantManager_struct * PortableServer_ServantManager;
-#endif
+
 
 /* ObjectId   */
 /*!

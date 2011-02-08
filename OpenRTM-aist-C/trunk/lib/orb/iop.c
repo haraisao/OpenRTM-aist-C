@@ -187,8 +187,8 @@ CORBA_URL__alloc(int32_t n){
     url[i].naming_context = NULL; 
     url[i].object_key_len = 0; 
     url[i].flags = 0; 
-    url[i]._ior_octet_len = 0; 
-    url[i]._ior_octet = NULL; 
+    url[i]._ior_string_len = 0; 
+    url[i]._ior_string = NULL; 
   }
 
   return url;
@@ -202,7 +202,7 @@ CORBA_URL__delete(CORBA_URL *url, int32_t n){
     String__delete(url[i].hostname, "CORBA_URL__delete(hostname)");
     String__delete(url[i].object_key, "CORBA_URL__delete(object_key)");
     String__delete(url[i].naming_context, "CORBA_URL__delete(naming_context)");
-    String__delete(url[i]._ior_octet, "CORBA_URL__delete(_ior_octet)");
+    String__delete(url[i]._ior_string, "CORBA_URL__delete(_ior_string)");
   }
   return;
 }
@@ -277,18 +277,18 @@ int parseIOR(CORBA_URL **data, octet *ior, int *pos, int byte_order){
   _ior_len = *pos - _start;
   sprintf(buf, "IOR:0%d000000%s", byte_order, Octet2String(ior+_start, _ior_len));
 
-  url->_ior_octet_len = _ior_len +12;
-  url->_ior_octet = (char *)RtORB_alloc(_ior_len+13, "parseIOR");
-  memcpy(url->_ior_octet, buf , url->_ior_octet_len+1);
+  url->_ior_string_len = _ior_len +12;
+  url->_ior_string = (char *)RtORB_alloc(_ior_len+13, "parseIOR");
+  memcpy(url->_ior_string, buf , url->_ior_string_len+1);
   free(buf);
 */
   _ior_len = *pos - _start;
 /*
   sprintf(buf, "IOR:0%d000000%s", byte_order, Octet2String(ior+_start, _ior_len));
 */
-  url->_ior_octet_len = _ior_len ;
-  url->_ior_octet = (char *)RtORB_alloc(_ior_len, "parseIOR");
-  memcpy(url->_ior_octet, ior+_start , url->_ior_octet_len);
+  url->_ior_string_len = _ior_len ;
+  url->_ior_string = (char *)RtORB_alloc(_ior_len, "parseIOR");
+  memcpy(url->_ior_string, ior+_start , url->_ior_string_len);
 
   if(res){  *data = url;  }
 
@@ -333,7 +333,7 @@ parseURL(CORBA_URL *target, char *str){
   char *tmp;
 
   str = nextToken(&tmp, str, ":");
-  if(!strcmp(tmp,"rir")){
+  if(!strcmp(tmp,"rtr")){
     target->protocol = PROTO_RIR;
     RtORB_free(tmp, "parseURL(proto)");
     return;

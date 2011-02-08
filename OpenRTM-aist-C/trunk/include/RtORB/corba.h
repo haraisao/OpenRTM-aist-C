@@ -64,7 +64,6 @@ extern "C"
 #include <RtORB/functions/giop-marshal.h>
 #include <RtORB/functions/giop-msg.h>
 #include <RtORB/functions/socket.h>
-#include <RtORB/functions/shmcport.h>
 #include <RtORB/functions/poa.h>
 #include <RtORB/functions/server_loop.h>
 /*

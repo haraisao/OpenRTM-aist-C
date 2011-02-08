@@ -236,9 +236,7 @@ CORBA_ORB_init(int *argc, char **argv, char orb_id, CORBA_Environment *env){
   orb->_threads = (PtrArray *)new_PtrArray();
 #endif
 
-#if 0
   orb->hostname = (char *)Get_IP_Address();
-#endif
 
   /* RootPOA */
   orb->poa_mgr_factory = (PortableServer_POAManagerFactory)PortableServer_POAManagerFactory_new(orb);
@@ -365,7 +363,10 @@ CORBA_Object__narrow(CORBA_Object obj, CORBA_TypeCode tc, CORBA_Environment *env
 
 void delete_CORBA_Object(CORBA_Object obj){
   if(!obj) return;
-
+#if DEBUG
+  fprintf(stderr, "   Call delete Object %x \n", obj);
+  fprintf(stderr, "   Call delete Object %s \n", obj->_ior_string);
+#endif
   if(obj->_url){
     CORBA_URL__delete(obj->_url, obj->num_urls);
     RtORB_free(obj->_url, "delete_CORBA_Object(url)");
@@ -376,11 +377,31 @@ void delete_CORBA_Object(CORBA_Object obj){
   if(obj->connection){
     String__delete((char *)obj->connection->hostname, "delete_CORBA_Object(connection.hostname)");
   } 
+  String__delete((char *)obj->_ior_string, "delete_CORBA_Object(_ior_string)");
+
   if(obj->servant) RtORB_free(obj->servant,"delete_CORBA_Object(servant)");
 
-  if(obj->_ior_string) RtORB_free(obj->_ior_string, "_ior_string");
+/*
+  I should check whether poa is RootPOA and whether orb is ROOT.
+ 
+  if(obj->poa) RtORB_free(obj->poa, "PortableServer_POA_struct");
+  if(obj->orb) RtORB_free(obj->orb, "CORBA_ORB");
+*/
+
+/*
+  if(obj->connection.parent) RtORB_free(obj->connection.parent,
+		  "GIOP_Connection.parent");
+*/
+
+  if(obj->interface) RtORB_free(obj->interface,"CORBA_InterfaceDef");
+  if(obj->repository_id) RtORB_free(obj->repository_id, "repository_id");
+  if(obj->policy) RtORB_free(obj->policy, "CORBA_Policy");
+  if(obj->_policies) RtORB_free(obj->_policies, "CORBA_PolicyList");
 
   if(obj->connection) RtORB_free(obj->connection,"GIOP_Connection");
+#if 0
+  if(obj->impl) RtORB_free(obj->impl, "impl");
+#endif
 
   RtORB_free(obj, "delete_CORBA_Object");
 
@@ -396,51 +417,60 @@ char *
 CORBA_Object__to_string(CORBA_Object obj, CORBA_Environment *env)
 {
   char *str = NULL;
-  char *res = NULL;
-  str = (char *)RtORB_alloc( 512, "CORBA_Object__to_string");
-  memset(str,0, 512 );
+  str = (char *)RtORB_alloc( 4096, "CORBA_Object__to_string");
+  memset(str,0,4096 );
 
+/*
+  createIOR(str, obj->connection.sock, obj->typedId, obj->object_key);
+*/
   createIOR(str, obj->connection->sock, (char *)obj->typedId, (char *)obj->object_key);
-
+  obj->_ior_string = (unsigned char *)RtORB_strdup(str, "__to_string");
 
   if( str ){
     RtORB_free( str, "CORBA_Object__to_string");
-  }else{
-   res = (char *)RtORB_strdup(str, "__to_string");
   }
 
-  return res;
+  return (char *)obj->_ior_string;
 }
 
 unsigned char *
 CORBA_ORB_object_to_string(CORBA_ORB orb, CORBA_Object obj,
 		CORBA_Environment *env)
 {
-  unsigned char *retval=NULL;
+  unsigned char *retval;
   char *str = NULL;
+  char *ior;
 
   if(!obj) return NULL;
 
-  str = ( char* )RtORB_alloc( 512,"CORBA_ORB_object_to_string");
-  memset(str,0,512);
+  str = ( char* )RtORB_alloc( 4096,"CORBA_ORB_object_to_string");
+  memset(str,0,4096);
 
-  if (obj->_ior_string == NULL){
+  if(!obj->_ior_string){
     if (obj->connection->sock && obj->typedId && obj->object_key){
       createIOR(str, obj->connection->sock, (char *)obj->typedId, (char *)obj->object_key);
-      retval = (unsigned char *)RtORB_strdup(str, "object_to_string");
-    }else if (obj->_url->_ior_octet){
-      char *ior;
-      ior = Octet2String((octet *)obj->_url->_ior_octet, obj->_url->_ior_octet_len);
+      obj->_ior_string = (unsigned char *)RtORB_strdup(str, "object_to_string");
+
+    }else if (obj->_url->_ior_string){
+      ior = Octet2String((octet *)obj->_url->_ior_string, obj->_url->_ior_string_len);
       sprintf(str, "IOR:0%d000000%s", (int)obj->_url->byte_order,ior);
-      RtORB_free(ior, "CORBA_ORB_object_to_string;ior");
-      retval = (unsigned char *)RtORB_strdup(str, "object_to_string");
+      obj->_ior_string = (unsigned char *)RtORB_strdup(str, "object_to_string");
     }else{
       CORBA_exception_set(env,  CORBA_SYSTEM_EXCEPTION, 
        "Object doesn't have connection or typedId or object_key", NULL);
+        if ( str ){
+          RtORB_free( str, "CORBA_ORB_object_to_string");
+        }
+	return NULL;
     }
-  }else{
-   retval = obj->_ior_string;
   }
+
+#if 0
+  retval =(unsigned char *)RtORB_strdup(obj->_ior_string,
+		  "CORBA_ORB_object_to_string:");
+#else
+  retval = obj->_ior_string;
+#endif
 
   if ( str ) {
      RtORB_free( str, "CORBA_ORB_object_to_string");
@@ -465,7 +495,7 @@ CORBA_ORB_string_to_object(CORBA_ORB orb, unsigned char *str,
      delete_CORBA_Object(obj);
      return CORBA_ORB_resolve_initial_references(orb, obj->_url[0].object_key, env);
     }
-#if 0
+#ifdef DEBUG
     fprintf(stderr, "\n\tGIOP_Connection_create in CORBA_ORB_string_to_object (%s:%d)\n", obj->_url[0].hostname, obj->_url[0].port);
 #endif
     obj->connection = GIOP_Connection__create();
@@ -537,35 +567,29 @@ CORBA_ORB_destroy(CORBA_ORB orb, CORBA_Environment *env){
 #if USE_THREAD
   destroy_PtrArray(orb->_threads);
 #endif
-//  PortableServer_POAManagerFactory_destroy(orb->poa_mgr_factory, env);
-//  RtORB_free(orb->hostname, "destroy_hostname");
+  PortableServer_POAManagerFactory_destroy(orb->poa_mgr_factory, env);
+  RtORB_free(orb->hostname, "destroy_hostname");
   RtORB_free(orb, "CORBA_ORB_destory");
   return;
 }
 
-#if 0
 uint32_t 
 CORBA_ORB_get_next_request_id(CORBA_ORB orb, CORBA_Environment *env){
    orb->request_id++ ;
    return orb->request_id;
 }
-#endif
 
 /******** Object *********/
 
-/*
 CORBA_InterfaceDef *
 CORBA_Object_get_interface(CORBA_Object object, CORBA_Environment *env){
   return object->interface;
 }
-*/
 
-/*
 uint32_t *
 CORBA_Object_repository_id(CORBA_Object object, CORBA_Environment *env){
   return object->repository_id;
 }
-*/
 
 CORBA_Object 
 CORBA_Object_duplicate(CORBA_Object object, CORBA_Environment *env){
@@ -594,7 +618,7 @@ CORBA_Object_is_a(CORBA_Object object,
 		unsigned char *logical_type_id,
 		CORBA_Environment *env)
 {
-//  if(!strcmp((char *)object->repository_id, (const char *)logical_type_id)) return TRUE;
+  if(!strcmp((char *)object->repository_id, (const char *)logical_type_id)) return TRUE;
   if(!strcmp((char *)logical_type_id, "IDL:omg.org/CORBA/Object:1.0")) return TRUE;
   return FALSE;
 }

@@ -79,21 +79,29 @@ typedef struct GIOP_Connection{
  * @param release (Unused)
  */
 typedef struct CORBA_Object_struct{
-  void *servant;  /*   PortableServer_ServantBase ? */
+  void *servant;
   struct PortableServer_POA_struct *poa;
   CORBA_ORB orb;
   unsigned char *typedId;
   unsigned char *object_key;
-
   CORBA_URL *_url;
   unsigned char num_urls;
+/*
+  uint32_t _length_ior_string;
+*/
   unsigned char *_ior_string;
+/*
+  GIOP_Connection connection;
+*/
   GIOP_Connection *connection;
+  CORBA_InterfaceDef *interface;
+  uint32_t *repository_id;
   uint32_t ref;
+  CORBA_Policy *policy;
+  CORBA_PolicyList *_policies;
   void *impl;
   void *impl_obj;
   int32_t release;
-
 #ifdef __cplusplus
   CORBA_boolean _is_equivalent(CORBA_Object_struct*);
   CORBA_Object_struct & operator=(const CORBA_Object_struct &o);
