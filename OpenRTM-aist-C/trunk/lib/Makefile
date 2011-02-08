@@ -21,12 +21,17 @@ rtm-lib:
 
 distclean:
 	/bin/rm -f *~
-	cd idl-compiler && $(MAKE) clean
-	cd lib && $(MAKE) allclean
-	rm include/RtORB/config_rtorb.h
+	cd orb && $(MAKE) allclean
+	cd rtm && $(MAKE) clean
+	rm ../include/RtORB/config_rtorb.h
 
 clean:
 	/bin/rm -f *~
-	cd idl-compiler && $(MAKE) clean
-	cd lib && $(MAKE) allclean
-	rm include/RtORB/config_rtorb.h
+	cd orb && $(MAKE) allclean
+	cd rtm && $(MAKE) clean
+	rm ../include/RtORB/config_rtorb.h
+allclean:
+	/bin/rm -f *~
+	cd orb && $(MAKE) allclean
+	cd rtm && $(MAKE) clean
+	rm ../include/RtORB/config_rtorb.h
