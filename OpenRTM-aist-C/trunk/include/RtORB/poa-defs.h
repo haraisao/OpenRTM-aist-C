@@ -58,6 +58,7 @@ typedef struct PortableServer_POA_Policy_struct{
 
 typedef PortableServer_POA_Policy_struct * PortableServer_POA_Policy;
 
+#endif
 /* POAManagerFactory */
 /*!
  * @struct PortableServer_POAManagerFactory_struct
@@ -73,7 +74,6 @@ typedef struct PortableServer_POAManagerFactory_struct{
 } PortableServer_POAManagerFactory_struct;
 
 typedef PortableServer_POAManagerFactory_struct * PortableServer_POAManagerFactory;
-#endif
 
 /* POAManager */
 /*!

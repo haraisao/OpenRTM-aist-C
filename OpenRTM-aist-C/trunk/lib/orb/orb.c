@@ -239,14 +239,14 @@ CORBA_ORB_init(int *argc, char **argv, char orb_id, CORBA_Environment *env){
   orb->hostname = (char *)Get_IP_Address();
 
   /* RootPOA */
-//  orb->poa_mgr_factory = (PortableServer_POAManagerFactory)PortableServer_POAManagerFactory_new(orb);
-//  PortableServer_POAManagerFactory_create_POAManager(orb->poa_mgr_factory, "RootPOAManager", env);
+  orb->poa_mgr_factory = (PortableServer_POAManagerFactory)PortableServer_POAManagerFactory_new(orb);
+  PortableServer_POAManagerFactory_create_POAManager(orb->poa_mgr_factory, "RootPOAManager", env);
 
   PortableServer_POA RootPOA = (PortableServer_POA)PortableServer_POA_new("RootPOA", orb->cfg.port);
   RootPOA->manager = (PortableServer_POAManager)PtrArray_get(orb->poa_mgr_factory->poa_mgr, 0);
   RootPOA->orb = orb;
 
-//  PtrArray_add(RootPOA->manager->poa, RootPOA);
+  PtrArray_add(RootPOA->manager->poa, RootPOA);
   PtrArray_add(orb->_adapters, (void *)RootPOA);
 
   obj = new_CORBA_Object("RootPOA");
