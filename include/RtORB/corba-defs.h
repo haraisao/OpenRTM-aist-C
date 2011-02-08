@@ -640,7 +640,7 @@ typedef struct CORBA_ORB_struct{
 
   uint32_t request_id;
 
-//  struct PortableServer_POAManagerFactory_struct *poa_mgr_factory;
+  struct PortableServer_POAManagerFactory_struct *poa_mgr_factory;
 
   CORBA_Config cfg;
 

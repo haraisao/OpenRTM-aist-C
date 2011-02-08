@@ -30,7 +30,7 @@
 #include <RtORB/corba.h>
 #include <RtORB/sockport.h>
 
-#if 0
+#if 1
 /*
     PortableServer::POAManageFactory
 */
@@ -103,16 +103,22 @@ PortableServer_POAManagerFactory_list(PortableServer_POAManagerFactory factory,
   return factory->poa_mgr;
 }
 
+#endif
 /*  create_POAManager */
 PortableServer_POAManager
 PortableServer_POAManagerFactory_create_POAManager(
+#if 1
 		PortableServer_POAManagerFactory factory,
+#else
+		void *factory,
+#endif
 		char *id, CORBA_Environment *env)
 {
 
   int i;
   if(!id) return (PortableServer_POAManager)NULL;
 
+#if 1
   for(i=0; i<factory->poa_mgr->length; i++){
       PortableServer_POAManager mgr = (PortableServer_POAManager)PtrArray_get(factory->poa_mgr, i);
       if(!strcmp(mgr->id, id)){
@@ -120,6 +126,7 @@ PortableServer_POAManagerFactory_create_POAManager(
          return (PortableServer_POAManager)NULL;
       }
   }
+#endif
 
   PortableServer_POAManager poa_mgr = (PortableServer_POAManager)RtORB_calloc(sizeof(PortableServer_POAManager_struct), 1, "PortableServer_POAManagerFactory_create_POAManager");
 
@@ -130,12 +137,13 @@ PortableServer_POAManagerFactory_create_POAManager(
   }
   poa_mgr->status = POA_HOLDING;
 
+#if 1
   PtrArray_add(factory->poa_mgr, poa_mgr);
-  
+#endif 
+
   return poa_mgr;
 }
 
-#endif
 /*
  *
  * PortableServer_POAManager 
