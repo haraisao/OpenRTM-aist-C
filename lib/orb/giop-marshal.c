@@ -1121,10 +1121,13 @@ int marshal_by_typecode(octet *buf, void *argv, CORBA_TypeCode tc, int *current)
           marshalOctet(buf, current, '\0');
           marshalLong(buf, current, 0);
         } else if (obj->_url){
-          memcpy(buf + (*current), obj->_url[0]._ior_octet, obj->_url[0]._ior_octet_len);
-          *current += obj->_url[0]._ior_octet_len;
+          memcpy(buf + (*current), obj->_url[0]._ior_string, obj->_url[0]._ior_string_len);
+          *current += obj->_url[0]._ior_string_len;
         }else{
-          ior = CORBA_Object__to_string(obj, &env);
+          if(!obj->_ior_string){
+            CORBA_Object__to_string(obj, &env);
+          }
+          ior = (char *)obj->_ior_string;
           ior_byte = (char *)String2Octet(ior + 12); 
           len = strlen(ior+12) / 2;
 	  memcpy(buf + (*current), ior_byte, len);

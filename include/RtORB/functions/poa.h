@@ -30,7 +30,6 @@
 #ifndef __FUNC_POA_H__
 #define __FUNC_POA_H__
 
-#if 1
 /*!
  * @if jp
  * @brief "POA Manager Factory" を生成する。PortableServer_POAManagerFactory構造体の生成と初期化のみ。
@@ -82,7 +81,6 @@ PortableServer_POAManagerFactory_find(PortableServer_POAManagerFactory factory, 
 PtrArray * PortableServer_POAManagerFactory_list(PortableServer_POAManagerFactory factory,
 		CORBA_Environment *env);
 
-#endif
 /*!
  * @if jp
  * @brief "Root POA Manager"　を生成する。以下に詳細。
@@ -98,15 +96,9 @@ PtrArray * PortableServer_POAManagerFactory_list(PortableServer_POAManagerFactor
  * @param env CORBA env(Exception Infomation)
  * @return 'POA Manager reference' / 'Null':Error or NotFound
  */
-#if 1
 PortableServer_POAManager
 PortableServer_POAManagerFactory_create_POAManager(PortableServer_POAManagerFactory factory,
 		char *id, CORBA_Environment *env);
-#else
-PortableServer_POAManager
-PortableServer_POAManagerFactory_create_POAManager(void *factory,
-		char *id, CORBA_Environment *env);
-#endif
 
 /*!
  * @if jp
@@ -267,10 +259,7 @@ PortableServer_POA PortableServer_POA_new(char *id, unsigned short port);
  * @return POA reference
  */
 PortableServer_POA PortableServer_POA_createPOA(PortableServer_POA ppoa, char *id, 
-		PortableServer_POAManager mgr,
-#if 0
-		 PortableServer_POA_Policy *policies, 
-#endif
+		PortableServer_POAManager mgr, PortableServer_POA_Policy *policies, 
 		CORBA_Environment *env);
 
 /*!

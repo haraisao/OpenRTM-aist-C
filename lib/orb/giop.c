@@ -52,15 +52,11 @@ GIOP_Connection__create(){
 		 "GIOP_Connection__alloc" );
   memset(conn, 0, sizeof(GIOP_Connection));
 
-#if 0
   if(_ORB_){
     conn->hostname = (unsigned char *)RtORB_strdup(_ORB_->hostname, "GIOP_Connection__create");
   }else{ 
-#endif
     conn->hostname = (unsigned char *)Get_IP_Address();
-#if 0
   }
-#endif
   conn->activate = FALSE;
 
 #if USE_THREAD
@@ -377,7 +373,7 @@ GIOP_ReplyBody *invokeServant(PortableServer_POA poa,
 
     call_impl_func = (impl_func_type)(*info->impl_finder)(&sb->_private, function, &m_data, &impl_method );
 
-#if DEBUG_MALLOC
+#if 0
     fprintf(stderr, "    invokeServant obj_key=%s, func=%s\n", obj_key, function);
 #endif
 #ifdef METHOD_LOG
