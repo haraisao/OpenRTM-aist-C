@@ -50,9 +50,6 @@ extern "C"
  */
 typedef struct PtrList_struct{
   uint32_t length;
-/*
-  uint32_t *item;
-*/
   void **item;
   struct PtrList_struct *prev, *next;
   void (*free_op)(void**);

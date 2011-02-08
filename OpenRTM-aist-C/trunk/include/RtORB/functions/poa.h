@@ -259,7 +259,10 @@ PortableServer_POA PortableServer_POA_new(char *id, unsigned short port);
  * @return POA reference
  */
 PortableServer_POA PortableServer_POA_createPOA(PortableServer_POA ppoa, char *id, 
-		PortableServer_POAManager mgr, PortableServer_POA_Policy *policies, 
+		PortableServer_POAManager mgr,
+#if 0
+		 PortableServer_POA_Policy *policies, 
+#endif
 		CORBA_Environment *env);
 
 /*!
@@ -473,9 +476,11 @@ PortableServer_POA PortableServer_ServantBase__default_POA(PortableServer_Servan
 /*!
  * @brief (T.B.D)
  */
+#if 0
 CORBA_InterfaceDef * PortableServer_ServantBase__get_interface(PortableServer_Servant servant, 
 		CORBA_Environment *env);
 
+#endif
 /*!
  * @if jp
  * @brief 指定したIDと一致するIDを持つサーバントがあるかどうか調べる。一致するものがあれば、'TRUE'、異なれば'FALSE'を返す。

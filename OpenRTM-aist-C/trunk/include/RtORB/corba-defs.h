@@ -172,215 +172,7 @@ typedef union
 typedef struct CORBA_any {
   struct CORBA_TypeCode_struct *_type;
   CORBA_any_val *_val;
-/*
-  CORBA_boolean _release;
-*/
   CORBA_unsigned_long _release;
-
-#ifdef __cplusplus
-  CORBA_any();
-/*!
- * @brief (TODO)
- */
-  CORBA_any(const CORBA_any &o);
-  ~CORBA_any();
-
-/*!
- * @brief (TODO)
- */
-  CORBA_boolean hasData(struct CORBA_TypeCode_struct *) const;
-
-/*!
- * @brief (TODO)
- */
-  void setData(struct CORBA_TypeCode_struct *tc, char *data, int len);
-/*!
- * @brief (TODO)
- */
-  void copy_val(CORBA_TypeCode_struct *, CORBA_any_val *);
-/*!
- * @brief (TODO)
- */
-  void set_val(CORBA_TypeCode_struct *, CORBA_any_val *);
-
-/*!
- * @brief (TODO)
- */	
-  void alloc(CORBA_TypeCode_struct *);
-/*!
- * @brief (TODO)
- */
-  void free_();
-
-/*!
- * @brief (TODO)
- */  
-  CORBA_any & operator=(const CORBA_any &o);
-
-/*!
- * @brief (TODO)
- */
-  CORBA_any * duplicate();
-
-/*!
- * @brief (TODO)
- */
-  CORBA_TypeCode_struct * type() { return _type; }
-
-/*!
- * @brief (TODO)
- */		
-  struct from_char {
-    from_char(CORBA_char v) : val(v) {};
-    CORBA_char val;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct from_boolean {
-    from_boolean(CORBA_boolean v) : val(v) {};
-    CORBA_boolean val;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct from_octet {
-    from_octet(CORBA_octet v) : val(v) {};
-    CORBA_octet val;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct from_string {
-    from_string(const char *v) : val(v) {}
-    const char *val;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct from_object {
-    from_object(CORBA::Object_ptr &ptr_);
-    CORBA::Object_ptr &ptr;
-  };
-
-/*!
- * @brief (TODO)
- */  
-  struct from_any {
-    from_any(CORBA_any *v) : val(v) {}
-    CORBA_any * val;
-  };
-
-/*!
- * @brief (TODO)
- */
-  void operator<<=(from_char);
-/*!
- * @brief (TODO)
- */
-  void operator<<=(from_boolean);
-/*!
- * @brief (TODO)
- */
-  void operator<<=(from_octet);
-/*!
- * @brief (TODO)
- */
-  void operator<<=(from_string);
-/*!
- * @brief (TODO)
- */
-  void operator<<=(from_object);
-/*!
- * @brief (TODO)
- */
-  void operator<<=(from_any);
-/*!
- * @brief (TODO)
- */
-  void operator<<=(CORBA_unsigned_long);
-
-/*!
- * @brief (TODO)
- */
-  struct to_char {
-    to_char(CORBA_char &buf_) : buf(buf_){}
-    CORBA_char &buf;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct to_octet {
-    to_octet(CORBA_octet &buf_) : buf(buf_){}
-    CORBA_octet &buf;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct to_boolean {
-    to_boolean(CORBA_boolean &buf_) : buf(buf_){}
-    CORBA_boolean &buf;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct to_string {
-    to_string(char *& buf_) : buf(buf_){}
-    to_string(const char *& buf_) : buf((char *&)buf_){}
-    char * & buf;
-  };
-
-/*!
- * @brief (TODO)
- */
-  struct to_object {
-    to_object(CORBA::Object_ptr &ptr_) : ptr(ptr_) {}
-    CORBA::Object_ptr &ptr;
-  };
-
-/*!
- * @brief (TODO)
- */	
-  CORBA_boolean operator>>=(to_char o) const;
-
-/*!
- * @brief (TODO)
- */
-  CORBA_boolean operator>>=(to_boolean o) const;
-
-/*!
- * @brief (TODO)
- */
-  CORBA_boolean operator>>=(to_octet o) const;
-
-/*!
- * @brief (TODO)
- */
-  CORBA_boolean operator>>=(to_string o) const;
-
-/*!
- * @brief (TODO)
- */
-  CORBA_boolean operator>>=(to_object o) const;
-
-/*!
- * @brief (TODO)
- */
-  CORBA_boolean operator>>=(CORBA_any &o) const;
-
-/*!
- * @brief (TODO)
- */
-  CORBA_boolean operator>>=(CORBA_unsigned_long &n) const;
-
-#endif
 } CORBA_any ;
 
 /*!
@@ -465,163 +257,6 @@ void 	CORBA_any_set_exception_value(CORBA_any *any, struct CORBA_TypeCode_struct
  */
 void 	CORBA_any_set_exception(CORBA_any *any, CORBA_any *src);
 
-#ifdef __cplusplus
-
-typedef CORBA_boolean         CORBA_boolean_var;
-typedef CORBA_double          CORBA_double_var;
-typedef CORBA_float           CORBA_float_var;
-typedef CORBA_long            CORBA_long_var;
-typedef CORBA_char            CORBA_char_var;
-typedef CORBA_unsigned_long   CORBA_unsigned_long_var;
-typedef CORBA_octet           CORBA_octet_var;
-typedef CORBA_short           CORBA_short_var;
-typedef CORBA_unsigned_short  CORBA_unsigned_short_var;
-
-
-typedef CORBA_string CORBA_string_ptr;
-
-/*!
- * @class CORBA_string_var
- * @if jp
- * @brief (TODO)
- * @else
- * @brief (TODO)
- * @endif
-*/
-class CORBA_string_var {
-public:
-
-/*!
- * @brief (TODO)
- */
-  CORBA_string_var() : _str(0) {}
-
-/*!
- * @brief (TODO)
- */
-  CORBA_string_var(unsigned char *p) : _str(0)
-  {
-    _str = alloc((const char*)p);
-  }
-
-/*!
- * @brief (TODO)
- */    
-  CORBA_string_var(char *p) : _str(0)
-  {
-    _str = alloc(p);
-  }
-
-/*!
- * @brief (TODO)
- */
-  CORBA_string_var(const char *p) : _str(0)
-  {
-    _str = alloc(p);
-  }
-  ~CORBA_string_var();
-
-/*!
- * @brief (TODO)
- */
-  operator CORBA_string () { return _str; }
-
-/*!
- * @brief (TODO)
- */
-  CORBA_string _retn() {
-    char *tmp = _str;
-    _str = NULL;
-    return tmp;
-  }
-
-/*!
- * @brief (TODO)
- */
-  const char * in() {
-    return _str;
-  }
-
-private:
-  char *_str;  /*!< TODO */
-  
-private:
-/*!
- * @brief (TODO)
- */
-  char * alloc(const char *p);
-};
-
-
-typedef CORBA_wstring CORBA_wstring_ptr;
-
-/*!
- * @class CORBA_wstring_var
- * @if jp
- * @brief (TODO)
- * @else
- * @brief (TODO)
- * @endif
-*/
-class CORBA_wstring_var {
-public:
-
-/*!
- * @brief (TODO)
- */
-  CORBA_wstring_var() : _str(0) {}
-
-/*!
- * @brief (TODO)
- */
-  CORBA_wstring_var(unsigned char *p) : _str(0)
-  {
-    _str = alloc((const int16_t*)p);
-  }
-    
-/*!
- * @brief (TODO)
- */
-  CORBA_wstring_var(int16_t *p) : _str(0)
-  {
-    _str = alloc(p);
-  }
-
-/*!
- * @brief (TODO)
- */
-  CORBA_wstring_var(const int16_t *p) : _str(0)
-  {
-    _str = alloc(p);
-  }
-  ~CORBA_wstring_var();
-
-/*!
- * @brief (TODO)
- */
-  operator CORBA_wstring () { return (short *)_str; }
-
-/*!
- * @brief (TODO)
- */
-  CORBA_wstring _retn() {
-    short *tmp = (short *)_str;
-    _str = NULL;
-    return tmp;
-  }
-
-private:
-  int16_t *_str;  /*!< TODO */
-  
-private:
-/*!
- * @brief (TODO)
- */
-  int16_t * alloc(const int16_t *p);
-};
-
-#endif
-
 /*  Sequence */
 /*!
  * @struct CORBA_SequenceBase
@@ -635,9 +270,6 @@ typedef struct{
   uint32_t _maximum;
   uint32_t _length;
   void * *_buffer;
-/*
-  boolean  _release;
-*/
   uint32_t  _release;
 } CORBA_SequenceBase;
 
@@ -654,9 +286,6 @@ typedef struct{
   uint32_t _length;
   uint32_t _maximum;
   void *_buffer;
-/*
-  boolean  _release;
-*/
   uint32_t  _release;
   uint32_t _type;
 } CORBA_Sequence;
@@ -673,9 +302,6 @@ typedef struct {
   uint32_t _length;
   uint32_t _maximum;
   unsigned char *_buffer;
-/*
-  boolean  _release;
-*/
   uint32_t  _release;
 } CORBA_Sequence_Octet;
 
@@ -730,6 +356,7 @@ typedef struct CORBA_Config {
 }CORBA_Config;
 
 /*-----------------------------------------------------------------*/
+#if 0
 /*!
  * @struct CORBA_InterfaceDef
  * @brief CORBA_InterfaceDef (TODO)
@@ -738,12 +365,14 @@ typedef struct CORBA_Config {
 typedef struct{
 	uint32_t dummy;
 }CORBA_InterfaceDef;
+#endif
 
 /*! enum IOP_Profile_ID (TODO) */
 enum CORBA_SetOverrideType{
 	CORBA_SET_OVERRIDE,CORBA_ADD_OVERRIDE
 };
 
+#if 0
 /* Policy */
 typedef uint32_t CORBA_PolicyType;
 
@@ -822,6 +451,7 @@ typedef struct{
   uint32_t _release;
   CORBA_DomainManager *_types;
 }CORBA_DomainManagerList;
+#endif
 
 /*   ORB  */
 /*!
@@ -839,14 +469,19 @@ typedef struct{
  */
 typedef struct CORBA_ORB_struct{
   unsigned char *_id;
+#if 0
   PtrArray *_threads;
+#endif
   PtrArray *_adapters;
   hashtable *_object_table;
+#if 0
   CORBA_PolicyList *_policies;
+#endif
 
   char *hostname;
-
+#if 0
   uint32_t request_id;
+#endif
 
   struct PortableServer_POAManagerFactory_struct *poa_mgr_factory;
 
@@ -906,11 +541,6 @@ typedef struct CORBA_TypeCode_struct{
   int16_t 			size;
   int16_t				alignment;
 
-#ifdef __cplusplus
-  const char *id() const { return repository_id; }
-  const char *name() const { return identifier; }
-#endif
-	
 }CORBA_TypeCode_struct;
 
 typedef CORBA_TypeCode_struct *CORBA_TypeCode ;
@@ -941,9 +571,6 @@ typedef struct CORBA_IArg {
 typedef struct CORBA_Class_Method{
   char *name;
   CORBA_TypeCode retval;
-/*
-  void (*func)();
-*/
   int32_t in_argc;
   CORBA_IArg *in_argv;
   int32_t n_exceptinfo;

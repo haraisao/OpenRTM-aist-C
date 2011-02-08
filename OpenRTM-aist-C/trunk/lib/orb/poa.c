@@ -108,10 +108,12 @@ PortableServer_POAManagerFactory_create_POAManager(
 		PortableServer_POAManagerFactory factory,
 		char *id, CORBA_Environment *env)
 {
-
+#if 0
   int i;
+#endif
   if(!id) return (PortableServer_POAManager)NULL;
 
+#if 0
   for(i=0; i<factory->poa_mgr->length; i++){
       PortableServer_POAManager mgr = (PortableServer_POAManager)PtrArray_get(factory->poa_mgr, i);
       if(!strcmp(mgr->id, id)){
@@ -119,6 +121,7 @@ PortableServer_POAManagerFactory_create_POAManager(
          return (PortableServer_POAManager)NULL;
       }
   }
+#endif
 
   PortableServer_POAManager poa_mgr = (PortableServer_POAManager)RtORB_calloc(sizeof(PortableServer_POAManager_struct), 1, "PortableServer_POAManagerFactory_create_POAManager");
 
@@ -129,7 +132,9 @@ PortableServer_POAManagerFactory_create_POAManager(
   }
   poa_mgr->status = POA_HOLDING;
 
+#if 0
   PtrArray_add(factory->poa_mgr, poa_mgr);
+#endif
   
   return poa_mgr;
 }
@@ -364,7 +369,9 @@ PortableServer_POA
 PortableServer_POA_createPOA(PortableServer_POA ppoa,
 		char *id, 
 		PortableServer_POAManager mgr, 
+#if 0
 		PortableServer_POA_Policy *policies, 
+#endif
 		CORBA_Environment *env){
   char mgr_id[256];
 
@@ -379,7 +386,9 @@ PortableServer_POA_createPOA(PortableServer_POA ppoa,
     poa->manager = mgr;
   }
 
+#if 0
   if(ppoa) PtrArray_add(ppoa->children, poa);
+#endif
 
   PtrArray_add(poa->manager->poa, poa);
 
@@ -422,8 +431,6 @@ int PortableServer_enqueue_request(GIOP_ConnectionHandler *h){
 
 
 void PortableServer_execute_request(void *arg){
-  int i;
-
   PortableServer_POA poa = (PortableServer_POA)arg;
 
   poa->requests = (PtrList *)GIOP_execute_request(poa, poa->requests);
@@ -624,11 +631,12 @@ PortableServer_ServantBase__default_POA(PortableServer_Servant servant, CORBA_En
 */
 }
 
-
+#if 0
 CORBA_InterfaceDef *
 PortableServer_ServantBase__get_interface(PortableServer_Servant servant, CORBA_Environment *env){
 	return NULL;
 }
+#endif
 
 CORBA_boolean
 PortableServer_ServantBase__is_a(PortableServer_Servant servant, const char *id, CORBA_Environment *env){
@@ -705,8 +713,10 @@ PortableServer_ServantBase__init(PortableServer_ServantBase *servant, CORBA_Envi
       sb->vepv[0]->finalize = PortableServer_ServantBase__fini; 
   if (!sb->vepv[0]->default_POA)
       sb->vepv[0]->default_POA = PortableServer_ServantBase__default_POA; 
+#if 0
   if (!sb->vepv[0]->get_interface)
       sb->vepv[0]->get_interface = PortableServer_ServantBase__get_interface; 
+#endif
   if (!sb->vepv[0]->is_a)
       sb->vepv[0]->is_a = PortableServer_ServantBase__is_a; 
   if (!sb->vepv[0]->non_existent)

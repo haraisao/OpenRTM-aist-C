@@ -486,7 +486,9 @@ uint32_t CORBA_ORB_get_next_request_id(CORBA_ORB orb, CORBA_Environment *env);
  * @param env CORBA env(Exception Infomation) (Unused)
  * @return Interface
  */
+#if 0
 CORBA_InterfaceDef * CORBA_Object_get_interface(CORBA_Object object, CORBA_Environment *env);
+#endif
 
 /*!
  * @if jp
@@ -607,8 +609,10 @@ boolean CORBA_Object_is_equivalent(CORBA_Object object, CORBA_Object other_objec
  * @param env (T.B.D)
  * @return (T.B.D)
  */
+#if 0
 CORBA_Policy * CORBA_Object_get_policy(CORBA_Object object, CORBA_PolicyType policy_type,
 		CORBA_Environment *env);
+#endif
 
 /*!
  * @if jp
@@ -621,9 +625,10 @@ CORBA_Policy * CORBA_Object_get_policy(CORBA_Object object, CORBA_PolicyType pol
  * @param env (T.B.D)
  * @return (T.B.D)
  */
+#if 0
 CORBA_Policy * CORBA_Object_get_client_policy(CORBA_Object object, CORBA_PolicyType type,
 		CORBA_Environment *env);
-
+#endif
 /*!
  * @if jp
  * @brief (T.B.D)
@@ -635,9 +640,11 @@ CORBA_Policy * CORBA_Object_get_client_policy(CORBA_Object object, CORBA_PolicyT
  * @param env (T.B.D)
  * @return (T.B.D)
  */
+#if 0
 CORBA_PolicyList * CORBA_Object_get_policy_overrides(CORBA_Object object,
 		CORBA_PolicyTypeSeq types, CORBA_Environment *env);
 
+#endif
 /*!
  * @if jp
  * @brief (T.B.D)
@@ -650,9 +657,10 @@ CORBA_PolicyList * CORBA_Object_get_policy_overrides(CORBA_Object object,
  * @param env CORBA env(Exception Infomation)
  * @return (T.B.D)
  */
+#if 0
 CORBA_Object CORBA_Object_set_policy_overrides(CORBA_Object object, CORBA_PolicyList policies,
 		uint32_t set_add, CORBA_Environment *env);
-
+#endif
 /*!
  * @if jp
  * @brief (T.B.D)
@@ -664,8 +672,10 @@ CORBA_Object CORBA_Object_set_policy_overrides(CORBA_Object object, CORBA_Policy
  * @param env CORBA env(Exception Infomation)
  * @return (T.B.D)
  */
+#if 0
 boolean CORBA_Object_validate_connection(CORBA_Object object,
 		CORBA_PolicyList inconsistent_policies, CORBA_Environment *env);
+#endif
 
 /*!
  * @if jp
@@ -677,9 +687,10 @@ boolean CORBA_Object_validate_connection(CORBA_Object object,
  * @param env (T.B.D)
  * @return (T.B.D)
  */
+#if 0
 CORBA_DomainManagerList * CORBA_Object_get_domain_managers(CORBA_Object object,
 		CORBA_Environment *env);
-
+#endif
 /*!
  * @if jp
  * @brief (T.B.D)
@@ -712,7 +723,9 @@ CORBA_ORB CORBA_Object_get_orb( CORBA_Object object, CORBA_Environment *env);
  * @endif
  * @return CORBA policy
  */
+#if 0
 CORBA_Policy new_CORBA_Policy();
+#endif
 
 /*!
  * @if jp
@@ -724,7 +737,9 @@ CORBA_Policy new_CORBA_Policy();
  * @param env CORBA env(Exception Infomation)
  * @return copied ORBA policy
  */
+#if 0
 CORBA_Policy CORBA_Policy_copy(CORBA_Policy policy, CORBA_Environment *env);
+#endif
 
 /*!
  * @if jp
@@ -736,7 +751,9 @@ CORBA_Policy CORBA_Policy_copy(CORBA_Policy policy, CORBA_Environment *env);
  * @param env CORBA env(Exception Infomation)
  * @return void
  */
+#if 0
 void CORBA_Policy_destroy(CORBA_Policy policy, CORBA_Environment *env);
+#endif
 
 /*!
  * @if jp
@@ -750,7 +767,9 @@ void CORBA_Policy_destroy(CORBA_Policy policy, CORBA_Environment *env);
  * @param env CORBA env(Exception Infomation)
  * @return CORBA policy
  */
+#if 0
 CORBA_Policy CORBA_ORB_create_policy(CORBA_ORB orb, CORBA_PolicyType type,
 		CORBA_any val, CORBA_Environment *env);
+#endif
 
 #endif

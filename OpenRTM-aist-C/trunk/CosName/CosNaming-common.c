@@ -3,7 +3,6 @@
  */
 
 #include <string.h>
-#include <RtORB/cdrStream.h>
 #define CONST const
 #define CosNaming_COMMON
 #include "CosNaming.h"

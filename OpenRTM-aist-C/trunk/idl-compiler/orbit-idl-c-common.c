@@ -892,7 +892,9 @@ orbit_idl_output_c_common (IDL_tree       tree,
   fprintf (ci->fh, OIDL_C_WARNING);
 
   fprintf (ci->fh, "#include <string.h>\n");
+#if 0
   fprintf (ci->fh, "#include <RtORB/cdrStream.h>\n");
+#endif
   fprintf (ci->fh, "#define CONST const\n");
   fprintf (ci->fh, "#define %s_COMMON\n", ci->c_base_name);
 
