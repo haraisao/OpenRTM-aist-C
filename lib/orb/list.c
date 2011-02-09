@@ -210,3 +210,16 @@ void PtrList_foreach(PtrList *lst, void *(*func)(void *) ){
   return;
 }
 
+void*
+PtrList_find_item(PtrList *lst, void *val, int32_t (*cmp)(void*, void*) ){
+  int i, len;
+
+  if(!lst) return -1;
+  len = PtrList_length(lst);
+
+  for(i=0; i<len;i++){
+     void * itm =  PtrList_get_item(lst, i);
+     if( cmp(val, itm) ) return itm;
+  }
+  return NULL;
+}
