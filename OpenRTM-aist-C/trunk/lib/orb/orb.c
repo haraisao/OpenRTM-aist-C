@@ -90,9 +90,13 @@ void setInitRef(CORBA_Config *cfg, char *argv[]){
   tmp = nextToken(&ref->key, argv[1], "=");
   ref->url = RtORB_strdup(tmp+1, "setInitRef");
 
+#if 0
   if(!cfg->init_ref) cfg->init_ref = new_PtrArray();
 
   PtrArray_add(cfg->init_ref, ref);
+#else
+  cfg->init_ref = PtrList_append(cfg->init_ref, ref, NULL);
+#endif
 }
 
 void setDefaultInitRef(CORBA_Config *cfg, char *argv[]){
@@ -138,8 +142,9 @@ int checkArgs(CORBA_Config *cfg, int *argc, char *argv[], int i,
  * @param val init_ref(CORBA_Config)
  * @return 1:OK
  */
-int
-CORBA_Ref__print(void *val){
+int32_t
+CORBA_Ref__print(void *val)
+{
   CORBA_Ref *ref = (CORBA_Ref *)val;
   fprintf(stderr, "object_key = %s, url = %s\n", ref->key, ref->url);
   return 1;
@@ -155,7 +160,9 @@ CORBA_Ref__print(void *val){
  * @param ref CORBA_Ref data
  * @return 0:UnMatched, else:Matched
  */
-int CORBA_Ref_CompKey(void *val, long ref){
+int32_t
+CORBA_Ref_CompKey(void *val, void *ref)
+{
 	return (!strcmp((char *)val, ((CORBA_Ref *)ref)->key));
 }
 
@@ -171,10 +178,17 @@ int CORBA_Ref_CompKey(void *val, long ref){
  */
 char *
 CORBA_Ref_find_url(PtrArray *refs, char *name){
+#if 0
   int n;
-  n = PtrArray_find(refs,  name, (int32_t (*)(void*, long))CORBA_Ref_CompKey);
+  n = PtrArray_find(refs, name, (int32_t (*)(void*, void *))CORBA_Ref_CompKey);
   if(n < 0) return NULL;
   return  ((CORBA_Ref *)PtrArray_get(refs, n))->url;
+#else
+  char *res;
+
+  res = (char *)PtrList_find_item(refs, name, (int32_t (*)(void*, void *))CORBA_Ref_CompKey);
+  return res;
+#endif
 }
 
 CORBA_ORB
@@ -205,7 +219,11 @@ CORBA_ORB_init(int *argc, char **argv, char orb_id, CORBA_Environment *env){
 
   /* init_refs */
   if(orb->cfg.init_ref){
+#if 0
     PtrArray_foreach(orb->cfg.init_ref, (void *(*)(long))CORBA_Ref__print);
+#else
+    PtrList_foreach(orb->cfg.init_ref, (void *(*)(void *))CORBA_Ref__print);
+#endif
   }
 
   CORBA_Ref_find_url(orb->cfg.init_ref, "NameService");
