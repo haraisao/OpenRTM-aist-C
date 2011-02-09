@@ -14,7 +14,7 @@ endif
 TOP_DIR=..
 IDLC=$(TOP_DIR)/idl-compiler/rtorb-idl
 #IDL_FLAGS= --nocpp-defs #--skeleton-impl
-IDL_FLAGS= # --nocpp-defs #
+IDL_FLAGS= --nocpp-defs #
 IDL_SRC = CosNaming
 IDL_SOURCE = $(TOP_DIR)/idl/$(IDL_SRC).idl
 ECHO_SRCS = $(IDL_SRC).h $(IDL_SRC)-common.c $(IDL_SRC)-skels.c $(IDL_SRC)-stubs.c
