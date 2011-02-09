@@ -28,14 +28,15 @@ STUB_OBJS = $(IDL_SRC)-stubs.o
 
 
 #SERVER_OBJS  =  NameService.o $(SKELIMPL_OBJ)
-SERVER_OBJS  =  NameService.o # NameService_impl.o
+SERVER_OBJS  =  NameService.o NameService_impl.o CosNaming-skels.o
 #SERVER_OBJS += $(COMMON_OBJS) $(SKEL_OBJS)
 CLIENT_OBJS  =  Client.o #$(COMMON_OBJS) $(STUB_OBJS)
 SAMPLE_OBJS =  Sample.o $(COMMON_OBJS) $(SKEL_OBJS) $(STUB_OBJS)
 
 OBJS_DECODE=  decode-ior.o 
 
-NAMING_OBJ = CosNaming-common.o CosNaming-skels.o CosNaming-stubs.o CosNaming-skelimpl.o
+#NAMING_OBJ = CosNaming-common.o CosNaming-skels.o CosNaming-stubs.o CosNaming-skelimpl.o
+NAMING_OBJ = CosNaming-common.o CosNaming-stubs.o 
 NAMING_LIB = libRtORB_CosNaming.so
 
 CFLAGS = -g -Wall -I. -I$(TOP_DIR)/include #-DDEBUG # -DCYGWIN

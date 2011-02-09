@@ -214,7 +214,7 @@ void*
 PtrList_find_item(PtrList *lst, void *val, int32_t (*cmp)(void*, void*) ){
   int i, len;
 
-  if(!lst) return -1;
+  if(!lst) return NULL;
   len = PtrList_length(lst);
 
   for(i=0; i<len;i++){
