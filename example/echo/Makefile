@@ -31,8 +31,8 @@ OBJS_DECODE=  decode-ior.o
 CFLAGS = -g  -I. -I$(TOP_DIR)/include -DDEBUG 
 #CFLAGS += -DCYGWIN
 CFLAGS += -D$(UNAME)
-LIBS = -L$(TOP_DIR)/lib -lRtORB 
-LIBS += -lpthread 
+LIBS = -L$(TOP_DIR)/lib/orb -lRtORB 
+#LIBS += -lpthread 
 
 
 TARGET = echo.h Server Client Sample

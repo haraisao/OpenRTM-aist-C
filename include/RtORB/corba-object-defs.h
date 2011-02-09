@@ -82,23 +82,17 @@ typedef struct CORBA_Object_struct{
   void *servant;
   struct PortableServer_POA_struct *poa;
   CORBA_ORB orb;
+  CORBA_URL *_url;
   unsigned char *typedId;
   unsigned char *object_key;
-  CORBA_URL *_url;
-  unsigned char num_urls;
   unsigned char *_ior_string;
   GIOP_Connection *connection;
-#if 0
-  CORBA_InterfaceDef *interface;
-  uint32_t *repository_id;
-#endif
-  uint32_t ref;
-#if 0
-  CORBA_Policy *policy;
-  CORBA_PolicyList *_policies;
-#endif
   void *impl;
   void *impl_obj;
+
+  int32_t num_urls;
+  uint32_t ref;
+
   int32_t release;
 
 }CORBA_Object_struct;

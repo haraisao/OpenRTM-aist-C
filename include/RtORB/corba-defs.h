@@ -35,17 +35,6 @@
 #include <RtORB/hashtable.h>
 #include <RtORB/typecode.h>
 
-
-#ifdef __cplusplus
-namespace CORBA {
-  class Any_var;
-  class Object;
-  class Object_ptr;
-}
-
-class cdrStream;
-#endif
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -70,40 +59,12 @@ extern "C"
 
 #define CORBA_OBJECT_NIL	NULL
 
-/* Alignments */
-#define CORBA_OCTET_ALIGN	1
-#define CORBA_WCHAR_ALIGN	2
-#define CORBA_SHORT_ALIGN	2
-#define CORBA_LONG_ALIGN	4
-#define CORBA_FLOAT_ALIGN	4
-#define CORBA_DOUBLE_ALIGN	8
-#define CORBA_LONG_LONG_ALIGN	8
-#define CORBA_LONG_DOUBLE_ALIGN	16
-#define CORBA_OBJECT_ALIGN	4
-/* SIZE_OF */
-#define CORBA_OCTET_SIZE	1
-#define CORBA_WCHAR_SIZE	2
-#define CORBA_SHORT_SIZE	2
-#define CORBA_LONG_SIZE		4
-#define CORBA_FLOAT_SIZE	4
-#define CORBA_DOUBLE_SIZE	8
-#define CORBA_LONG_LONG_SIZE	8
-#define CORBA_LONG_DOUBLE_SIZE	16
-#define CORBA_OBJECT_SIZE	4
-
-/* Exception */
-  /*
-enum CORBA_System_Exceptions{
-  CORBA_BAD_PARAM=1, CORBA_INVALID_VALUE, CORBA_UNKNOWN_VALUE, END_EXCEPTION
-};
-  */
 
 /*! enum IOP_ServiceId (正常終了/ユーザ例外/システム例外) */
 enum CORBA_ReplyStatusType{
    CORBA_NO_EXCEPTION, CORBA_USER_EXCEPTION, CORBA_SYSTEM_EXCEPTION, 
    CORBA_LOCATION_FORWARD,CORBA_LOCATION_FORWARD_PERM, NEEDS_ADDRESSING_MODE
 };
-
 
 /***  Basic Data Type **/
 typedef char   CORBA_char;
@@ -128,7 +89,6 @@ typedef unsigned char boolean;
 extern const uint32_t RTORB_ORB_TYPE;
 
 #define CORBA_ANY_MAXBUF MaxMessageSize  
-
 
 struct CORBA_Object_struct;
 
@@ -175,87 +135,6 @@ typedef struct CORBA_any {
   CORBA_unsigned_long _release;
 } CORBA_any ;
 
-/*!
- * @if jp
- * @brief CORBA_any型データ用にメモリを確保し、TypeCodeとreleaseフラグをセットする。
- * @else
- * @brief allocate memory for CORBA_any data, and set TypeCode data and Release_Flag.
- * @endif
- * @param clear clear Flag
- * @return void
- */
-void 	CORBA_any_alloc(CORBA_any *, struct CORBA_TypeCode_struct *, int32_t clear);
-
-/*!
- * @if jp
- * @brief CORBA_any型データ内のコンテンツを全てクリアする。
- * @else
- * @brief clear all contents in CORBA_any data array.
- * @endif
- * @param any CORBA_any data
- * @return void
- */
-void 	CORBA_any_clear(CORBA_any *any);
-
-/*!
- * @if jp
- * @brief CORBA_any型データ内に、引数のコンテンツデータをセットする。
- * @else
- * @brief set contents data to CORBA_any data array.
- * @endif
- * @param data contents data
- * @param len length of array
- * @return void
- */
-void    CORBA_any_set_value(CORBA_any*, struct CORBA_TypeCode_struct *, char *data, int32_t len);
-
-/*!
- * @if jp
- * @brief TypeCodeに応じた、CORBA_any型データ内のコンテンツデータを返す。
- * @else
- * @brief return contents data releated with TypeCode from CORBA_any data array. 
- * @endif
- * @return reference of contents data
- */
-void * 	CORBA_any_get_value(CORBA_any*);
-	
-/*!
- * @if jp
- * @brief CORBA_any型データ内のエンコード済みのCORBA_any_val型コンテンツデータを返す。また、その配列長をセットする。
- * @else
- * @brief return encoded contents data in CORBA_any data array.
- * @endif
- * @param any CORBA_any data
- * @param len length of CORBA_any_val data array
- * @return encoded data
- */
-char * 	CORBA_any_get_encoded(CORBA_any *any, int32_t *len);
-
-/*!
- * @if jp
- * @brief CORBA_any型データ内のコンテンツに例外情報のデータをセットする。
- * @else
- * @brief set contents exception data to CORBA_any data array.
- * @endif
- * @param any CORBA_any data
- * @param tc CORBA_TypeCode data
- * @param value contents exception data
- * @param release release Flag
- * @return void
- */
-void 	CORBA_any_set_exception_value(CORBA_any *any, struct CORBA_TypeCode_struct * tc, void *value, CORBA_boolean release);
-
-/*!
- * @if jp
- * @brief CORBA_any型データ内のコンテンツに例外情報のデータをセットする。
- * @else
- * @brief set contents exception data to CORBA_any data array.
- * @endif
- * @param any target of CORBA_any data
- * @param src buffer of CORBA_any data
- * @return void
- */
-void 	CORBA_any_set_exception(CORBA_any *any, CORBA_any *src);
 
 /*  Sequence */
 /*!
@@ -356,135 +235,20 @@ typedef struct CORBA_Config {
 }CORBA_Config;
 
 /*-----------------------------------------------------------------*/
-#if 0
-/*!
- * @struct CORBA_InterfaceDef
- * @brief CORBA_InterfaceDef (TODO)
- * @param dummy (TODO)
- */
-typedef struct{
-	uint32_t dummy;
-}CORBA_InterfaceDef;
-#endif
-
-/*! enum IOP_Profile_ID (TODO) */
-enum CORBA_SetOverrideType{
-	CORBA_SET_OVERRIDE,CORBA_ADD_OVERRIDE
-};
-
-#if 0
-/* Policy */
-typedef uint32_t CORBA_PolicyType;
-
-/*!
- * @struct CORBA_Policy_struct
- * @brief CORBA_Policy_struct (TODO)
- * @param policy_type (TODO)
- * @param state (TODO)
- */
-typedef struct{
-  CORBA_PolicyType policy_type;  /* readonly */
-  CORBA_any state;
-}CORBA_Policy_struct;
-
-typedef CORBA_Policy_struct  * CORBA_Policy;
-
-/*!
- * @struct CORBA_PolicyList
- * @brief CORBA_PolicyList (TODO)
- * @param _maximum (TODO)
- * @param _length (TODO)
- * @param _release data release flag (TRUE:release)
- * @param _policies (TODO)
- */
-typedef struct{
-  uint32_t _maximum;
-  uint32_t _length;
-  uint32_t _release;
-  CORBA_Policy *_policies;
-}CORBA_PolicyList;
-
-/*!
- * @struct CORBA_PolicyTypeSeq
- * @brief CORBA_PolicyTypeSeq (TODO)
- * @param _maximum (TODO)
- * @param _length (TODO)
- * @param _release data release flag (TRUE:release)
- * @param _types (TODO)
- */
-typedef struct{
-  uint32_t _maximum;
-  uint32_t _length;
-  uint32_t _release;
-  CORBA_PolicyType *_types;
-}CORBA_PolicyTypeSeq;
-
-typedef int32_t CORBA_PolicyErrorCode;
-
-extern const CORBA_PolicyErrorCode BAD_POLICY;
-extern const CORBA_PolicyErrorCode UNSUPPORTED_POLICY;
-extern const CORBA_PolicyErrorCode BAD_POLICY_TYPE;
-extern const CORBA_PolicyErrorCode BAD_POLICY_VALUE;
-extern const CORBA_PolicyErrorCode UNSUPPORTED_POLICY_VALUE;
-
-/*  Domain Manager */
-/*!
- * @struct CORBA_DomainManager
- * @brief CORBA_DomainManager (TODO)
- * @param _id (TODO)
- */
-typedef struct{
-  uint32_t _id;
-}CORBA_DomainManager;
-
-/*!
- * @struct CORBA_DomainManagerList
- * @brief CORBA_DomainManagerList (TODO)
- * @param _maximum (TODO)
- * @param _length (TODO)
- * @param _release data release flag (TRUE:release)
- * @param _types (TODO)
- */
-typedef struct{
-  uint32_t _maximum;
-  uint32_t _length;
-  uint32_t _release;
-  CORBA_DomainManager *_types;
-}CORBA_DomainManagerList;
-#endif
-
 /*   ORB  */
 /*!
  * @struct CORBA_ORB_struct
  * @brief ORB structure in RtORB
  * @param _id (Unused)
- * @param _threads (Unused) (for Multi Thread)
- * @param _adapters ORB内のオブジェクトアダプタのList(servantのlist)
- * @param _object_table ORB内のオブジェクトテーブル
- * @param _policies (Unused)
  * @param hostname ORBを起動したホスト名(IP address)
- * @param request_id (Unused)
- * @param poa_mgr_factory RootPOAManager
  * @param cfg 初期設定のコマンド引数などの処理用
  */
 typedef struct CORBA_ORB_struct{
   unsigned char *_id;
-#if 0
-  PtrArray *_threads;
-#endif
-  PtrArray *_adapters;
-  hashtable *_object_table;
-#if 0
-  CORBA_PolicyList *_policies;
-#endif
+
+  struct CORBA_Object_struct *RootPOA;
 
   char *hostname;
-#if 0
-  uint32_t request_id;
-#endif
-
-  struct PortableServer_POAManagerFactory_struct *poa_mgr_factory;
-
   CORBA_Config cfg;
 
 } CORBA_ORB_struct;

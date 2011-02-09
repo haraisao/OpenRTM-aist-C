@@ -39,6 +39,8 @@ bindObjectToName(CORBA_ORB orb, CORBA_Object obj, CORBA_Environment *env){
   contextName->_buffer[0].kind = "my_context";
 
   testContext = CosNaming_NamingContext_bind_new_context(CORBA_Object_dup(rootContext), contextName, env);
+  fprintf(stderr, "!!!! bind_new_context Bound %s, %s \n",
+	    contextName->_buffer[0].id ,contextName->_buffer[0].kind ); 
 
   if(catchException(env, ex_CosNaming_NamingContext_AlreadyBound) ){
     fprintf(stderr, "!!!! Already Bound %s, %s \n",
@@ -61,6 +63,7 @@ bindObjectToName(CORBA_ORB orb, CORBA_Object obj, CORBA_Environment *env){
   objectName->_buffer[0].kind = "Object";
 
   CosNaming_NamingContext_bind(testContext, objectName, obj, env);
+  fprintf(stderr, "Call bind  \n"); 
 
   if(catchException(env, ex_CosNaming_NamingContext_AlreadyBound) ){
     fprintf(stderr, "Sorry, Already_Bound  \n"); 

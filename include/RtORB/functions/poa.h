@@ -32,73 +32,15 @@
 
 /*!
  * @if jp
- * @brief "POA Manager Factory" を生成する。PortableServer_POAManagerFactory構造体の生成と初期化のみ。
- * @else
- * @brief create 'POA Manager Factory'.
- * @endif
- * @param orb ORB reference
- * @return POAManagerFactory reference
- */
-PortableServer_POAManagerFactory PortableServer_POAManagerFactory_new(CORBA_ORB orb);
-
-/*!
- * @if jp
- * @brief POA Manager Factoryに含まれるPOAManager全てを破棄する。
- * @else
- * @brief Destroy POA Manager Factory including each POA Managers.
- * @endif
- * @param factory POAManagerFactory reference
- * @param env CORBA env(Exception Infomation)
- * @return void
- */
-void PortableServer_POAManagerFactory_destroy(PortableServer_POAManagerFactory factory, CORBA_Environment *env);
-
-/*!
- * @if jp
- * @brief POA Manager Factoryに含まれるPOAManagerから、指定したIDと一致するものを探し、リファレンスを返す。
- * @else
- * @brief Return reference of POA Manager which is match to 'ID' from POA Manager Factory
- * @endif
- * @param factory POAManagerFactory reference
- * @param id ID for serch (=POA Manager's ID) 
- * @param env CORBA env(Exception Infomation)
- * @return 'POA Manager reference' / 'Null':Error or NotFound
- */
-PortableServer_POAManager
-PortableServer_POAManagerFactory_find(PortableServer_POAManagerFactory factory, char *id,
-		CORBA_Environment *env);
-
-/*!
- * @if jp
- * @brief POA Manager Facotroyに含まれるPOA Managerのリストを返す。
- * @else
- * @brief Return POA Mangar's list from POA_Manager_Factory.
- * @endif
- * @param factory POAManagerFactory reference
- * @param env CORBA env(Exception Infomation)
- * @return POA Manager's list
- */
-PtrArray * PortableServer_POAManagerFactory_list(PortableServer_POAManagerFactory factory,
-		CORBA_Environment *env);
-
-/*!
- * @if jp
  * @brief "Root POA Manager"　を生成する。以下に詳細。
  *
- *        先ず、POAManagerFactory内のManagerリストに生成するManagerと同じIDのものが有るかどうかを確認する。
- *        新規であれば、PortableServer_POAManager構造体を生成し、初期化(HOLDING状態)する。
- *        自身をPOAManagerFactoryに追加登録する。
- * @else
- * @brief create 'Root POA Manager'. Check whether already exist or not by ID. Create and initialize POA Manager, and add to Factory.
- * @endif
  * @param factory POAManagerFactory reference
  * @param id ID for regist (=POA Manager's ID) 
  * @param env CORBA env(Exception Infomation)
  * @return 'POA Manager reference' / 'Null':Error or NotFound
  */
 PortableServer_POAManager
-PortableServer_POAManagerFactory_create_POAManager(PortableServer_POAManagerFactory factory,
-		char *id, CORBA_Environment *env);
+PortableServer_POAManager__create(char *id, CORBA_Environment *env);
 
 /*!
  * @if jp

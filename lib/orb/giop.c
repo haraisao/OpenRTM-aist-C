@@ -313,18 +313,19 @@ GIOP_ReplyBody *invokeServant(PortableServer_POA poa,
 {
   char *function;
   char *obj_key;
-  RtORB_POA_Object *poa_obj;
   PortableServer_ClassInfo *info;
   CORBA_Class_Method *m_data;
   void *(*impl_method)();
   void (*call_impl_func)(PortableServer_ServantBase *, void*, CORBA_Class_Method*, void**, CORBA_Environment*, void*(*method)());
   void * *argv;
   void * result;
+  RtORB_POA_Object *poa_obj=NULL;
+  hashtable *tbl=NULL; 
+
   typedef void (*impl_func_type)(PortableServer_ServantBase *, void*, CORBA_Class_Method*, void**, CORBA_Environment*, void*(*method)());
 
   void RtORB_Result_free(CORBA_TypeCode tc, void **result);
 
-  hashtable *tbl; 
 
   GIOP_ReplyBody *reply = (GIOP_ReplyBody *)RtORB_alloc(sizeof(GIOP_ReplyBody),
 		  "ReplyBody in invokeServant");
@@ -334,29 +335,18 @@ GIOP_ReplyBody *invokeServant(PortableServer_POA poa,
   reply->body_size = 0;
 
   if(poa) tbl = poa->object_map;
-  else tbl = _ORB_->_object_table;
-  
-  if (version > 1){
-    obj_key = (char *)header->_1_2.target.object_key._buffer;
-    function = (char *)header->_1_2.operation._buffer;
-  }else{
-    obj_key = (char *)header->_1_0.object_key._buffer;
-    function = (char *)header->_1_0.operation._buffer;
-  }
 
-  if(!obj_key) obj_key = (char *)"NameService";
-  poa_obj = (RtORB_POA_Object *)getValue(tbl, obj_key);
-
-
-#ifdef DEBUG_OLD
+  if(tbl != NULL){
     if (version > 1){
-      fprintf(stderr, "POA Object %s, function: %s\n",
-		      header->_1_2.target.object_key._buffer, function);
+      obj_key = (char *)header->_1_2.target.object_key._buffer;
+      function = (char *)header->_1_2.operation._buffer;
     }else{
-      fprintf(stderr, "POA Object %s, function: %s\n",
-		      header->_1_0.object_key._buffer, function);
+      obj_key = (char *)header->_1_0.object_key._buffer;
+      function = (char *)header->_1_0.operation._buffer;
     }
-#endif
+    if(!obj_key) obj_key = (char *)"NameService";
+    poa_obj = (RtORB_POA_Object *)getValue(tbl, obj_key);
+  }
 
   if(poa_obj == NULL){
     reply->status = GIOP_SYSTEM_EXCEPTION;
@@ -368,14 +358,11 @@ GIOP_ReplyBody *invokeServant(PortableServer_POA poa,
 
   }else{
     extern void** Result_alloc(CORBA_TypeCode tc);
-    info = (PortableServer_ClassInfo *)poa_obj->_private;
+    info = (PortableServer_ClassInfo *)poa_obj->impl_serv._private;
     PortableServer_ServantBase *sb = (PortableServer_ServantBase*)poa_obj->servant;
 
     call_impl_func = (impl_func_type)(*info->impl_finder)(&sb->_private, function, &m_data, &impl_method );
 
-#if 0
-    fprintf(stderr, "    invokeServant obj_key=%s, func=%s\n", obj_key, function);
-#endif
 #ifdef METHOD_LOG
     printInvokeServent("method", (char *)poa_obj->obj->typedId, function);
 #endif
@@ -470,13 +457,17 @@ GIOP_ReplyBody *invokeServant(PortableServer_POA poa,
 }
 
 int find_object(PortableServer_POA poa, char *key, char *ior){
-  hashtable *tbl;
+  hashtable *tbl=NULL;
+  int res = GIOP_UNKNOWN_OBJECT;
 
   if(poa) tbl = poa->object_map;
-  else tbl = _ORB_->_object_table;
 
-  if ( getValue(tbl, key) == NULL) return  GIOP_UNKNOWN_OBJECT;
-  return  GIOP_OBJECT_HERE;
+  if ( tbl != NULL){
+    if ( getValue(tbl, key) != NULL){
+      res = GIOP_OBJECT_HERE;
+    }
+  }
+  return  res;
 }
 
 int reply_locateMessage(PortableServer_POA poa, GIOP_ConnectionHandler *h,

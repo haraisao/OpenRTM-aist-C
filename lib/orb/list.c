@@ -190,3 +190,23 @@ PtrList_remove_released_items(PtrList *lst){
   if(retval) return PtrList_first(retval);
   return retval;
 }
+
+/*
+
+
+*/
+void PtrList_foreach(PtrList *lst, void *(*func)(void *) ){
+  int i;
+  int len;
+  PtrList *first;
+
+  if(!lst) return;
+  first = PtrList_first(lst);
+  len = PtrList_length(first);
+
+  for(i=0; i<len;i++){
+    func(PtrList_get_item(first,i));
+  }
+  return;
+}
+

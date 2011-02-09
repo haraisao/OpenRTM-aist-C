@@ -22,69 +22,6 @@
 
 #include <RtORB/corba.h>
 
-/*
-void *
-any_to_value(void **ptr, CORBA_TypeCode tc){
-    SKIP_ALIAS(tc);
-
-    switch(tc->kind){
-      case tk_null:
-      case tk_void:
-	      fprintf(stderr, "null or void value found\n");
-	      return NULL;
-      case tk_octet:
-      case tk_boolean:
-      case tk_char:
-	      fprintf(stderr, "char = %d\n", (int)(*((char **)ptr)) );
-	      break; 
-      case tk_short:
-      case tk_ushort:
-	      fprintf(stderr, "short = %d\n", (int)(*((short **)ptr)) );
-	      break;
-      case tk_long:
-      case tk_ulong:
-      case tk_enum:
-	      fprintf(stderr, "long = %d\n", (int)(*((int32_t **)ptr)) );
-	      break;
-      case tk_sequence:
-	      fprintf(stderr, "sequence = %x\n", (int)ptr );
-	      break;
-      default :
-	      fprintf(stderr, "Unknown Type = %d\n", (int)tc->kind);
-	      break;
-
-    }
-
-    return (void *)ptr;
-}
-*/
-
-/*
-void *
-get_value_by_name(CORBA_any *val, char *label){
-  int i;
-  int skip = 0;
-  //void **ptr = (void **)val->_value;
-  void **ptr = (void**) CORBA_any_get_value(val);
-  void *retval;
-  CORBA_TypeCode tc = val->_type;
-
-  for(i=0; i<tc->member_count;i++){
-   if(strcmp(tc->member_name[i], label) == 0) break;
-   skip = size_of_typecode(tc->member_type[i]);
-  }
-  if(i == tc->member_count){
-	  fprintf(stderr, "Label %s not found\n", label);
-	  return NULL;
-  }
-  ptr = (void **)((char *)ptr + skip);
-
-  retval = any_to_value(ptr, tc->member_type[i]);
-
-  return retval;
-}
-*/
-
 /*!
  * @if jp
  * @brief CORBA_any型データ用にメモリを確保し、TypeCodeとreleaseフラグをセットする。
@@ -210,7 +147,6 @@ void CORBA_any_clear(CORBA_any *any)
   if (!any) { return; }
   
   if (any->_type && any->_release > 0 && any->_val) {
-//    CORBA_any_val *val = any->_val;
 
     switch(any->_type->kind) {
     case tk_string:
@@ -242,11 +178,8 @@ void CORBA_any_clear(CORBA_any *any)
        RtORB_free(val, "~CORBA_any_clear2(any->_val)");
     }
   }
-//  any->_val = NULL;
   any->_type = NULL;
-/*
-  any->_release = 1;
-*/
+  return;
 }
 
 char * CORBA_any_get_encoded(CORBA_any *any, int32_t *len)
