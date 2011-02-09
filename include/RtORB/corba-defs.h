@@ -229,7 +229,7 @@ typedef struct CORBA_Config {
    char *orb_id;
    char *listenEndpoints;
    uint32_t flag_propietary_activation;
-   PtrArray  *init_ref;
+   PtrList  *init_ref;
    char *default_init_ref;
    uint16_t port;
 }CORBA_Config;
