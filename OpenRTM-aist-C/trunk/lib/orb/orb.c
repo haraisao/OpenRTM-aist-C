@@ -262,6 +262,9 @@ new_CORBA_Object(char *object_key){
 }
 
 int  CORBA_Object_free(CORBA_Object obj){
+#if DEBUG
+  fprintf(stderr, "\t[[[Call CORBA_Object_free: (%x)ref=%d\n", obj,obj->ref);
+#endif
   if(obj->ref == 0) return 0;
 
   if(obj->ref > 0) obj->ref -= 1;
@@ -279,7 +282,7 @@ CORBA_Object_dup(CORBA_Object obj){
    return NULL;
   }
   obj->ref += 1;
-#if DEBUG
+#if DEBUG 
   fprintf(stderr, "\t[[[Call CORBA_Object_dup: (%x)ref=%d\n", obj,obj->ref);
 #endif
   return obj;

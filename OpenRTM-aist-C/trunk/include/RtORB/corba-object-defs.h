@@ -91,9 +91,10 @@ typedef struct CORBA_Object_struct{
   void *impl_obj;
 
   int32_t num_urls;
+
   uint32_t ref;
 
-  int32_t release;
+//  int32_t release;
 
 }CORBA_Object_struct;
 

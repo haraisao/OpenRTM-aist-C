@@ -173,7 +173,9 @@ RtORB_free_by_typecode(CORBA_TypeCode tc, void *val, int32_t flag, int32_t cpp_f
             if(cpp_flag == 0){
 	      CORBA_Object_free(obj);
             }else{
+#if 0
 	      if(obj->release) CORBA_Object_free(obj);
+#endif
             }
 	 }
 	 break;
@@ -242,7 +244,7 @@ RtORB_Result__free(CORBA_TypeCode tc, void **result, int cpp_flag){
 
   case tk_objref:
     if(cpp_flag == 0){
-      RtORB_free_by_typecode(tc, (void*)result, 0, cpp_flag);
+      RtORB_free_by_typecode(tc, (void*)&result, 0, cpp_flag);
     }
     return;
 
