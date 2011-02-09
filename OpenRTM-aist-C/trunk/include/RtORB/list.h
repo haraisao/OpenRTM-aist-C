@@ -218,6 +218,18 @@ PtrList *PtrList_first(PtrList *lst);
  */
 PtrList *PtrList_last(PtrList *lst);
 
+
+/*!
+ * @if jp
+ * @brief Foreach operator
+ * @else
+ * @brief Foreach operator
+ * @endif
+ * @param lst List pointer
+ * @return Head List pointer
+ */
+void PtrList_foreach(PtrList *lst, void *(*func)(void *) );
+
 #ifdef __cplusplus
 }
 #endif 

@@ -43,38 +43,6 @@ extern "C"
 #define POA_DISCARDING 	3  /*!< DISCARDING Status of POA Manager (request --> Destroy) */
 #define POA_INACTIVE  	4  /*!< INACTIVE Status of POA Manager   (request --> Deny) */
 
-/* POA_Policy */
-/*!
- * @struct PortableServer_POA_Policy_struct
- * @brief POA Policy (Unused)
- * @param type type
- * @param id id
- */
-#if 0
-typedef struct PortableServer_POA_Policy_struct{
-  uint32_t  type;
-  uint32_t  id;
-} PortableServer_POA_Policy_struct;
-
-typedef PortableServer_POA_Policy_struct * PortableServer_POA_Policy;
-#endif
-
-/* POAManagerFactory */
-/*!
- * @struct PortableServer_POAManagerFactory_struct
- * @brief POAManagerFactory structure
- * @param orb CORBA ORB
- * @param id POAManager's ID
- * @param poa_mgr POA Manager's array
- */
-typedef struct PortableServer_POAManagerFactory_struct{
-  struct CORBA_ORB_struct *orb;
-  char *id;
-  PtrArray *poa_mgr;
-} PortableServer_POAManagerFactory_struct;
-
-typedef PortableServer_POAManagerFactory_struct * PortableServer_POAManagerFactory;
-
 /* POAManager */
 /*!
  * @struct PortableServer_POAManager_struct
@@ -87,12 +55,9 @@ typedef PortableServer_POAManagerFactory_struct * PortableServer_POAManagerFacto
 typedef struct PortableServer_POAManager_struct{
   struct CORBA_ORB_struct *orb;
   char *id;
-  PtrArray *poa;
+  PtrList *poa;
 
   uint32_t status;
-#if USE_THREAD
-  pthread_t _thread[FD_SETSIZE];
-#endif
 } PortableServer_POAManager_struct;
 
 typedef PortableServer_POAManager_struct * PortableServer_POAManager;
@@ -116,17 +81,8 @@ typedef struct PortableServer_POA_struct{
   char *id;
 
   struct GIOP_Connection *_server;
-
-  PortableServer_POAManagerFactory mgr_factory;
   PortableServer_POAManager manager;
 
-/*  struct PortableServer_POA_struct *children;   */
-#if 0
-  PtrArray *children;
-  struct PortableServer_ServantManager_struct *servant_mgr;
-#endif
-
-/*  PtrArray *servants;   */
   hashtable *object_map;
 
   PtrList *requests;
@@ -189,9 +145,6 @@ typedef struct {
   PortableServer_POA (*default_POA)(PortableServer_Servant, CORBA_Environment *);
   void (*add_ref)(PortableServer_Servant, CORBA_Environment *);
   void (*remove_ref)(PortableServer_Servant, CORBA_Environment *);
-#if 0
-  CORBA_InterfaceDef *(*get_interface)(PortableServer_Servant, CORBA_Environment *);
-#endif
   CORBA_boolean (*is_a)(PortableServer_Servant, const char *, CORBA_Environment *);
   CORBA_boolean (*non_existent)(PortableServer_Servant, CORBA_Environment *);
 } PortableServer_ServantBase__epv ;
@@ -233,9 +186,6 @@ typedef struct{
  */
 typedef struct {
   void (*dummy)();
-/*
-  void *(*impl_finder)(void*, char*, CORBA_Class_Method**, void *(**)());
-*/
   void *(*impl_finder)();
   const char *class_name;
   uint32_t *class_id;
@@ -254,16 +204,19 @@ typedef struct {
  * @param _reserve (TODO)
  */
 typedef struct{
+  struct {
+    void *_private;
+    void *_vepv;
+  } impl_serv;
 
-  void *_private;
+  PortableServer_POA poa;
+
+  PortableServer_Servant servant;
 
   CORBA_Object obj;
 
-  PortableServer_POA poa;
-  PortableServer_Servant servant;
-  PortableServer_ObjectId objectId;
-
   void *_reserve;
+
 }RtORB_POA_Object;
 
 /*!

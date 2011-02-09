@@ -27,7 +27,7 @@ UUID_LIB = -L/usr/lib/e2fsprogs -luuid
 else
 CFLAGS = -fpic $(INCLUDE) $(CFLAG_DEBUG) $(CFLAG_OS)
 endif
-CFLAGS += -O2
+#CFLAGS += -O2
 #CFLAGS += -ansi
 
 TOP_DIR=../..
@@ -88,6 +88,7 @@ $(LIBORB_A): $(LIBOBJS) $(NAMING_HEADER) $(NAMING_SRCS)
 
 clean:
 	rm -f *~  $(LIBOBJS)  $(NAMING_HEADER) $(LIBORB) $(LIBORB_A)
+	cd CosName && $(MAKE) allclean
 
 allclean:
 	rm -f *.o *~ $(LIBORB) $(NAMING_HEADER) $(LIBORB) $(LIBORB_A)

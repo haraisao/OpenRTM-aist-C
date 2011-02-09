@@ -1052,11 +1052,13 @@ impl_CosNaming_NamingContext_list (impl_POA_CosNaming_NamingContext * servant,
   /* ------ init private attributes here ------ */
   /* ------ ---------- end ------------- ------ */
 
+  fprintf(stderr, "impl_CosNaming_BindingIterator__create \n");
   objid = PortableServer_POA_activate_object (poa, newservant, ev);
   RtORB_free (objid, " objid");
   retval = PortableServer_POA_servant_to_reference (poa, newservant, ev);
   SOCKET_UNLOCK();
 
+  fprintf(stderr, "------- \n");
   return retval;
 }
 

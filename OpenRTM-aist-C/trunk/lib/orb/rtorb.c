@@ -264,7 +264,7 @@ void call_local_func(CORBA_Object obj,
   typedef void (*impl_func_type)(PortableServer_ServantBase *, void*, CORBA_Class_Method*, void**, CORBA_Environment*, void*(*method)());
 
   poa_obj =(RtORB_POA_Object *) getValue(obj->poa->object_map, obj->object_key);
-  info = (PortableServer_ClassInfo *)poa_obj->_private;
+  info = (PortableServer_ClassInfo *)poa_obj->impl_serv._private;
   PortableServer_ServantBase *sb = (PortableServer_ServantBase*)poa_obj->servant;
   call_impl_func = (impl_func_type)(*info->impl_finder)(&sb->_private, method->name, &m_data, &impl_method );
   (*call_impl_func)(sb, retval, m_data, args, env, impl_method);
@@ -298,7 +298,7 @@ void invokeMethod(CORBA_Object obj,
 
   /* Object is in Local_Host */
   poa_obj =(RtORB_POA_Object *) getValue(obj->poa->object_map, obj->object_key);
-  info = (PortableServer_ClassInfo *)poa_obj->_private;
+  info = (PortableServer_ClassInfo *)poa_obj->impl_serv._private;
   PortableServer_ServantBase *sb = (PortableServer_ServantBase*)poa_obj->servant;
   call_impl_func = (impl_func_type)(*info->impl_finder)(&sb->_private, method->name, &m_data, &impl_method );
   (*call_impl_func)(sb, retval, m_data, args, env, impl_method);

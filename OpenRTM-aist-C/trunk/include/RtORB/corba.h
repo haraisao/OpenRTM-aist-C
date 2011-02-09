@@ -55,6 +55,7 @@ extern "C"
 #include <RtORB/functions/allocater.h>
 #include <RtORB/functions/endian.h>
 #include <RtORB/corba-seq.h>
+#include <RtORB/functions/corba-any.h>
 #include <RtORB/functions/corba-exception.h>
 #include <RtORB/functions/corba-sequence.h>
 #include <RtORB/functions/corba-typecode.h>

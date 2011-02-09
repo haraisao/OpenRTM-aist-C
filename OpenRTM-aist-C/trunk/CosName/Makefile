@@ -40,8 +40,9 @@ NAMING_LIB = libRtORB_CosNaming.so
 
 CFLAGS = -g -Wall -I. -I$(TOP_DIR)/include #-DDEBUG # -DCYGWIN
 CFLAGS = -g -Wall -I. -I$(TOP_DIR)/include -D$(UNAME)
-CFLAGS += -DUSE_THREAD
-LIBS= -lpthread -L$(TOP_DIR)/lib/orb -lRtORB #-lRtORB_CosNaming
+#CFLAGS += -DUSE_THREAD
+#LIBS= -lpthread -L$(TOP_DIR)/lib/orb -lRtORB #-lRtORB_CosNaming
+LIBS= -L$(TOP_DIR)/lib/orb -lRtORB #-lRtORB_CosNaming
 ifneq ($(UNAME),FreeBSD)
 ifneq ($(UNAME),Darwin)
 LIBS += -luuid
