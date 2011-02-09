@@ -230,6 +230,8 @@ PtrList *PtrList_last(PtrList *lst);
  */
 void PtrList_foreach(PtrList *lst, void *(*func)(void *) );
 
+void* PtrList_find_item(PtrList *array, void *val, int32_t (*cmp)(void*, void*) );
+
 #ifdef __cplusplus
 }
 #endif 
