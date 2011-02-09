@@ -14,7 +14,7 @@ ifneq (,$(findstring CYGWIN, $(UNAME)))
 endif
 
 CFLAG_DEBUG = -Wall
-CFLAG_DEBUG += -g
+#CFLAG_DEBUG += -g
 #CFLAG_DEBUG += -DDEBUG
 #CFLAG_DEBUG += -DDEBUG_MALLOC 
 #CFLAG_DEBUG += -DHASH_DEBUG
@@ -27,7 +27,7 @@ UUID_LIB = -L/usr/lib/e2fsprogs -luuid
 else
 CFLAGS = -fpic $(INCLUDE) $(CFLAG_DEBUG) $(CFLAG_OS)
 endif
-#CFLAGS += -O2
+CFLAGS += -O2
 #CFLAGS += -ansi
 
 TOP_DIR=../..
@@ -36,12 +36,14 @@ IDL_SOURCE = $(TOP_DIR)/idl/$(IDL_SRC).idl
 
 INCLUDE = -I. -I$(TOP_DIR)/include # -I./CosName 
 
-NAMING_SRCS = CosName/CosNaming-common.c CosName/CosNaming-skels.c CosName/CosNaming-stubs.c CosName/NameService_impl.c
+#NAMING_SRCS = CosName/CosNaming-common.c CosName/CosNaming-skels.c CosName/CosNaming-stubs.c CosName/NameService_impl.c
+NAMING_SRCS = CosName/CosNaming-common.c CosName/CosNaming-stubs.c
 NAMING_OBJ = $(NAMING_SRCS:.c=.o)
 NAMING_HEADER = CosName/CosNaming.h
 
 #LIBOBJS  = client.o sockserv.o
-LIBOBJS  = socket.o hashtable.o list.o array.o
+LIBOBJS  = socket.o hashtable.o list.o
+#LIBOBJS += array.o
 LIBOBJS += util.o endian.o allocater.o
 LIBOBJS += iop.o giop.o giop-msg.o giop-marshal.o
 LIBOBJS += orb.o 

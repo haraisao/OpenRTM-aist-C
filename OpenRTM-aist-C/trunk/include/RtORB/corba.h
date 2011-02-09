@@ -50,7 +50,9 @@ extern "C"
 #endif 
 
 #include <RtORB/list.h>
+#if 0
 #include <RtORB/array.h>
+#endif
 #include <RtORB/corba-seq.h>
 #include <RtORB/functions/allocater.h>
 #include <RtORB/functions/endian.h>
