@@ -95,8 +95,12 @@ int main(int argc, char **argv){
   signal(SIGTERM, quit);
 
   //get RootPOA Reference
+#if 0
   CORBA_Object poa_obj = CORBA_ORB_resolve_initial_references(orb,"RootPOA", &env);
   PortableServer_POA poa = poa_obj->poa;
+#else
+  PortableServer_POA poa = The_RootPOA;
+#endif
   catchDefaultException(&env);
 
   //create Naming context
@@ -113,7 +117,6 @@ int main(int argc, char **argv){
 
   // activate POA Manager
   PortableServer_POAManager_activate(poa_manager, &env);
-
 /////////////////
 
   // run ORB --> server Roop action

@@ -45,8 +45,8 @@ void actionReply(octet *buf, CORBA_Sequence_Octet *body, CORBA_Class_Method *met
 
    reply_header = (GIOP_ReplyHeader *)newReplyHeader();
    deMarshalReply(reply_header, body, buf, &header);
-
-   if(header.version.minor < 2){
+   if(header.minor < 2)
+   {
        reply_status = reply_header->_1_0.reply_status;
    }else{
        reply_status = reply_header->_1_2.reply_status;
@@ -78,7 +78,7 @@ void actionReply(octet *buf, CORBA_Sequence_Octet *body, CORBA_Class_Method *met
 	    dumpMessage(buf + SIZEOF_GIOP_HEADER, header.message_size);
 	    break;
     }
-    deleteReplyHeader(reply_header, header.version.minor);
+    deleteReplyHeader(reply_header, header.minor);
     return;
 }
 
@@ -168,7 +168,7 @@ void invokeMethod_via_GIOP(CORBA_Object obj,
 
  if((header.flags & 0x01) == 0 ) header.message_size=ntohl(header.message_size);
  else byte_order = 1;
- if(header.version.minor > 0) fragment = header.flags & 0x02;
+ if(header.minor > 0) fragment = header.flags & 0x02;
 
   body = (CORBA_Sequence_Octet *)new_CORBA_Sequence_Octet(0);
   actionReply((octet *)buf, body, method, env);
@@ -263,7 +263,11 @@ void call_local_func(CORBA_Object obj,
   void (*call_impl_func)(PortableServer_ServantBase *, void*, CORBA_Class_Method*, void**, CORBA_Environment*, void*(*method)());
   typedef void (*impl_func_type)(PortableServer_ServantBase *, void*, CORBA_Class_Method*, void**, CORBA_Environment*, void*(*method)());
 
+#if 0
   poa_obj =(RtORB_POA_Object *) getValue(obj->poa->object_map, obj->object_key);
+#else
+  poa_obj =(RtORB_POA_Object *) getValue(The_RootPOA->object_map, obj->object_key);
+#endif
   info = (PortableServer_ClassInfo *)poa_obj->impl_serv._private;
   PortableServer_ServantBase *sb = (PortableServer_ServantBase*)poa_obj->servant;
   call_impl_func = (impl_func_type)(*info->impl_finder)(&sb->_private, method->name, &m_data, &impl_method );
@@ -287,7 +291,12 @@ void invokeMethod(CORBA_Object obj,
   if(env->_major)  clearException(env);
 
   /* check wheter object is exist in Local_Host or not(=Remote_Host).  */
-  if(!CORBA_ORB_find_object(obj->poa, obj, env)){
+#if 0
+  if(!CORBA_ORB_find_object(obj->poa, obj, env))
+#else
+  if(!CORBA_ORB_find_object(The_RootPOA, obj, env))
+#endif
+  {
 #ifdef DEBUG
     fprintf(stderr, "  connect to %s:%d\n", obj->connection->hostname, obj->connection->port);
 #endif
@@ -297,7 +306,11 @@ void invokeMethod(CORBA_Object obj,
   }
 
   /* Object is in Local_Host */
+#if 0
   poa_obj =(RtORB_POA_Object *) getValue(obj->poa->object_map, obj->object_key);
+#else
+  poa_obj =(RtORB_POA_Object *) getValue(The_RootPOA->object_map, obj->object_key);
+#endif
   info = (PortableServer_ClassInfo *)poa_obj->impl_serv._private;
   PortableServer_ServantBase *sb = (PortableServer_ServantBase*)poa_obj->servant;
   call_impl_func = (impl_func_type)(*info->impl_finder)(&sb->_private, method->name, &m_data, &impl_method );

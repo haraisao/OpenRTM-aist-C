@@ -229,8 +229,6 @@ typedef struct CORBA_Config {
 typedef struct CORBA_ORB_struct{
   unsigned char *_id;
 
-  struct CORBA_Object_struct *RootPOA;
-
   char *hostname;
   CORBA_Config cfg;
 

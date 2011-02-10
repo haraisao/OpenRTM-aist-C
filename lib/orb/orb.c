@@ -29,7 +29,11 @@
 
 #include <RtORB/corba.h>
 
-CORBA_ORB  _ORB_;
+CORBA_ORB  The_ORB;
+struct PortableServer_POA_struct  *The_RootPOA;
+CORBA_Object  The_RootPOA_Object=NULL;
+
+
 #ifdef USE_THREAD
 pthread_mutex_t CORBA_MUTEX = PTHREAD_MUTEX_INITIALIZER;
 #endif
@@ -192,7 +196,6 @@ CORBA_ORB_init(int *argc, char **argv, char orb_id, CORBA_Environment *env){
 	*/
   int i;
   CORBA_ORB orb = (CORBA_ORB)RtORB_calloc(sizeof(CORBA_ORB_struct), 1, "CORBA_ORB_init");
-  CORBA_Object obj;
 
   memset(&orb->cfg, 0, sizeof(CORBA_Config));
   memset(env, 0, sizeof(CORBA_Environment));
@@ -219,17 +222,19 @@ CORBA_ORB_init(int *argc, char **argv, char orb_id, CORBA_Environment *env){
 
   orb->hostname = (char *)Get_IP_Address();
 
-  /* RootPOA */
-  PortableServer_POA RootPOA = PortableServer_POA_new("RootPOA", orb->cfg.port);
-  RootPOA->manager = PortableServer_POAManager_new("RootPOAManager");
-  RootPOA->orb = orb;
-  RootPOA->manager->poa = PtrList_append(RootPOA->manager->poa, RootPOA, NULL);
+  /* create the RootPOA */
+  The_RootPOA = PortableServer_POA_new("RootPOA", orb->cfg.port);
+#if 0
+  The_RootPOA->orb = orb;
+#endif
+  The_RootPOA->status = POA_HOLDING;
 
-  obj = new_CORBA_Object("RootPOA");
-  obj->poa = RootPOA;
-  orb->RootPOA = obj;
+#if 0
+  The_RootPOA_Object = new_CORBA_Object("RootPOA");
+  The_RootPOA_Object->poa = The_RootPOA;
+#endif
 
-  _ORB_ = orb;
+  The_ORB = orb;
   return orb;
 }
 
@@ -240,7 +245,10 @@ CORBA_ORB_resolve_initial_references(CORBA_ORB orb, char *obj_key,
   CORBA_Object obj=NULL;
   char *url;
 
-  if(strcmp(obj_key, "RootPOA") == 0) return orb->RootPOA;
+  if(strcmp(obj_key, "RootPOA") == 0){
+    return The_RootPOA;
+//    return The_RootPOA_Object;
+  }
   url = CORBA_Ref_find_url(orb->cfg.init_ref, obj_key);
 
   if(url){
@@ -422,7 +430,10 @@ CORBA_ORB_string_to_object(CORBA_ORB orb, unsigned char *str,
   CORBA_Object obj = new_CORBA_Object(NULL);
 
   obj->num_urls = parseCorbaURL(&obj->_url, (char *)str);
+
+#if 0
   obj->orb = orb;
+#endif
 
   if(obj->num_urls){
     if(obj->_url[0].protocol == PROTO_RIR){
@@ -436,7 +447,9 @@ CORBA_ORB_string_to_object(CORBA_ORB orb, unsigned char *str,
     RtORB_free(obj->connection->hostname, "CORBA_ORB_string_to_object");
     obj->connection->hostname=(unsigned char *)RtORB_strdup(obj->_url[0].hostname, "string_to_object");
     obj->connection->port = obj->_url[0].port;
+#if 0
     obj->poa = 0;
+#endif
     if(obj->_url[0].type_id){
       obj->typedId = (unsigned char *)obj->_url[0].type_id;
     }
@@ -445,7 +458,9 @@ CORBA_ORB_string_to_object(CORBA_ORB orb, unsigned char *str,
 
   }else{
     obj->connection = NULL;
+#if 0
     obj->poa = 0;
+#endif
   }
   return obj;
 }
@@ -481,8 +496,7 @@ CORBA_ORB_perform_work(CORBA_ORB orb, CORBA_Environment *env){
 
 void 
 CORBA_ORB_run(CORBA_ORB orb,  CORBA_Environment *env) {
-  CORBA_Object poa_obj = orb->RootPOA;
-  POA_main_loop( poa_obj->poa );
+  POA_main_loop( The_RootPOA );
   return;
 }
 
@@ -495,10 +509,12 @@ CORBA_ORB_shutdown(CORBA_ORB orb, boolean wait_for_completion,
 
 void
 CORBA_ORB_destroy(CORBA_ORB orb, CORBA_Environment *env){
-  _ORB_=NULL;
+  The_ORB=NULL;
 
-  PortableServer_POA_destory(orb->RootPOA->poa, env);
-  CORBA_Object_free(orb->RootPOA);
+  PortableServer_POA_destory(The_RootPOA, env);
+#if 0
+  CORBA_Object_free(The_RootPOA_Object);
+#endif
 
   RtORB_free(orb->hostname, "destroy_hostname");
   RtORB_free(orb, "CORBA_ORB_destory");
@@ -582,6 +598,10 @@ CORBA_ORB
 CORBA_Object_get_orb( CORBA_Object object,
 		CORBA_Environment *env)
 {
+#if 0
   return object->orb;
+#else
+  return The_ORB;
+#endif
 }
 

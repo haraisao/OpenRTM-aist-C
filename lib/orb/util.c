@@ -392,8 +392,8 @@ RtORB_strlen(char *str){
 }
 
 char *Get_IP_Address(){
-  if(_ORB_){
-    return RtORB_strdup(_ORB_->hostname, "Get_IP_Address");
+  if(The_ORB){
+    return RtORB_strdup(The_ORB->hostname, "Get_IP_Address");
   }else{
     char *addr;
 
