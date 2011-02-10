@@ -44,7 +44,6 @@
 
 #define RECV_BUF_SIZE  1024 * 2048
 
-extern CORBA_ORB _ORB_;
 /***********************************/
 GIOP_Connection *
 GIOP_Connection__create(){
@@ -52,8 +51,8 @@ GIOP_Connection__create(){
 		 "GIOP_Connection__alloc" );
   memset(conn, 0, sizeof(GIOP_Connection));
 
-  if(_ORB_){
-    conn->hostname = (unsigned char *)RtORB_strdup(_ORB_->hostname, "GIOP_Connection__create");
+  if(The_ORB){
+    conn->hostname = (unsigned char *)RtORB_strdup(The_ORB->hostname, "GIOP_Connection__create");
   }else{ 
     conn->hostname = (unsigned char *)Get_IP_Address();
   }
@@ -136,8 +135,8 @@ GIOP_MessageHeader *GIOP_Create_MessageHeader(int order, int version){
   GIOP_MessageHeader *header = (GIOP_MessageHeader *)RtORB_alloc(SIZEOF_GIOP_HEADER, "GIOP_Create_MessageHeader");
 
   memcpy(header->magic, "GIOP", 4);
-  header->version.major = 1;
-  header->version.minor = version;
+  header->major = 1;
+  header->minor = version;
   header->flags = order;
 
   return header;
@@ -730,12 +729,12 @@ void GIOP_Request_perform(GIOP_ConnectionHandler *h, octet *buf,
   deMarshalRequest(request_header, body, (char *)buf, header);
 
   reply_body = invokeServant(poa, request_header, env, body->_buffer,
-		  header->version.minor, byte_order);
+		  header->minor, byte_order);
 
-  reply_Message(h, request_header, reply_body, header->version.minor);
+  reply_Message(h, request_header, reply_body, header->minor);
 
   deleteReplyBody(reply_body);
-  deleteRequestHeader(request_header, header->version.minor);
+  deleteRequestHeader(request_header, header->minor);
   return;
 }
 
@@ -767,7 +766,8 @@ void GIOP_Reply_perform(GIOP_ConnectionHandler *h, octet *buf, PortableServer_PO
    reply_header = (GIOP_ReplyHeader *)newReplyHeader();
    deMarshalReply(reply_header, body, buf, header);
 
-   if(header->version.minor < 2){
+   if(header->minor < 2)
+   {
      reply_status = reply_header->_1_0.reply_status;
    }else{
      reply_status = reply_header->_1_2.reply_status;
@@ -792,7 +792,7 @@ void GIOP_Reply_perform(GIOP_ConnectionHandler *h, octet *buf, PortableServer_PO
        dumpMessage(buf + SIZEOF_GIOP_HEADER, header->message_size);
      break;
    }
-   deleteReplyHeader(reply_header, header->version.minor);
+   deleteReplyHeader(reply_header, header->minor);
    
    return;
 }
@@ -855,9 +855,9 @@ void GIOP_LocationRequest_perform(GIOP_ConnectionHandler *h, octet *buf, Portabl
   locate_request_header = (GIOP_LocateRequestHeader *)newLocateRequestHeader();
   deMarshalLocateRequest(locate_request_header, buf, header);
 
-  reply_locateMessage(poa, h, locate_request_header, header->version.minor);
+  reply_locateMessage(poa, h, locate_request_header, header->minor);
 
-  deleteLocateRequestHeader(locate_request_header, header->version.minor);
+  deleteLocateRequestHeader(locate_request_header, header->minor);
   return;
 }
 
@@ -1002,7 +1002,7 @@ int RecvMessage(GIOP_ConnectionHandler *h){
   if((header.flags & 0x01) == 0 );    /*header.message_size=ntohl(header.message_size); -> in receiveMessage */
   else byte_order = 1;
 
-  if(header.version.minor > 0) fragment = header.flags & 0x02;
+  if(header.minor > 0) fragment = header.flags & 0x02;
 
 #ifdef DEBUG_GIOP
   fprintf(stderr, "[%d]\n", header.message_type);
@@ -1108,12 +1108,12 @@ PtrList *GIOP_execute_request(PortableServer_POA poa, PtrList *lst){
 
     poa = (PortableServer_POA) GIOP_ConnectionHandler_get_arg(h);
 
-    version = header->version.minor;
+    version = header->minor;
 
     if((header->flags & 0x01) == 0 ) header->message_size=ntohl(header->message_size);
     else byte_order = 1;
 
-    if(header->version.minor > 0) fragment = header->flags & 0x02;
+    if(version > 0) fragment = header->flags & 0x02;
 
     memset(&env, 0, sizeof(CORBA_Environment));
 

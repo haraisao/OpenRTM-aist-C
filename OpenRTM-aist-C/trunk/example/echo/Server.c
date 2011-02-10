@@ -88,12 +88,17 @@ int main(int argc, char **argv){
 
   orb = (CORBA_ORB)CORBA_ORB_init(&argc, argv, 0, &env);
 
+#if 0
   CORBA_Object poa_obj = (CORBA_Object)
 	  CORBA_ORB_resolve_initial_references(orb,"RootPOA", &env);
 
   PortableServer_POA poa = poa_obj->poa;
 
   catchDefaultException(&env);
+#else
+  PortableServer_POA poa = The_RootPOA;
+#endif
+
 
   Echo myEcho = (Echo)impl_Echo__create(poa, &env);
   catchDefaultException(&env);

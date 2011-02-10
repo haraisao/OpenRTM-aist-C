@@ -30,190 +30,13 @@
 #include <RtORB/corba.h>
 #include <RtORB/sockport.h>
 
-/*
- *
- * PortableServer_POAManager 
- *
- **/
-/* PortableServer::POAManager */
-PortableServer_POAManager
-PortableServer_POAManager_new(char *id)
-{
-  PortableServer_POAManager poa_mgr = (PortableServer_POAManager)RtORB_calloc(sizeof(PortableServer_POAManager_struct), 1, "PortableServer_POAManager_new");
-
-  poa_mgr->poa = NULL;
-
-  if(id){
-    poa_mgr->id = (char *)RtORB_strdup(id, "PortableServer_POAManager_new");
-  }
-  poa_mgr->status = POA_HOLDING;
-  
-  return poa_mgr;
-}
-
-/* activate */
 void
 PortableServer_POAManager_activate(PortableServer_POAManager poa_mgr,
-		CORBA_Environment *env) {
-   int i,len;
-
-   if(poa_mgr->status == POA_INACTIVE){
-     CORBA_system_exception(env, "AdapterInactive");
-     return;
-   }
-   if(poa_mgr->status == POA_ACTIVE) return;
-   poa_mgr->status = POA_ACTIVE;
-
-   len = PtrList_length(poa_mgr->poa);
-
-   for(i=0; i < len && i < FD_SETSIZE; i++){
-     PortableServer_POA poa = (PortableServer_POA)PtrList_get_item(poa_mgr->poa,i);
-
-     set_SockProfile(poa->_server->sock,
-		     SOCK_SERVER, 
-		     NULL, NULL,
-		     PortableServer_enqueue_request);
-   }
-   return;
+		CORBA_Environment *env) 
+{
+  PortableServer_POA_activate(poa_mgr, env);
+  return;
 }
-
-/*
- deactivate
-*/
-void 
-PortableServer_POAManager_deactivate(PortableServer_POAManager poa_mgr,
-		CORBA_boolean etherealize_objects,
-		CORBA_boolean wait_for_complation,
-		CORBA_Environment *env) {
-   int i, len;
-
-   if(poa_mgr->status == POA_INACTIVE){
-     CORBA_system_exception(env, "AdapterInactive");
-     return;
-   }
-   poa_mgr->status = POA_INACTIVE;
-   len = PtrList_length(poa_mgr->poa);
-
-   for(i=0; i < len; i++){
-     PortableServer_POA poa = (PortableServer_POA)PtrList_get_item(poa_mgr->poa,i);
-     GIOP_Connection__shutdown(poa->_server);
-   }
-
-   return;
-}
-
-/*
- discars_requests
-*/
-void 
-PortableServer_POAManager_discars_requests(PortableServer_POAManager poa_mgr,
-		CORBA_boolean wait_for_complation,
-		CORBA_Environment *env) {
-   int i, len;
-
-   if(poa_mgr->status == POA_INACTIVE){
-     CORBA_system_exception(env, "AdapterInactive");
-     return;
-   }
-   if(poa_mgr->status == POA_DISCARDING) return;
-
-   poa_mgr->status = POA_DISCARDING;
-   len = PtrList_length(poa_mgr->poa);
-
-   for(i=0; i < len; i++){
-     PortableServer_POA poa = (PortableServer_POA)PtrList_get_item(poa_mgr->poa,i);
-     GIOP_Connection__shutdown(poa->_server);
-   }
-
-   if(wait_for_complation){
-   }
-
-   return;
-}
-
-/*
- hold_requests
-*/
-void 
-PortableServer_POAManager_hold_requests(PortableServer_POAManager poa_mgr,
-		CORBA_boolean wait_for_complation,
-		CORBA_Environment *env) {
-   int i,len;
-
-   if(poa_mgr->status == POA_INACTIVE){
-     CORBA_system_exception(env, "AdapterInactive");
-     return;
-   }
-   if(poa_mgr->status == POA_HOLDING) return;
-
-   poa_mgr->status = POA_HOLDING;
-
-   len = PtrList_length(poa_mgr->poa);
-
-   for(i=0; i < poa_mgr->poa->length; i++){
-     PortableServer_POA poa = (PortableServer_POA)PtrList_get_item(poa_mgr->poa,i);
-     GIOP_Connection__shutdown(poa->_server);
-   }
-
-   if(wait_for_complation){
-   }
-
-   return;
-}
-
-
-/*
- shutdown
-*/
-void 
-PortableServer_POAManager_shutdown(PortableServer_POAManager poa_mgr, CORBA_Environment *env) {
-   int i,len;
-
-   poa_mgr->status = POA_DISCARDING;
-   len = PtrList_length(poa_mgr->poa);
-
-   for(i=0; i < poa_mgr->poa->length; i++){
-     PortableServer_POA poa = (PortableServer_POA)PtrList_get_item(poa_mgr->poa,i);
-     GIOP_Connection__shutdown(poa->_server);
-   }
-
-   return;
-}
-
-/*
- destory
-*/
-void
-PortableServer_POAManager_destory(PortableServer_POAManager poa_mgr, CORBA_Environment *env){
-   int i,len;
-
-   len = PtrList_length(poa_mgr->poa);
-
-   for(i=0; i < len; i++){
-     PortableServer_POA poa = (PortableServer_POA)PtrList_get_item(poa_mgr->poa,i);
-     GIOP_Connection__free(poa->_server);
-     poa->_server = 0;
-   }
-   poa_mgr->status = POA_INACTIVE;
-   return;
-}
-
-/*
- get_status
-*/
-uint32_t
-PortableServer_POAManager_get_state(PortableServer_POAManager poa_mgr, CORBA_Environment *env){
-   return poa_mgr->status;
-}
-
-/*
- get_id
-*/
-char *
-PortableServer_POAManager_get_id(PortableServer_POAManager poa_mgr, CORBA_Environment *env){
-   return poa_mgr->id;
-}
-
 /*
  *
  * PortableServer_POA
@@ -247,41 +70,84 @@ PortableServer_POA
 PortableServer_POA_createPOA(PortableServer_POA ppoa,
 		char *id, 
 		PortableServer_POAManager mgr, 
-		CORBA_Environment *env){
-  char mgr_id[256];
-
+		CORBA_Environment *env)
+{
+  fprintf(stderr, "!!!! RtORB doesn't support multi POA...\n");
   if(!id) return (PortableServer_POA)NULL;
   PortableServer_POA poa = PortableServer_POA_new(id, 0);
 
-  if (!mgr){
-    strcpy(mgr_id, id);
-    strcat(mgr_id, "Manager");
-    poa->manager = PortableServer_POAManager_new(mgr_id);
-  }else{
-    poa->manager = mgr;
-  }
-
-  poa->manager->poa = PtrList_append(poa->manager->poa, poa, NULL);
-
+#if 0
   poa->orb = ppoa->orb;
+#endif
 
   return poa;
 }
 
 void
-PortableServer_POA_activate(PortableServer_POA poa, CORBA_Environment *env) {
-  PortableServer_POAManager_activate(poa->manager, env);
+PortableServer_POA_activate(PortableServer_POA poa, CORBA_Environment *env) 
+{
+  if(poa->status == POA_INACTIVE){
+    CORBA_system_exception(env, "AdapterInactive");
+    return;
+  }
+  if(poa->status == POA_ACTIVE) return;
+  poa->status = POA_ACTIVE;
+
+  set_SockProfile(poa->_server->sock, SOCK_SERVER, NULL, NULL, PortableServer_enqueue_request);
 }
 
 void
-PortableServer_POA_destory(PortableServer_POA poa, CORBA_Environment *env) {
-  PortableServer_POAManager_destory(poa->manager, env);
+PortableServer_POA_deactivate(PortableServer_POA poa, CORBA_Environment *env) 
+{
+   if(poa->status == POA_INACTIVE){
+     CORBA_system_exception(env, "AdapterInactive");
+     return;
+   }
+   poa->status = POA_INACTIVE;
+
+   GIOP_Connection__shutdown(poa->_server);
+
+   return;
+}
+
+/*
+ shutdown
+*/
+void 
+PortableServer_POA_shutdown(PortableServer_POA poa, CORBA_Environment *env) 
+{
+
+   poa->status = POA_DISCARDING;
+
+   GIOP_Connection__shutdown(poa->_server);
+
+   return;
 }
 
 
+void
+PortableServer_POA_destory(PortableServer_POA poa, CORBA_Environment *env) 
+{
+  PortableServer_POA_shutdown(poa, env);
+  GIOP_Connection__free(poa->_server);
+  poa->_server = 0;
+
+  poa->status = POA_INACTIVE;
+  return;
+}
+
+/*
+ get_status
+*/
+uint32_t
+PortableServer_POA_get_state(PortableServer_POA poa, CORBA_Environment *env)
+{
+   return poa->status;
+}
+
 PortableServer_POAManager
 PortableServer_POA__get_the_POAManager(PortableServer_POA poa, CORBA_Environment *env){
-  return poa->manager;
+  return poa;
 }
 
 /* change for shmc */
@@ -319,29 +185,25 @@ PortableServer_ObjectId
 PortableServer_POA_activate_object(PortableServer_POA poa, 
 		PortableServer_Servant servant, CORBA_Environment *env)
 {
-  PortableServer_ObjectId obj_id;
+  PortableServer_ObjectId obj_id = NULL;
   CORBA_Object obj;
   PortableServer_ServantBase *sb = (PortableServer_ServantBase *)servant;
   RtORB_POA_Object *poa_obj = (RtORB_POA_Object *)sb->_private;
 
-  if(!poa_obj) {
+  if(poa_obj == NULL) {
     CORBA_system_exception(env, "Error in PortableServer_POA_activate_object:RtORB_POA_Object is NULL");
-     return NULL;
+  }else{
+    obj = poa_obj->obj;
+    if(obj == NULL) {
+      CORBA_system_exception(env, "Error in PortableServer_POA_activate_object:CORBA_Object is NULL");
+    }else{
+#if 0
+      obj->poa = poa;
+#endif
+      obj_id = RtORB_strdup((char *)obj->object_key, "PortableServer_POA_activate_object");
+      register_PortableServer_Servant(poa, servant, env);
+    }
   }
-
-  obj = poa_obj->obj;
-
-  if(!obj) {
-    CORBA_system_exception(env, "Error in PortableServer_POA_activate_object:CORBA_Object is NULL");
-     return NULL;
-  }
-
-  obj_id = (PortableServer_ObjectId)RtORB_alloc(sizeof(struct PortableServer_ObjectId_struct), "PortableServer_POA_activate_object");
-
-  obj->poa = poa;
-
-  register_PortableServer_Servant(poa, servant, env);
-
   return obj_id;
 }
 
@@ -423,9 +285,7 @@ PortableServer_POA_deactivate_object(PortableServer_POA poa,
 		CORBA_Environment *env)
 {
 
-  deleteItem(poa->object_map, id->_this->object_key);
-  RtORB_free(id->_this->_ior_string, "PortableServer_POA_deactivate_object");
-
+  deleteItem(poa->object_map, id);
   return ;
 }
 
@@ -456,9 +316,11 @@ PortableServer_POA_servant_to_reference(PortableServer_POA poa,
   
   sb = (PortableServer_ServantBase *)servant;
   poa_obj = (RtORB_POA_Object *)sb->_private;
+#if 0
   if (poa_obj->obj->poa == NULL) {
     poa_obj->obj->poa = poa;
   }
+#endif
 
   return poa_obj->obj;
 
@@ -477,12 +339,16 @@ PortableServer_ServantBase__default_POA(PortableServer_Servant servant, CORBA_En
     return NULL;
   }
 
+#if 0
   RtORB_POA_Object *prvt=(RtORB_POA_Object *)sb->_private;
   if(!prvt->poa){
     return prvt->obj->poa;
   }
 
   return prvt->poa;
+#else
+  return The_RootPOA;
+#endif
 }
 
 CORBA_boolean
@@ -558,21 +424,27 @@ PortableServer_ServantBase__init(PortableServer_ServantBase *servant, CORBA_Envi
   return;
 }
 
-extern CORBA_ORB _ORB_;
-
 PortableServer_POA PortableServer_root_POA(CORBA_Environment *ev)
 {
   PortableServer_POA poa = NULL;
-    if (!_ORB_) {
+    if (!The_ORB) {
       return NULL;
     }
-  poa = (PortableServer_POA) ((CORBA_Object)CORBA_ORB_resolve_initial_references(_ORB_, "RootPOA",  ev))->poa;
+#if 0
+  poa = (PortableServer_POA) ((CORBA_Object)CORBA_ORB_resolve_initial_references(The_ORB, "RootPOA",  ev))->poa;
+#else
+  poa = The_RootPOA;
+#endif
   return poa;
 }
 
 PortableServer_POA PortableServer_POA__narrow(CORBA_Object obj)
 {
+#if 0
   PortableServer_POA poa = NULL;
   if(obj) poa = obj->poa;
   return poa;
+#else
+  return The_RootPOA;
+#endif
 }

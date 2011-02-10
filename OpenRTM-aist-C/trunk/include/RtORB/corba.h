@@ -135,7 +135,8 @@ extern "C"
  */
 void do_assert(boolean c, const char* info);
 
-extern CORBA_ORB _ORB_;  /*!< ORB(global)(used in orb.c,poa.c) */
+extern CORBA_ORB The_ORB;  /*!< ORB(global)(used in orb.c,poa.c) */
+extern struct PortableServer_POA_struct  *The_RootPOA;  /*!< RootPOA(global)(used in orb.c,poa.c) */
 
 #ifdef USE_THREAD
 extern pthread_mutex_t  CORBA_MUTEX;  /*!< MUTEX(global) */

@@ -191,6 +191,7 @@ fprintf(stderr, "... end string_to_object\n");
     exit(1);
   }
 #endif
+
   //n_loop = 10000;
   n_loop = 1;
 

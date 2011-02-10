@@ -265,10 +265,6 @@ char *get_ip_address(int sock){
     char *ip_addr = (char *)inet_ntoa(addr->sin_addr);
 
 
-#if 0
-    fprintf(stderr, "Host = %s \n", ip_addr);
-#endif
-
     if( (addr->sin_family == AF_INET)
 #if 1
        && (strcmp(ip_addr,"127.0.0.1") != 0)
@@ -306,9 +302,6 @@ char *get_ip_address(int sock){
         (strncmp(ip_addr, "172.", 4) != 0) &&
         (strcmp(ip_addr, "0.0.0.0") != 0)
       ){
-#if 0
-    fprintf(stderr, "Host = %s \n", ip_addr);
-#endif
         res = RtORB_strdup(ip_addr, "get_ip_address");
         break;
       }else{
@@ -364,41 +357,6 @@ int make_client_socket_port(char *hostname, int port)
 	return fd;
 }
 
-#if 0 /* no use */
-int select_client_socket( int client_port, int timeout,
-		void (*exception_request)(), int (*command_request)())
-{
-  int	 nfds;
-  fd_set socks;
-  int	 stat;
-  struct timeval time_out;
-
-  //time_out.tv_sec = (int)floor(timeout / 1000);
-  time_out.tv_sec = timeout / 1000;
-  time_out.tv_usec = (timeout - time_out.tv_sec * 1000) * 1000 ;
-
-  FD_ZERO(&socks);
-  FD_SET(client_port, &socks);
-
-  nfds = client_port+1;
-  stat=select(nfds, &socks, 0, 0 /*&exceptions*/, &time_out);
-
-  if (stat>0) {
-    if (FD_ISSET(client_port, &socks)) { 
-      if(command_request){
-        if((*command_request)(client_port) == -1){
-          close(client_port);
-	  return 0;
-        }
-      }
-      FD_CLR(client_port, &socks);
-    }
-  }
-
-  return 1; 
-}
-#endif /* no use */
-
 
 /*
    TEST Implementation
@@ -429,17 +387,6 @@ void clear_SockProfile(int fd){
   return;
 }
 
-/*
-void set_SockProfile_type(int fd, int type){
-
-  SOCKET_LOCK();
-  
-  SockProfile[fd].type = type;
-
-  SOCKET_UNLOCK();
-  return;
-}
-*/
 void set_SockProfile_arg(int fd, void *arg){
   
   SOCKET_LOCK();
@@ -454,18 +401,6 @@ void *get_SockProfile_arg(int fd)
 {
   return SockProfile[fd].arg;
 }
-
-/*
-void set_SockProfile_service(int fd,
-		int (*command_request)()){
-
-  SOCKET_LOCK();
-  SockProfile[fd].command_proc = command_request;
-  SOCKET_UNLOCK();
-
-  return;
-}
-*/
 
 /*!
  * @if jp

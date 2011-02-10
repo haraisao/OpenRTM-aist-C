@@ -80,8 +80,7 @@ typedef struct GIOP_Connection{
  */
 typedef struct CORBA_Object_struct{
   void *servant;
-  struct PortableServer_POA_struct *poa;
-  CORBA_ORB orb;
+
   CORBA_URL *_url;
   unsigned char *typedId;
   unsigned char *object_key;
@@ -93,8 +92,6 @@ typedef struct CORBA_Object_struct{
   int32_t num_urls;
 
   uint32_t ref;
-
-//  int32_t release;
 
 }CORBA_Object_struct;
 

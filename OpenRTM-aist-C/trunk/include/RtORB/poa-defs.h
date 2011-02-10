@@ -43,24 +43,6 @@ extern "C"
 #define POA_DISCARDING 	3  /*!< DISCARDING Status of POA Manager (request --> Destroy) */
 #define POA_INACTIVE  	4  /*!< INACTIVE Status of POA Manager   (request --> Deny) */
 
-/* POAManager */
-/*!
- * @struct PortableServer_POAManager_struct
- * @brief POAManager structure
- * @param orb CORBA ORB
- * @param id POA's ID
- * @param poa POA's array
- * @param status POA status (POA_HOLDING/POA_ACTIVE/POA_DISCARDING/POA_INACTIVE)
- */
-typedef struct PortableServer_POAManager_struct{
-  char *id;
-  PtrList *poa;
-
-  uint32_t status;
-} PortableServer_POAManager_struct;
-
-typedef PortableServer_POAManager_struct * PortableServer_POAManager;
-
 /* POA   */
 /*!
  * @struct PortableServer_POA_struct
@@ -76,52 +58,22 @@ typedef PortableServer_POAManager_struct * PortableServer_POAManager;
  * @param requests Request Queue from client to Servant
  */
 typedef struct PortableServer_POA_struct{
+#if 0
   struct CORBA_ORB_struct *orb;
+#endif
   char *id;
-
   struct GIOP_Connection *_server;
-  PortableServer_POAManager manager;
-
   hashtable *object_map;
-
   PtrList *requests;
+  uint32_t status;
 
 }PortableServer_POA_struct;
 
 typedef PortableServer_POA_struct * PortableServer_POA;
-
-/* ServantManager   */
-/*!
- * @struct PortableServer_ServantManager_struct
- * @brief ServantManager structure
- * @param id (TODO)
- * @param poa (TODO)
- * @param status (TODO)
- */
-typedef struct PortableServer_ServantManager_struct{
-  char *id;
-
-  PortableServer_POA poa;
-
-  uint32_t status;
-}PortableServer_ServantManager_struct;
-
-typedef PortableServer_ServantManager_struct * PortableServer_ServantManager;
-
+typedef PortableServer_POA_struct * PortableServer_POAManager;
 
 /* ObjectId   */
-/*!
- * @struct PortableServer_ObjectId_struct
- * @brief  PortableServer_ObjectId_struct structure
- * @param _this pointer of CORBA_Object_struct
- */
-typedef struct PortableServer_ObjectId_struct{
-  
-  struct CORBA_Object_struct *_this;
-
-}PortableServer_ObjectId_struct;
-
-typedef PortableServer_ObjectId_struct * PortableServer_ObjectId;
+typedef char * PortableServer_ObjectId;
 
 /*   Servant   */
 typedef void *PortableServer_Servant;

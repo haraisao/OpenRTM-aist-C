@@ -32,13 +32,6 @@
 
 /*  GIOP_MessageHeader *GIOP_Create_MessageHeader(); */
 
-/******* GIOP ************/
-GIOP_Version GIOP_1_0 = {1,0};
-GIOP_Version GIOP_1_1 = {1,1};
-GIOP_Version GIOP_1_2 = {1,2};
-GIOP_Version GIOP_1_3 = {1,3};
-
-
 /************************/
 uint32_t request_counter = 0;
 
@@ -261,7 +254,7 @@ int deMarshalRequest(GIOP_RequestHeader *header,
 		CORBA_Sequence_Octet *body,
 		char *buf, GIOP_MessageHeader *m_header){
 
-  int version = m_header->version.minor;
+  int version = m_header->minor;
 
   switch(version){
     case 0: case 1:
@@ -295,7 +288,7 @@ int deMarshalRequest_1_0(GIOP_RequestHeader *Header,
   int current = SIZEOF_GIOP_HEADER;
   int version, size, order;
 
-  version = m_header->version.minor;
+  version = m_header->minor;
   order   = m_header->flags & 0x01;
   size    = m_header->message_size;
 
@@ -333,7 +326,7 @@ int deMarshalRequest_1_2(GIOP_RequestHeader *Header,
   int current = SIZEOF_GIOP_HEADER;
   int version, size, order;
 
-  version = m_header->version.minor;
+  version = m_header->minor;
   order   = m_header->flags & 0x01;
   size    = m_header->message_size;
 
@@ -392,7 +385,7 @@ int deMarshalReply(GIOP_ReplyHeader *header,
   int size;
   int current = SIZEOF_GIOP_HEADER;
 
-  version = m_header->version.minor;
+  version = m_header->minor;
   order = m_header->flags & 0x01;
   size = m_header->message_size;
 
@@ -467,7 +460,7 @@ int deMarshalLocateRequest(GIOP_LocateRequestHeader *header,
   int size;
   int current = SIZEOF_GIOP_HEADER;
 
-  version = m_header->version.minor;
+  version = m_header->minor;
   order = m_header->flags & 0x01;
   size = m_header->message_size;
 

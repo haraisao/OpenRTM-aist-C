@@ -112,17 +112,6 @@ typedef union {
  * GIOP Message Header
  */
 /*!
- * @struct GIOP_Version
- * @brief GIOP_Version for GIOP_Message_Header
- * @param major major version
- * @param minor minor version
- */
-typedef struct {
-  octet major;
-  octet minor;
-} GIOP_Version;
-
-/*!
  * @struct GIOP_MessageHeader
  * @brief GIOP Message Header structure
  * @param magic magic number (='GIOP')
@@ -133,7 +122,8 @@ typedef struct {
  */
 typedef struct{
   char magic[4];
-  GIOP_Version version;
+  octet major;
+  octet minor;
   octet flags;  	/* GIOP1.0 --> byte_code */
   octet message_type;
   uint32_t message_size;

@@ -394,8 +394,12 @@ RTC_Manager_initORB(RTC_Manager *mgr)
   mgr->m_pORB = (CORBA_ORB)CORBA_ORB_init(&mgr->argc, mgr->argv, 0, &env);
 
   /* Get the RootPOA */
+#if 0
   CORBA_Object poa_obj = CORBA_ORB_resolve_initial_references(mgr->m_pORB, "RootPOA", &env);
   mgr->m_pPOA = poa_obj->poa;
+#else
+  mgr->m_pPOA = The_RootPOA;
+#endif
 
   catchDefaultException(&env);
 
