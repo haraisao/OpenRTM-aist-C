@@ -740,9 +740,6 @@ demarshal_by_typecode(void **dist, CORBA_TypeCode tc, octet *buf, int *current, 
 	      obj->num_urls = num_urls;
 	      obj->_url = url;
 	      ior_len = *current - ior_start;
-#if 0
-	      obj->orb = NULL;
-#endif
 
 #ifdef DEBUG_MARSHAL
               fprintf(stderr, "\n\tCall GIOP_Connection__create in demarshal_by_typecode( %s:%d )\n",
@@ -753,25 +750,10 @@ demarshal_by_typecode(void **dist, CORBA_TypeCode tc, octet *buf, int *current, 
 	      obj->connection->hostname = (unsigned char *)RtORB_strdup(obj->_url[0].hostname,
 						       "demarshal");
 	      obj->connection->port = obj->_url[0].port;
-#if 0
-	      obj->poa = 0;
-#endif
 
 	      RtORB_free(obj->object_key, "demarshal_by_typecode(objref)");
 	      obj->object_key = (unsigned char *)RtORB_strdup(obj->_url[0].object_key,
 					     "demarshal_by_typecode(objref)");
-#if 0
-	      {
-		CORBA_Environment ev;
-		memset(&ev, 0x00, sizeof(ev));
-
-		PortableServer_POA poa = PortableServer_root_POA(&ev);
-
-		if (CORBA_ORB_find_object(poa, obj, &ev)) {
-		  obj->poa = poa;
-		}
-	      }
-#endif
 	      *dist = obj;
 #if DEBUG_MARSHAL
               fprintf(stderr, "Check objct reference ref=%d\n",obj->ref);

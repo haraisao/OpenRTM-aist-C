@@ -99,22 +99,16 @@ void invokeMethod_via_GIOP(CORBA_Object obj,
   octet *req_buf = NULL;
   char *buf = NULL;
 
-  arg_buf = ( octet* )RtORB_alloc(MaxMessageSize,"invokeMethod_via_GIOP(arg_buf)");
-  req_buf = ( octet* )RtORB_alloc(MaxMessageSize,"invokeMethod_via_GIOP(req_buf)");
-  buf = ( char* )RtORB_alloc( MaxMessageSize,"invokeMethod_via_GIOP(buf)");
 
   /* connect to the remote object */
   h = make_client_connection(obj->connection);
   if (h == NULL) {
       fprintf(stderr, "Can't open connection (%s, %d)\n", obj->connection->hostname, obj->connection->port);
      if(arg_buf){ RtORB_free(arg_buf,"invokeMethod_via_GIOP(arg_buf)"); }
-      if(req_buf){ RtORB_free(req_buf,"invokeMethod_via_GIOP(req_buf)"); }
-      if(buf){ RtORB_free(buf,"invokeMethod_via_GIOP(buf)"); }
       exit(1);
   }
 
   /* check location */
-#if 1
   if(!obj->_url[0].location_flags){
     if(confirmLocation(h, &obj->_url[0]) != GIOP_OBJECT_HERE )
     {
@@ -122,31 +116,26 @@ void invokeMethod_via_GIOP(CORBA_Object obj,
       env->_major = CORBA_SYSTEM_EXCEPTION;
 
      RtORB_free(h, "invokeMethod_via_GIOP(h)");
-     if(arg_buf){ RtORB_free(arg_buf, "invokeMethod_via_GIOP(arg_buf)"); }
-     if(req_buf){ RtORB_free(req_buf, "invokeMethod_via_GIOP(req_buf)"); }
-     if(buf){ RtORB_free(buf, "invokeMethod_via_GIOP(buf)"); }
      return;
 
     }else obj->_url[0].location_flags = 1;
   }
-#endif
+
+  arg_buf = ( octet* )RtORB_alloc(MaxMessageSize,"invokeMethod_via_GIOP(arg_buf)");
+  req_buf = ( octet* )RtORB_alloc(MaxMessageSize,"invokeMethod_via_GIOP(req_buf)");
+  buf = ( char* )RtORB_alloc( MaxMessageSize,"invokeMethod_via_GIOP(buf)");
 
   /*  send request */
-#ifdef DEBUG_MALLOC
-  fprintf(stderr, "  send request : %s\n", method->name);
-#endif  
   len = Marshal_Args(arg_buf, args, method->in_argc, method->in_argv);
+
 #ifdef DEBUG_GIOP
   fprintf(stderr, "  ====== send request data  : %d\n", len);
   dumpMessage(arg_buf, len);
   fprintf(stderr, "  ====== \n");
 #endif  
-  len = createRequest(req_buf, 1, 
-		  obj->_url[0].object_key,
-		  obj->_url[0].object_key_len,
-		  method->name,
-		  strlen(method->name)+1,
-		  arg_buf, len, 2 );
+
+  len = createRequest(req_buf, 1, obj->_url[0].object_key, obj->_url[0].object_key_len,
+		  method->name, strlen(method->name)+1, arg_buf, len, 2 );
 
   /* change for shmc */
   GIOP_ConnectionHandler_send(h, (char *)req_buf, len);
@@ -174,9 +163,6 @@ void invokeMethod_via_GIOP(CORBA_Object obj,
   actionReply((octet *)buf, body, method, env);
 
   if(env->_major == CORBA_NO_EXCEPTION){
-#ifdef DEBUG_MALLOC
-  fprintf(stderr, "  deMarshal_Arguments: start\n");
-#endif  
     deMarshal_Arguments(retval, args, body->_buffer, method, byte_order);
   }else if(env->_major == CORBA_USER_EXCEPTION){
        int len, i;
@@ -184,7 +170,7 @@ void invokeMethod_via_GIOP(CORBA_Object obj,
        env->_repo_id = (unsigned char *)demarshalString((octet *)body->_buffer, &pos, byte_order, &len);
 
        for(i=0;i<method->n_exceptinfo;i++){
-		   if(strcmp((const char *)method->exceptinfo[i]->repository_id,
+          if(strcmp((const char *)method->exceptinfo[i]->repository_id,
 			 (const char *)env->_repo_id) == 0){
 
 	   void *value = NULL;
@@ -193,10 +179,7 @@ void invokeMethod_via_GIOP(CORBA_Object obj,
 	     demarshal_by_typecode((void **)value, 
 	 	method->exceptinfo[i], body->_buffer, &pos, byte_order);
 	   }
-	   CORBA_any_set_exception_value(&env->_params,
-					 method->exceptinfo[i],
-					 value,
-					 FALSE);
+	   CORBA_any_set_exception_value(&env->_params, method->exceptinfo[i], value, FALSE);
 	   break;
 	 }
        }
@@ -204,26 +187,13 @@ void invokeMethod_via_GIOP(CORBA_Object obj,
           fprintf(stderr, "Unknown Exception occured: %s\n", env->_repo_id);
   }
 
-#ifdef DEBUG_MALLOC
-  fprintf(stderr, "  delete Replybody...: start\n");
-#endif  
   delete_CORBA_Sequence_Octet(body, 1);
-
-#ifdef DEBUG_MALLOC
-  fprintf(stderr, "  free all local values h,arg_buf,req_buf,buf : start\n");
-#endif  
 
   RtORB_free(h, "invokeMethod_via_GIOP(h)");
 
-  if(arg_buf){
-    RtORB_free(arg_buf, "invokeMethod_via_GIOP(arg_buf)");
-  }
-  if(req_buf){
-    RtORB_free(req_buf, "invokeMethod_via_GIOP(req_buf)");
-  }
-  if(buf){
-    RtORB_free(buf, "invokeMethod_via_GIOP(buf)");
-  }
+  if(arg_buf){ RtORB_free(arg_buf, "invokeMethod_via_GIOP(arg_buf)"); }
+  if(req_buf){ RtORB_free(req_buf, "invokeMethod_via_GIOP(req_buf)"); }
+  if(buf){ RtORB_free(buf, "invokeMethod_via_GIOP(buf)"); }
 
   return;
 }
@@ -239,9 +209,9 @@ int CORBA_ORB_find_object(PortableServer_POA poa, CORBA_Object obj, CORBA_Enviro
 
 /*!
  * @if jp
- * @brief invokeMethod()のローカルテスト用
+ * @brief invokeMethod()
  * @else
- * @brief Local Test for invokeMethod()
+ * @brief invokeMethod()
  * @endif
  * @param obj CORBA Object
  * @param method method (CORBA_Class_Method)
@@ -250,30 +220,6 @@ int CORBA_ORB_find_object(PortableServer_POA poa, CORBA_Object obj, CORBA_Enviro
  * @param env CORBA env(Exception Infomation)
  * @return void
  */
-void call_local_func(CORBA_Object obj, 
-		CORBA_Class_Method *method,
-		void **retval,
-		void **args,
-		CORBA_Environment *env)
-{
-  RtORB_POA_Object *poa_obj;
-  PortableServer_ClassInfo *info;
-  CORBA_Class_Method *m_data;
-  void *(*impl_method)();
-  void (*call_impl_func)(PortableServer_ServantBase *, void*, CORBA_Class_Method*, void**, CORBA_Environment*, void*(*method)());
-  typedef void (*impl_func_type)(PortableServer_ServantBase *, void*, CORBA_Class_Method*, void**, CORBA_Environment*, void*(*method)());
-
-#if 0
-  poa_obj =(RtORB_POA_Object *) getValue(obj->poa->object_map, obj->object_key);
-#else
-  poa_obj =(RtORB_POA_Object *) getValue(The_RootPOA->object_map, obj->object_key);
-#endif
-  info = (PortableServer_ClassInfo *)poa_obj->impl_serv._private;
-  PortableServer_ServantBase *sb = (PortableServer_ServantBase*)poa_obj->servant;
-  call_impl_func = (impl_func_type)(*info->impl_finder)(&sb->_private, method->name, &m_data, &impl_method );
-  (*call_impl_func)(sb, retval, m_data, args, env, impl_method);
-}
-
 void invokeMethod(CORBA_Object obj, 
 		CORBA_Class_Method *method,
 		void **retval,
@@ -291,28 +237,17 @@ void invokeMethod(CORBA_Object obj,
   if(env->_major)  clearException(env);
 
   /* check wheter object is exist in Local_Host or not(=Remote_Host).  */
-#if 0
-  if(!CORBA_ORB_find_object(obj->poa, obj, env))
-#else
   if(!CORBA_ORB_find_object(The_RootPOA, obj, env))
-#endif
   {
-#ifdef DEBUG
-    fprintf(stderr, "  connect to %s:%d\n", obj->connection->hostname, obj->connection->port);
-#endif
     /* Object is in Remote_Host */
     invokeMethod_via_GIOP(obj, method, retval, args, env);
-    return;
+  }else{
+    /* Object is in Local_Host */
+    poa_obj =(RtORB_POA_Object *) getValue(The_RootPOA->object_map, obj->object_key);
+    info = (PortableServer_ClassInfo *)poa_obj->impl_serv._private;
+    PortableServer_ServantBase *sb = (PortableServer_ServantBase*)poa_obj->servant;
+    call_impl_func = (impl_func_type)(*info->impl_finder)(&sb->_private, method->name, &m_data, &impl_method );
+    (*call_impl_func)(sb, retval, m_data, args, env, impl_method);
   }
-
-  /* Object is in Local_Host */
-#if 0
-  poa_obj =(RtORB_POA_Object *) getValue(obj->poa->object_map, obj->object_key);
-#else
-  poa_obj =(RtORB_POA_Object *) getValue(The_RootPOA->object_map, obj->object_key);
-#endif
-  info = (PortableServer_ClassInfo *)poa_obj->impl_serv._private;
-  PortableServer_ServantBase *sb = (PortableServer_ServantBase*)poa_obj->servant;
-  call_impl_func = (impl_func_type)(*info->impl_finder)(&sb->_private, method->name, &m_data, &impl_method );
-  (*call_impl_func)(sb, retval, m_data, args, env, impl_method);
+  return;
 }

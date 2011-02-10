@@ -76,10 +76,6 @@ PortableServer_POA_createPOA(PortableServer_POA ppoa,
   if(!id) return (PortableServer_POA)NULL;
   PortableServer_POA poa = PortableServer_POA_new(id, 0);
 
-#if 0
-  poa->orb = ppoa->orb;
-#endif
-
   return poa;
 }
 
@@ -197,9 +193,6 @@ PortableServer_POA_activate_object(PortableServer_POA poa,
     if(obj == NULL) {
       CORBA_system_exception(env, "Error in PortableServer_POA_activate_object:CORBA_Object is NULL");
     }else{
-#if 0
-      obj->poa = poa;
-#endif
       obj_id = RtORB_strdup((char *)obj->object_key, "PortableServer_POA_activate_object");
       register_PortableServer_Servant(poa, servant, env);
     }
@@ -316,11 +309,6 @@ PortableServer_POA_servant_to_reference(PortableServer_POA poa,
   
   sb = (PortableServer_ServantBase *)servant;
   poa_obj = (RtORB_POA_Object *)sb->_private;
-#if 0
-  if (poa_obj->obj->poa == NULL) {
-    poa_obj->obj->poa = poa;
-  }
-#endif
 
   return poa_obj->obj;
 
@@ -339,16 +327,7 @@ PortableServer_ServantBase__default_POA(PortableServer_Servant servant, CORBA_En
     return NULL;
   }
 
-#if 0
-  RtORB_POA_Object *prvt=(RtORB_POA_Object *)sb->_private;
-  if(!prvt->poa){
-    return prvt->obj->poa;
-  }
-
-  return prvt->poa;
-#else
   return The_RootPOA;
-#endif
 }
 
 CORBA_boolean
@@ -427,24 +406,13 @@ PortableServer_ServantBase__init(PortableServer_ServantBase *servant, CORBA_Envi
 PortableServer_POA PortableServer_root_POA(CORBA_Environment *ev)
 {
   PortableServer_POA poa = NULL;
-    if (!The_ORB) {
-      return NULL;
-    }
-#if 0
-  poa = (PortableServer_POA) ((CORBA_Object)CORBA_ORB_resolve_initial_references(The_ORB, "RootPOA",  ev))->poa;
-#else
-  poa = The_RootPOA;
-#endif
+  if (The_ORB != NULL) {
+    poa = The_RootPOA;
+  }
   return poa;
 }
 
 PortableServer_POA PortableServer_POA__narrow(CORBA_Object obj)
 {
-#if 0
-  PortableServer_POA poa = NULL;
-  if(obj) poa = obj->poa;
-  return poa;
-#else
   return The_RootPOA;
-#endif
 }
