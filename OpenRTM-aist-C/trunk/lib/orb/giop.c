@@ -46,7 +46,8 @@
 
 /***********************************/
 GIOP_Connection *
-GIOP_Connection__create(){
+GIOP_Connection__create()
+{
   GIOP_Connection *conn=(GIOP_Connection *)RtORB_alloc(sizeof(GIOP_Connection),
 		 "GIOP_Connection__alloc" );
   memset(conn, 0, sizeof(GIOP_Connection));
@@ -67,7 +68,8 @@ GIOP_Connection__create(){
 
 
 void
-GIOP_Connection__open(GIOP_Connection *conn, short port){
+GIOP_Connection__open(GIOP_Connection *conn, short port)
+{
   extern int make_server_connection(GIOP_Connection *conn, int port);
   if(!conn) return;
 
@@ -77,7 +79,8 @@ GIOP_Connection__open(GIOP_Connection *conn, short port){
 }
 
 void
-GIOP_Connection__shutdown(GIOP_Connection *conn){
+GIOP_Connection__shutdown(GIOP_Connection *conn)
+{
 #if USE_THREAD
   void *result; 
 #endif
@@ -93,7 +96,8 @@ GIOP_Connection__shutdown(GIOP_Connection *conn){
 }
 
 void
-GIOP_Connection__close(GIOP_Connection *conn){
+GIOP_Connection__close(GIOP_Connection *conn)
+{
   if(!conn) return;
   if(conn->activate) GIOP_Connection__shutdown(conn);
   if(conn->sock) close(conn->sock);
@@ -106,7 +110,8 @@ GIOP_Connection__close(GIOP_Connection *conn){
 
 /* For multi thread */
 void *
-GIOP_Connection__run(GIOP_Connection *conn){
+GIOP_Connection__run(GIOP_Connection *conn)
+{
   if(!conn) return NULL;
 #if 0
   if(conn->type != 0) return;
@@ -119,7 +124,8 @@ GIOP_Connection__run(GIOP_Connection *conn){
 }
 
 void
-GIOP_Connection__free(GIOP_Connection *conn){
+GIOP_Connection__free(GIOP_Connection *conn)
+{
   if(!conn) return;
   if(conn->sock) GIOP_Connection__close(conn);
 
@@ -131,7 +137,9 @@ GIOP_Connection__free(GIOP_Connection *conn){
 
 
 /***************************************************/
-GIOP_MessageHeader *GIOP_Create_MessageHeader(int order, int version){
+GIOP_MessageHeader *
+GIOP_Create_MessageHeader(int order, int version)
+{
   GIOP_MessageHeader *header = (GIOP_MessageHeader *)RtORB_alloc(SIZEOF_GIOP_HEADER, "GIOP_Create_MessageHeader");
 
   memcpy(header->magic, "GIOP", 4);
@@ -146,10 +154,11 @@ GIOP_MessageHeader *GIOP_Create_MessageHeader(int order, int version){
 /***
  *
  */
-int receiveMessage(GIOP_ConnectionHandler *h, GIOP_MessageHeader *header, octet *buf, int maxMsg){
+int 
+receiveMessage(GIOP_ConnectionHandler *h, GIOP_MessageHeader *header, octet *buf, int maxMsg)
+{
   int recv_res = GIOP_ConnectionHandler_recv(h, (char *)buf, SIZEOF_GIOP_HEADER);
   if (recv_res < 0) {
-    //fprintf(stderr, "Bad GIOP message\n");
     return -1;
   }
   memcpy(header, buf, SIZEOF_GIOP_HEADER);
@@ -176,9 +185,9 @@ int receiveMessage(GIOP_ConnectionHandler *h, GIOP_MessageHeader *header, octet 
 
 /***************************************************/
 
-int reply_Message(GIOP_ConnectionHandler *h, GIOP_RequestHeader *request_header,
-		GIOP_ReplyBody *reply_body,
-		int version)
+int 
+reply_Message(GIOP_ConnectionHandler *h, GIOP_RequestHeader *request_header,
+		GIOP_ReplyBody *reply_body, int version)
 {
   unsigned char *msgbuf = NULL;
   int len=0;
@@ -264,7 +273,9 @@ int reply_Message(GIOP_ConnectionHandler *h, GIOP_RequestHeader *request_header,
  * @param n array index
  * @return 0:matched, 1:unmatched
  */
-int check_strings(char *str, char **str_array, int n){
+int 
+check_strings(char *str, char **str_array, int n)
+{
   int i;
   for (i=0;i<n;i++){
     if(!strcmp(str, str_array[i])) return 0;
@@ -455,7 +466,9 @@ GIOP_ReplyBody *invokeServant(PortableServer_POA poa,
   return reply;
 }
 
-int find_object(PortableServer_POA poa, char *key, char *ior){
+int 
+find_object(PortableServer_POA poa, char *key, char *ior)
+{
   hashtable *tbl=NULL;
   int res = GIOP_UNKNOWN_OBJECT;
 
@@ -469,7 +482,8 @@ int find_object(PortableServer_POA poa, char *key, char *ior){
   return  res;
 }
 
-int reply_locateMessage(PortableServer_POA poa, GIOP_ConnectionHandler *h,
+int 
+reply_locateMessage(PortableServer_POA poa, GIOP_ConnectionHandler *h,
 		GIOP_LocateRequestHeader *locate_request_header, int version)
 {
   unsigned char *buf = NULL;
@@ -504,11 +518,9 @@ int reply_locateMessage(PortableServer_POA poa, GIOP_ConnectionHandler *h,
 /********************************************************/
 /*   Create Message
 */
-uint32_t createRequest(octet *buf, int response, 
-		char *object_key, int object_key_len,
-		char *operation, int operation_len,
-		octet *args, int args_len, 
-		int version)
+uint32_t 
+createRequest(octet *buf, int response, char *object_key, int object_key_len,
+	char *operation, int operation_len, octet *args, int args_len, int version)
 {
   int len;
 
@@ -545,7 +557,8 @@ uint32_t createRequest(octet *buf, int response,
 /*
  * Cancel Request
  */
-uint32_t createCancelRequest(octet *buf, uint32_t request_id)
+uint32_t 
+createCancelRequest(octet *buf, uint32_t request_id)
 {
   uint32_t version = 2;
   int current = SIZEOF_GIOP_HEADER;
@@ -564,7 +577,9 @@ uint32_t createCancelRequest(octet *buf, uint32_t request_id)
 }
 
 
-int createLocateRequest(octet *buf, char *object_key, int len){
+int 
+createLocateRequest(octet *buf, char *object_key, int len)
+{
   int size;
   int version = 2;
   GIOP_LocateRequestHeader Header;
@@ -598,7 +613,8 @@ int createLocateRequest(octet *buf, char *object_key, int len){
 /*
  * CloseConnection Message
  */
-uint32_t createCloseConnectionMessage(octet *buf)
+uint32_t 
+createCloseConnectionMessage(octet *buf)
 {
   uint32_t version = 2;
 
@@ -616,7 +632,9 @@ uint32_t createCloseConnectionMessage(octet *buf)
 /*
  * MessageError Message
  */
-uint32_t createMessageErrorMessage(octet *buf){
+uint32_t 
+createMessageErrorMessage(octet *buf)
+{
   uint32_t version = 0;
 
   memset(buf, 0, MaxMessageSize);
@@ -634,7 +652,9 @@ uint32_t createMessageErrorMessage(octet *buf){
  *
  *
  */
-int requestLocation(GIOP_ConnectionHandler *h, CORBA_URL *ior){
+int 
+requestLocation(GIOP_ConnectionHandler *h, CORBA_URL *ior)
+{
   char *buf = NULL;
   int len;
   int ret;
@@ -656,7 +676,9 @@ int requestLocation(GIOP_ConnectionHandler *h, CORBA_URL *ior){
  *
  * confirm Location
  */
-int confirmLocation(GIOP_ConnectionHandler *h, CORBA_URL *ior){
+int 
+confirmLocation(GIOP_ConnectionHandler *h, CORBA_URL *ior)
+{
   char *buf;
   int len;
   GIOP_MessageHeader header;
@@ -710,7 +732,8 @@ int confirmLocation(GIOP_ConnectionHandler *h, CORBA_URL *ior){
  * @param env CORBA env(Exception Infomation)
  * @return void
  */
-void GIOP_Request_perform(GIOP_ConnectionHandler *h, octet *buf,
+void 
+GIOP_Request_perform(GIOP_ConnectionHandler *h, octet *buf,
   PortableServer_POA poa, GIOP_MessageHeader *header,
   CORBA_Sequence_Octet *body, CORBA_Environment *env)
 {
@@ -756,9 +779,9 @@ void GIOP_Request_perform(GIOP_ConnectionHandler *h, octet *buf,
  * @param env CORBA env(Exception Infomation)
  * @return void
  */
-void GIOP_Reply_perform(GIOP_ConnectionHandler *h, octet *buf, PortableServer_POA poa,
-  	GIOP_MessageHeader *header, CORBA_Sequence_Octet *body,
-	CORBA_Environment *env)
+void 
+GIOP_Reply_perform(GIOP_ConnectionHandler *h, octet *buf, PortableServer_POA poa,
+  	GIOP_MessageHeader *header, CORBA_Sequence_Octet *body, CORBA_Environment *env)
 {
   GIOP_ReplyHeader *reply_header;
   int reply_status;
@@ -815,9 +838,9 @@ void GIOP_Reply_perform(GIOP_ConnectionHandler *h, octet *buf, PortableServer_PO
  * @param env CORBA env(Exception Infomation)
  * @return void
  */
-void GIOP_CancelRequest_perform(GIOP_ConnectionHandler *h, octet *buf, PortableServer_POA poa,
-  	GIOP_MessageHeader *header, CORBA_Sequence_Octet *body,
-	CORBA_Environment *env)
+void 
+GIOP_CancelRequest_perform(GIOP_ConnectionHandler *h, octet *buf, PortableServer_POA poa,
+  	GIOP_MessageHeader *header, CORBA_Sequence_Octet *body, CORBA_Environment *env)
 {
   GIOP_CancelRequestHeader *cancel_request_header;
 
@@ -846,9 +869,9 @@ void GIOP_CancelRequest_perform(GIOP_ConnectionHandler *h, octet *buf, PortableS
  * @param env CORBA env(Exception Infomation)
  * @return void
  */
-void GIOP_LocationRequest_perform(GIOP_ConnectionHandler *h, octet *buf, PortableServer_POA poa,
-  	GIOP_MessageHeader *header, CORBA_Sequence_Octet *body,
-	CORBA_Environment *env)
+void 
+GIOP_LocationRequest_perform(GIOP_ConnectionHandler *h, octet *buf, PortableServer_POA poa,
+  	GIOP_MessageHeader *header, CORBA_Sequence_Octet *body, CORBA_Environment *env)
 {
   GIOP_LocateRequestHeader *locate_request_header;
 
@@ -879,9 +902,9 @@ void GIOP_LocationRequest_perform(GIOP_ConnectionHandler *h, octet *buf, Portabl
  * @param env CORBA env(Exception Infomation)
  * @return void
  */
-void GIOP_LocationReply_perform(GIOP_ConnectionHandler *h, octet *buf, PortableServer_POA poa,
-  	GIOP_MessageHeader *header, CORBA_Sequence_Octet *body,
-	CORBA_Environment *env)
+void 
+GIOP_LocationReply_perform(GIOP_ConnectionHandler *h, octet *buf, PortableServer_POA poa,
+  	GIOP_MessageHeader *header, CORBA_Sequence_Octet *body, CORBA_Environment *env)
 {
   GIOP_LocateReplyHeader *locate_reply_header;
 
@@ -918,7 +941,9 @@ void GIOP_LocationReply_perform(GIOP_ConnectionHandler *h, octet *buf, PortableS
 /*
  * free_request
  */
-void free_request(void *arg){
+void 
+free_request(void *arg)
+{
   GIOP_Request_Item req = (GIOP_Request_Item)arg;
   if(!req) return;
 
@@ -931,7 +956,9 @@ void free_request(void *arg){
 /*
  * GIOP enqueu request
  */
-PtrList *GIOP_enqueue_request(GIOP_ConnectionHandler *h, PtrList *lst){
+PtrList *
+GIOP_enqueue_request(GIOP_ConnectionHandler *h, PtrList *lst)
+{
   char *buf = NULL;
   
   GIOP_MessageHeader header;
@@ -946,7 +973,6 @@ PtrList *GIOP_enqueue_request(GIOP_ConnectionHandler *h, PtrList *lst){
 
 
   if(receiveMessage(h, &header, (octet *)buf, RECV_BUF_SIZE) < 0){
-//    fprintf(stderr, "Error in GIOP_enqueue_request: Fail to receive data...\n");  
     RtORB_free( buf, "GIOP_enqueue_request" );
     return NULL;
   }
@@ -972,7 +998,9 @@ PtrList *GIOP_enqueue_request(GIOP_ConnectionHandler *h, PtrList *lst){
  *   GIOP Communication
  *
  */
-int RecvMessage(GIOP_ConnectionHandler *h){
+int 
+RecvMessage(GIOP_ConnectionHandler *h)
+{
   int byte_order = 0 ;
   int fragment = -1 ;
   char *recvbuf = NULL;
@@ -1052,7 +1080,8 @@ struct GIOP_Request_Arg{
   PortableServer_POA poa;
 };
 
-void GIOP_Request_perform_thread(void *arg)
+void 
+GIOP_Request_perform_thread(void *arg)
 {
   struct GIOP_Request_Arg *args = (struct GIOP_Request_Arg *)arg;
   GIOP_MessageHeader *header;
@@ -1071,7 +1100,9 @@ void GIOP_Request_perform_thread(void *arg)
 }
 #endif
 
-PtrList *GIOP_execute_request(PortableServer_POA poa, PtrList *lst){
+PtrList *
+GIOP_execute_request(PortableServer_POA poa, PtrList *lst)
+{
   GIOP_ConnectionHandler *h;
   int version ;
   int byte_order = 0 ;
@@ -1083,24 +1114,11 @@ PtrList *GIOP_execute_request(PortableServer_POA poa, PtrList *lst){
   CORBA_Sequence_Octet *body;
   CORBA_Environment env;
 
-#if 0
-  CORBA_MUTEX_LOCK();
-#endif
-
   body = (CORBA_Sequence_Octet *)new_CORBA_Sequence_Octet2(0);
 
   current_request = lst;
 
-#if 0
-  CORBA_MUTEX_UNLOCK();
-#endif
-
   while(current_request){
-
-#if 0
-    CORBA_MUTEX_LOCK();
-#endif
-
     request = (GIOP_Request_Item)current_request->item;
     header = (GIOP_MessageHeader *)request->buf;
     buf = request->buf;
@@ -1148,7 +1166,6 @@ PtrList *GIOP_execute_request(PortableServer_POA poa, PtrList *lst){
       case GIOP_LocateReply:  /* This is for a client, not complete */
 	 GIOP_LocationRequest_perform(h, (octet *)buf, poa, header, body, &env);
          break;
-
       case GIOP_CloseConnection:
 	 break;
       case GIOP_MessageError: 
@@ -1173,34 +1190,15 @@ PtrList *GIOP_execute_request(PortableServer_POA poa, PtrList *lst){
 }
 
 
-int32_t GIOP_ConnectionHandler_send(GIOP_ConnectionHandler *h, char *buf, int32_t len)
+int32_t 
+GIOP_ConnectionHandler_send(GIOP_ConnectionHandler *h, char *buf, int32_t len)
 {
   int res=0;
 
   switch(h->type) {
     case CONNECTION_TYPE_SOCKET:
-#if 0
-      n = h->sock +1;
-
-      FD_ZERO(&w_sock);
-      FD_SET(h->sock, &w_sock);
-      int stat = select(n, &w_sock, 0, 0, &tv);
-      if(stat>0){
-        fprintf(stderr, "Ready to read data (%d)\n", h->sock);
-        read(h->sock, rbuf, 1024);
-      }
-
-      fprintf(stderr, "No data present in socket (%d)\n", h->sock);
-      FD_ZERO(&w_sock);
-      FD_SET(h->sock, &w_sock);
-      select(n, 0, &w_sock, 0, 0);
-
-      res=write(h->sock, buf, len);
-      fprintf(stderr, "Send Data %d (%d)\n", h->sock, res);
-#else
       res = writeBytes(h->sock, buf, 12);
       res += writeBytes(h->sock, buf+12, len-12);
-#endif
       return res;
 
     default:
@@ -1209,7 +1207,8 @@ int32_t GIOP_ConnectionHandler_send(GIOP_ConnectionHandler *h, char *buf, int32_
   }
 }
 
-int32_t GIOP_ConnectionHandler_recv(GIOP_ConnectionHandler *h, char *buf, int32_t len)
+int32_t 
+GIOP_ConnectionHandler_recv(GIOP_ConnectionHandler *h, char *buf, int32_t len)
 {
 
   switch(h->type) {
@@ -1221,7 +1220,8 @@ int32_t GIOP_ConnectionHandler_recv(GIOP_ConnectionHandler *h, char *buf, int32_
   }
 }
 
-void * GIOP_ConnectionHandler_get_arg(GIOP_ConnectionHandler *h)
+void * 
+GIOP_ConnectionHandler_get_arg(GIOP_ConnectionHandler *h)
 {
   switch(h->type) {
   case CONNECTION_TYPE_SOCKET:
@@ -1233,7 +1233,8 @@ void * GIOP_ConnectionHandler_get_arg(GIOP_ConnectionHandler *h)
   return NULL;
 }
 
-void GIOP_ConnectionHandler_close(GIOP_ConnectionHandler *h)
+void 
+GIOP_ConnectionHandler_close(GIOP_ConnectionHandler *h)
 {
   switch(h->type) {
   case CONNECTION_TYPE_SOCKET:

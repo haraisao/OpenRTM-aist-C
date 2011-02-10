@@ -98,10 +98,10 @@ int main(int argc, char **argv){
 #if 0
   CORBA_Object poa_obj = CORBA_ORB_resolve_initial_references(orb,"RootPOA", &env);
   PortableServer_POA poa = poa_obj->poa;
+  catchDefaultException(&env);
 #else
   PortableServer_POA poa = The_RootPOA;
 #endif
-  catchDefaultException(&env);
 
   //create Naming context
   CosNaming_NamingContext rootContext = (CosNaming_NamingContext)impl_CosNaming_NamingContext__create(poa, &env);

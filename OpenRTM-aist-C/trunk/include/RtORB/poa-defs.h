@@ -58,9 +58,6 @@ extern "C"
  * @param requests Request Queue from client to Servant
  */
 typedef struct PortableServer_POA_struct{
-#if 0
-  struct CORBA_ORB_struct *orb;
-#endif
   char *id;
   struct GIOP_Connection *_server;
   hashtable *object_map;

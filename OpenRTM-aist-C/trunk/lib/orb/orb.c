@@ -31,7 +31,6 @@
 
 CORBA_ORB  The_ORB;
 struct PortableServer_POA_struct  *The_RootPOA;
-CORBA_Object  The_RootPOA_Object=NULL;
 
 
 #ifdef USE_THREAD
@@ -39,23 +38,28 @@ pthread_mutex_t CORBA_MUTEX = PTHREAD_MUTEX_INITIALIZER;
 #endif
 
 /**********************/
-void CORBA_exception_init(CORBA_Environment *env){
+void 
+CORBA_exception_init(CORBA_Environment *env)
+{
    memset(env, 0, sizeof(*env));
    return;
 }
 
 char *
-CORBA_exception_id(CORBA_Environment *ev){
+CORBA_exception_id(CORBA_Environment *ev)
+{
 	return (char *)ev->_repo_id;
 }
 
 CORBA_any 
-CORBA_exception_value(CORBA_Environment *ev){
+CORBA_exception_value(CORBA_Environment *ev)
+{
   return ev->_params;
 }
 
 void
-CORBA_exception_free(CORBA_Environment *ev){
+CORBA_exception_free(CORBA_Environment *ev)
+{
   if (ev->_repo_id){
     RtORB_free(ev->_repo_id, "CORBA_exception_free(repo_id)");
   }
@@ -64,30 +68,41 @@ CORBA_exception_free(CORBA_Environment *ev){
 }
 
 void
-set_CORBA_exception(CORBA_Environment *ev, uint32_t id, char *report){
+set_CORBA_exception(CORBA_Environment *ev, uint32_t id, char *report)
+{
   ev->_major = id;
   ev->_repo_id = (unsigned char *)RtORB_strdup(report, "set_CORBA_exception");
   return;
 }
 
 /********************/
-void setServiceID(CORBA_Config *cfg, char *argv[]){
+void 
+setServiceID(CORBA_Config *cfg, char *argv[])
+{
  fprintf(stderr, "ServerID = %s\n", argv[1]);
 }
 
-void setORBid(CORBA_Config *cfg, char *argv[]){
+void 
+setORBid(CORBA_Config *cfg, char *argv[])
+{
  fprintf(stderr, "ORBid = %s\n", argv[1]);
 }
 
-void setListenEndpoints(CORBA_Config *cfg, char *argv[]){
+void 
+setListenEndpoints(CORBA_Config *cfg, char *argv[])
+{
  fprintf(stderr, "ListenEndpoints = %s\n", argv[1]);
 }
 
-void setProprietaryActivation(CORBA_Config *cfg, char *argv[]){
+void 
+setProprietaryActivation(CORBA_Config *cfg, char *argv[])
+{
  fprintf(stderr, "ProprietayActivation = %s\n", argv[1]);
 }
 
-void setInitRef(CORBA_Config *cfg, char *argv[]){
+void 
+setInitRef(CORBA_Config *cfg, char *argv[])
+{
   char *tmp;
   CORBA_Ref *ref = (CORBA_Ref *)RtORB_alloc(sizeof(CORBA_Ref), "setInitRef");
 
@@ -97,22 +112,30 @@ void setInitRef(CORBA_Config *cfg, char *argv[]){
   cfg->init_ref = PtrList_append(cfg->init_ref, ref, NULL);
 }
 
-void setDefaultInitRef(CORBA_Config *cfg, char *argv[]){
+void 
+setDefaultInitRef(CORBA_Config *cfg, char *argv[])
+{
   cfg->default_init_ref = argv[1];
 }
 
-void setServerPort(CORBA_Config *cfg, char *argv[]){
+void 
+setServerPort(CORBA_Config *cfg, char *argv[])
+{
  cfg->port = (unsigned short)atoi(argv[1]);
 }
 
-int checkArgParams(char *argv[], int n){
+int 
+checkArgParams(char *argv[], int n)
+{
   int i;
   for(i=0;i<n;i++) if(*argv[i+1] == '-') return 0;
   return 1;
 }
 
-int checkArgs(CORBA_Config *cfg, int *argc, char *argv[], int i,
-	  char *arg_name, void (*func)(CORBA_Config*,char**), int requires){
+int 
+checkArgs(CORBA_Config *cfg, int *argc, char *argv[], int i,
+  char *arg_name, void (*func)(CORBA_Config*,char**), int requires)
+{
    int j;
 
    if(!strcmp(argv[i], arg_name)){
@@ -175,7 +198,8 @@ CORBA_Ref_CompKey(void *val, void *ref)
  * @return CORBA_URL (or NULL)
  */
 char *
-CORBA_Ref_find_url(PtrList *refs, char *name){
+CORBA_Ref_find_url(PtrList *refs, char *name)
+{
   char *res=NULL;
   CORBA_Ref *val=NULL;
   if(refs == NULL) return NULL;
@@ -189,11 +213,12 @@ CORBA_Ref_find_url(PtrList *refs, char *name){
 }
 
 CORBA_ORB
-CORBA_ORB_init(int *argc, char **argv, char orb_id, CORBA_Environment *env){
-	/* 
-           Initialize ORB
-	   Setup POA, IR, NameingSerive, and other Object Services
-	*/
+CORBA_ORB_init(int *argc, char **argv, char orb_id, CORBA_Environment *env)
+{
+/* 
+   Initialize ORB
+   Setup POA, IR, NameingSerive, and other Object Services
+*/
   int i;
   CORBA_ORB orb = (CORBA_ORB)RtORB_calloc(sizeof(CORBA_ORB_struct), 1, "CORBA_ORB_init");
 
@@ -224,20 +249,15 @@ CORBA_ORB_init(int *argc, char **argv, char orb_id, CORBA_Environment *env){
 
   /* create the RootPOA */
   The_RootPOA = PortableServer_POA_new("RootPOA", orb->cfg.port);
-#if 0
-  The_RootPOA->orb = orb;
-#endif
   The_RootPOA->status = POA_HOLDING;
-
-#if 0
-  The_RootPOA_Object = new_CORBA_Object("RootPOA");
-  The_RootPOA_Object->poa = The_RootPOA;
-#endif
 
   The_ORB = orb;
   return orb;
 }
 
+/*
+
+*/
 CORBA_Object
 CORBA_ORB_resolve_initial_references(CORBA_ORB orb, char *obj_key, 
 		CORBA_Environment *env)
@@ -247,7 +267,6 @@ CORBA_ORB_resolve_initial_references(CORBA_ORB orb, char *obj_key,
 
   if(strcmp(obj_key, "RootPOA") == 0){
     return The_RootPOA;
-//    return The_RootPOA_Object;
   }
   url = CORBA_Ref_find_url(orb->cfg.init_ref, obj_key);
 
@@ -261,8 +280,12 @@ CORBA_ORB_resolve_initial_references(CORBA_ORB orb, char *obj_key,
   return obj;
 }
 
+/*
+
+*/
 CORBA_Object
-new_CORBA_Object(char *object_key){
+new_CORBA_Object(char *object_key)
+{
   CORBA_Object obj = (CORBA_Object)RtORB_alloc(sizeof(CORBA_Object_struct),
 		  "new_CORBA_Object");
   memset(obj, 0, sizeof(CORBA_Object_struct));
@@ -276,7 +299,9 @@ new_CORBA_Object(char *object_key){
   return obj;
 }
 
-int  CORBA_Object_free(CORBA_Object obj){
+int  
+CORBA_Object_free(CORBA_Object obj)
+{
 #if DEBUG
   fprintf(stderr, "\t[[[Call CORBA_Object_free: (%x)ref=%d\n", obj,obj->ref);
 #endif
@@ -291,7 +316,8 @@ int  CORBA_Object_free(CORBA_Object obj){
 }
 
 CORBA_Object
-CORBA_Object_dup(CORBA_Object obj){
+CORBA_Object_dup(CORBA_Object obj)
+{
   if(!obj) {
    fprintf(stderr, "Error in CORBA_Object_dup\n");
    return NULL;
@@ -304,7 +330,8 @@ CORBA_Object_dup(CORBA_Object obj){
 }
 
 void
-CORBA_Object__set_object_key(CORBA_Object obj, char *key, CORBA_Environment *env){
+CORBA_Object__set_object_key(CORBA_Object obj, char *key, CORBA_Environment *env)
+{
   RtORB_free(obj->object_key, "CORBA_Object__set_object_key");
   if(!key) obj->object_key = (unsigned char *)new_ObjectID();
   else obj->object_key = (unsigned char *)RtORB_strdup(key, "CORBA_Object__set_object_key");
@@ -313,14 +340,16 @@ CORBA_Object__set_object_key(CORBA_Object obj, char *key, CORBA_Environment *env
 }
 
 void
-CORBA_Object__narrow(CORBA_Object obj, CORBA_TypeCode tc, CORBA_Environment *env){
+CORBA_Object__narrow(CORBA_Object obj, CORBA_TypeCode tc, CORBA_Environment *env)
+{
   if(obj->typedId) RtORB_free(obj->typedId, "CORBA_Object__narrow");
   obj->typedId = (unsigned char *)RtORB_strdup(tc->repository_id, "CORBA_Object__narrow");
 
   return;
 }
 
-void delete_CORBA_Object(CORBA_Object obj){
+void delete_CORBA_Object(CORBA_Object obj)
+{
   if(!obj) return;
 #if DEBUG
   fprintf(stderr, "   Call delete Object %x \n", obj);
@@ -337,21 +366,8 @@ void delete_CORBA_Object(CORBA_Object obj){
     String__delete((char *)obj->connection->hostname, "delete_CORBA_Object(connection.hostname)");
   } 
   String__delete((char *)obj->_ior_string, "delete_CORBA_Object(_ior_string)");
-
   if(obj->servant) RtORB_free(obj->servant,"delete_CORBA_Object(servant)");
-
-/*
-  I should check whether poa is RootPOA and whether orb is ROOT.
- 
-  if(obj->poa) RtORB_free(obj->poa, "PortableServer_POA_struct");
-  if(obj->orb) RtORB_free(obj->orb, "CORBA_ORB");
-*/
-
-
   if(obj->connection) RtORB_free(obj->connection,"GIOP_Connection");
-#if 0
-  if(obj->impl) RtORB_free(obj->impl, "impl");
-#endif
 
   RtORB_free(obj, "delete_CORBA_Object");
 
@@ -359,7 +375,8 @@ void delete_CORBA_Object(CORBA_Object obj){
 }
 
 unsigned char *
-CORBA_ORB_id(CORBA_ORB orb, CORBA_Environment *env){
+CORBA_ORB_id(CORBA_ORB orb, CORBA_Environment *env)
+{
   return orb->_id;
 }
 
@@ -431,10 +448,6 @@ CORBA_ORB_string_to_object(CORBA_ORB orb, unsigned char *str,
 
   obj->num_urls = parseCorbaURL(&obj->_url, (char *)str);
 
-#if 0
-  obj->orb = orb;
-#endif
-
   if(obj->num_urls){
     if(obj->_url[0].protocol == PROTO_RIR){
      delete_CORBA_Object(obj);
@@ -447,9 +460,6 @@ CORBA_ORB_string_to_object(CORBA_ORB orb, unsigned char *str,
     RtORB_free(obj->connection->hostname, "CORBA_ORB_string_to_object");
     obj->connection->hostname=(unsigned char *)RtORB_strdup(obj->_url[0].hostname, "string_to_object");
     obj->connection->port = obj->_url[0].port;
-#if 0
-    obj->poa = 0;
-#endif
     if(obj->_url[0].type_id){
       obj->typedId = (unsigned char *)obj->_url[0].type_id;
     }
@@ -458,9 +468,6 @@ CORBA_ORB_string_to_object(CORBA_ORB orb, unsigned char *str,
 
   }else{
     obj->connection = NULL;
-#if 0
-    obj->poa = 0;
-#endif
   }
   return obj;
 }
@@ -485,17 +492,20 @@ CORBA_ORB_get_default_context(CORBA_ORB orb, CORBA_Context *ctx,
 }
 
 boolean
-CORBA_ORB_work_pending(CORBA_ORB orb, CORBA_Environment *env){
+CORBA_ORB_work_pending(CORBA_ORB orb, CORBA_Environment *env)
+{
   return FALSE;
 }
 
 void
-CORBA_ORB_perform_work(CORBA_ORB orb, CORBA_Environment *env){
+CORBA_ORB_perform_work(CORBA_ORB orb, CORBA_Environment *env)
+{
   return ;
 }
 
 void 
-CORBA_ORB_run(CORBA_ORB orb,  CORBA_Environment *env) {
+CORBA_ORB_run(CORBA_ORB orb,  CORBA_Environment *env) 
+{
   POA_main_loop( The_RootPOA );
   return;
 }
@@ -508,13 +518,11 @@ CORBA_ORB_shutdown(CORBA_ORB orb, boolean wait_for_completion,
 }
 
 void
-CORBA_ORB_destroy(CORBA_ORB orb, CORBA_Environment *env){
+CORBA_ORB_destroy(CORBA_ORB orb, CORBA_Environment *env)
+{
   The_ORB=NULL;
 
   PortableServer_POA_destory(The_RootPOA, env);
-#if 0
-  CORBA_Object_free(The_RootPOA_Object);
-#endif
 
   RtORB_free(orb->hostname, "destroy_hostname");
   RtORB_free(orb, "CORBA_ORB_destory");
@@ -524,20 +532,23 @@ CORBA_ORB_destroy(CORBA_ORB orb, CORBA_Environment *env){
 /******** Object *********/
 
 CORBA_Object 
-CORBA_Object_duplicate(CORBA_Object object, CORBA_Environment *env){
+CORBA_Object_duplicate(CORBA_Object object, CORBA_Environment *env)
+{
   object->ref++;
   return object;
 }
 
 void 
-CORBA_Object_release(CORBA_Object object, CORBA_Environment *env){
+CORBA_Object_release(CORBA_Object object, CORBA_Environment *env)
+{
   if( object->ref <= 0) return;
   object->ref--;
   return ;
 }
 
 boolean
-CORBA_Object_is_nil(CORBA_Object object, CORBA_Environment *env){
+CORBA_Object_is_nil(CORBA_Object object, CORBA_Environment *env)
+{
   if(object->ref == 0) return TRUE;
   return FALSE;
 }
@@ -552,15 +563,15 @@ CORBA_Object_is_a(CORBA_Object object,
 }
 
 boolean
-CORBA_Object_non_existent(CORBA_Object object, CORBA_Environment *env){
+CORBA_Object_non_existent(CORBA_Object object, CORBA_Environment *env)
+{
   if(object->ref == 0) return FALSE;
   return TRUE;
 }
 
 uint32_t
-CORBA_Object_hash(CORBA_Object object,
-		uint32_t maximum,
-		CORBA_Environment *env){
+CORBA_Object_hash(CORBA_Object object, uint32_t maximum, CORBA_Environment *env)
+{
   uint32_t val = elfhash(object->object_key);
 
   if(maximum) val =  val % maximum;
@@ -568,9 +579,9 @@ CORBA_Object_hash(CORBA_Object object,
 }
 
 boolean
-CORBA_Object_is_equivalent(CORBA_Object object,
-		CORBA_Object other_object,
-		CORBA_Environment *env){
+CORBA_Object_is_equivalent(CORBA_Object object, CORBA_Object other_object,
+		CORBA_Environment *env)
+{
   if (!object || !other_object) { return FALSE; }
 
   /* First, compare typedId if exist. They might be empty. */
@@ -588,20 +599,14 @@ CORBA_Object_is_equivalent(CORBA_Object object,
 
 
 CORBA_Object
-CORBA_Object_get_component( CORBA_Object object,
-		CORBA_Environment *env)
+CORBA_Object_get_component( CORBA_Object object, CORBA_Environment *env)
 {
   return object;
 }
 
 CORBA_ORB
-CORBA_Object_get_orb( CORBA_Object object,
-		CORBA_Environment *env)
+CORBA_Object_get_orb( CORBA_Object object, CORBA_Environment *env)
 {
-#if 0
-  return object->orb;
-#else
   return The_ORB;
-#endif
 }
 
