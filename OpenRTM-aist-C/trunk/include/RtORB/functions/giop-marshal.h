@@ -209,7 +209,7 @@ int marshal_Octet_Sequence(octet *buf, int *pos, octet *data, int size);
  * @param seq CORBA_Sequence type data for writing to 'buf' 
  * @return void
  */
-int marshal_CORBA_Sequence(octet *buf, int *pos, CORBA_Sequence *seq);
+int marshal_CORBA_Sequence(octet *buf, int *pos, CORBA_SequenceBase *seq, int type);
 
 /*!
  * @if jp

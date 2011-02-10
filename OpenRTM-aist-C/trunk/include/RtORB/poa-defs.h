@@ -53,7 +53,6 @@ extern "C"
  * @param status POA status (POA_HOLDING/POA_ACTIVE/POA_DISCARDING/POA_INACTIVE)
  */
 typedef struct PortableServer_POAManager_struct{
-  struct CORBA_ORB_struct *orb;
   char *id;
   PtrList *poa;
 

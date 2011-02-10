@@ -54,17 +54,18 @@ uint32_t get_octet_size(uint32_t type){
   return res;
 }
 
-uint32_t sizeof_CORBA_Sequence(CORBA_Sequence *seq){
-  return get_octet_size(seq->_type) * seq->_length;
+uint32_t sizeof_CORBA_Sequence(CORBA_SequenceBase *seq, int type)
+{
+  return get_octet_size(type) * seq->_length;
 }
 
-CORBA_Sequence *new_CORBA_Sequence(uint32_t type, uint32_t len){
-  CORBA_Sequence *res = (CORBA_Sequence *)RtORB_alloc(sizeof(CORBA_Sequence), 
+CORBA_SequenceBase *
+new_CORBA_Sequence(uint32_t type, uint32_t len){
+  CORBA_SequenceBase *res = (CORBA_SequenceBase *)RtORB_alloc(sizeof(CORBA_SequenceBase), 
 					"new_CORBA_Sequence");
-  res->_type = type;
   res->_length = res->_maximum = len;
   res->_release = 0;
-  res->_buffer = (octet *)RtORB_alloc(get_octet_size(type) * len, 
+  res->_buffer = (void **)RtORB_alloc(get_octet_size(type) * len, 
 				"new_CORBA_Sequence (_buffer)");
   return res;
 }

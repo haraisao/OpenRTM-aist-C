@@ -36,7 +36,7 @@ const uint32_t RTORB_ORB_TYPE = 0x52544d00; /*   RTM\x00  */
 int Create_Tag_Internet_IOP(char *dist, int sock, char *object_key){
    int current = 0;
    uint32_t orb_type_data[] = { 1, RTORB_ORB_TYPE };
-   CORBA_Sequence orb_type = { 2, 2, orb_type_data, 0, tk_long };
+   CORBA_SequenceBase orb_type = { 2, 2, (void **)orb_type_data, 0};
    uint32_t code_sets_data[] = {
 	   1,
 	   CodeSet_8859_1, /* 0x00010001 */
@@ -46,7 +46,7 @@ int Create_Tag_Internet_IOP(char *dist, int sock, char *object_key){
 	   1,
 	   CodeSet_UTF_16  /* 0x00010109 */
    };
-   CORBA_Sequence code_sets = { 7, 7, code_sets_data, 0, tk_long };
+   CORBA_SequenceBase code_sets = { 7, 7, (void **)code_sets_data, 0 };
 
    char *hostname = (char *)get_ip_address(sock);
    if(!hostname) hostname = "127.0.0.1";
@@ -71,20 +71,13 @@ int Create_Tag_Internet_IOP(char *dist, int sock, char *object_key){
    marshalString((octet *)dist, &current, object_key);
 
     /**** Tagged Component  ****/
-#if 1
    marshalLong((octet *)dist, &current, 2);   /* Number of TaggedComponent  */
    
    marshalLong((octet *)dist, &current, IOP_TAG_ORB_TYPE);    /* ORB_TYPE  */
-   marshal_CORBA_Sequence((octet *)dist, &current, &orb_type);
+   marshal_CORBA_Sequence((octet *)dist, &current, &orb_type, tk_long);
 
    marshalLong((octet *)dist, &current, IOP_TAG_CODE_SETS);   /* Default CODE_SETS  */
-   marshal_CORBA_Sequence((octet *)dist, &current, &code_sets);
-#else
-   marshalLong((octet *)dist, &current, 1);   /* Number of TaggedComponent  */
-   
-   marshalLong((octet *)dist, &current, IOP_TAG_ORB_TYPE);    /* ORB_TYPE  */
-   marshal_CORBA_Sequence((octet *)dist, &current, &orb_type);
-#endif
+   marshal_CORBA_Sequence((octet *)dist, &current, &code_sets, tk_long);
 
    return current; 
 }
