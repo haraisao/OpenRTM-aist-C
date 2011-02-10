@@ -166,7 +166,6 @@ typedef struct{
   IOP_IOR ior;
 } IORAddressingInfo;
 
-
 typedef uint32_t IOP_ComponentId;
 
 /*!
@@ -253,40 +252,6 @@ typedef union {
   IIOP_ProfileBody_1_0 _1_0;
   IIOP_ProfileBody_1_1 _1_1;
 } IIOP_ProfileBody;
-
-/*!
- * @struct IIOP_ListenPoint
- * @brief IIOP_ProfileBody (TODO)
- * @param host host (IP address)
- * @param port PORT number
- */
-typedef struct {
-  CORBA_String host;
-  uint16_t port;
-} IIOP_ListenPoint;
-
-/*!
- * @struct CORBA_Sequence_IIOP_ListenPoint
- * @brief CORBA_Sequence_IIOP_ListenPoint (TODO)
- * @param size (TODO)
- * @param data (TODO)
- */
-typedef struct {
-  uint32_t size;
-  IIOP_ListenPoint *data;
-} CORBA_Sequence_IIOP_ListenPoint;
-
-typedef CORBA_Sequence_IIOP_ListenPoint IIOP_ListenPointList;
-
-/*!
- * @struct BiDir_IIOP_ServiceContext
- * @brief BiDir_IIOP_ServiceContext (TODO)
- * @param listen_points (TODO)
- */
-typedef struct {
-  IIOP_ListenPointList  listen_points;
-} BiDir_IIOP_ServiceContext;
-
 
 /*
 

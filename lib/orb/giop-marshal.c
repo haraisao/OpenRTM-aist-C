@@ -194,12 +194,6 @@ uint32_t align_of_typecode(CORBA_TypeCode tc, int flag)
 */
 int copy_octet(void *dist, octet *buf, int size, int *current)
 {
-#if 0
-   if(sizeof(dist) < size || sizeof(buf) < (size + (*current))){
-     fprintf(stderr, "ERROR in copy_octet dist(len=%d) buf(len=%d)\n", sizeof(dist),sizeof(buf) );
-     return -1;
-   }
-#endif
    memcpy(dist, buf + (*current), size);
    *current += size;
    return *current;
@@ -353,12 +347,12 @@ int marshal_Octet_Sequence(octet *buf, int *pos, octet *data, int size)
 /*
   Marshal an CORBA_Sequence. I support only a basic data type....
 */
-int marshal_CORBA_Sequence(octet *buf, int *pos, CORBA_Sequence *seq)
+int marshal_CORBA_Sequence(octet *buf, int *pos, CORBA_SequenceBase *seq, int type)
 {
-  uint32_t len = sizeof_CORBA_Sequence(seq);
+  uint32_t len = sizeof_CORBA_Sequence(seq, type);
 
   marshalLong((octet *)buf, pos, len);
-  switch(seq->_type){
+  switch(type){
     case tk_char:
     case tk_octet:
       memcpy(buf+(*pos), seq->_buffer, seq->_length);
@@ -382,7 +376,7 @@ int marshal_CORBA_Sequence(octet *buf, int *pos, CORBA_Sequence *seq)
       *pos += seq->_length*8;
       break;
     default:
-      fprintf(stderr, "ERROR in marshal_CORBA_Sequence, sorry we dont support this type(%d)\n", (int)seq->_type); 
+      fprintf(stderr, "ERROR in marshal_CORBA_Sequence, sorry we dont support this type(%d)\n", type); 
       break;
    }
    return *pos;
@@ -643,33 +637,10 @@ demarshal_by_typecode(void **dist, CORBA_TypeCode tc, octet *buf, int *current, 
 
         if (dist) {
           sb = (CORBA_SequenceBase *)dist;
-    /*
-	      2010/2/16 
-	      For memory leaks.
-	      but this may cause segmentation fault. Wmm...
-    */
           if (sb->_maximum > 0) {
              /* Just free buffer. DO NOT free CORBA_Sequence object. */
-#if 0
-            switch(tc->member_type[0]->kind)
-            {
-              case tk_sequence:
-/*
-              case tk_struct:
-*/
-              case tk_union:
-              case tk_any:
-              case tk_objref:
-              case tk_string:
-                for (i=0; i<sb->_length; i++) {
-                  RtORB_free_by_typecode(tc->member_type[0],sb->_buffer[i],0);
-                }
-                break;
-              default:
-                break;
-            }
-#endif
-            RtORB__free(sb->_buffer, "demarshal_type_typecode : tk_sequence"); sb->_buffer = NULL;
+            RtORB__free(sb->_buffer, "demarshal_type_typecode : tk_sequence");
+            sb->_buffer = NULL;
           }
           sb->_length = sb->_maximum = len;
         }
@@ -781,9 +752,6 @@ demarshal_by_typecode(void **dist, CORBA_TypeCode tc, octet *buf, int *current, 
 						       "demarshal");
 	      obj->connection->port = obj->_url[0].port;
 	      obj->poa = 0;
-#if 0
-             if(obj->_url[0].type_id){  obj->typedId = obj->_url[0].type_id;  }
-#endif
 
 	      RtORB_free(obj->object_key, "demarshal_by_typecode(objref)");
 	      obj->object_key = (unsigned char *)RtORB_strdup(obj->_url[0].object_key,
@@ -928,13 +896,6 @@ deMarshal_Result(void **retval, CORBA_TypeCode tc, octet *buf,
    SKIP_ALIAS(tc);
 
    switch(tc->kind){
-#if 0
-     case tk_struct:
-     case tk_sequence:
-       /* Returned type is value. */
-       demarshal_by_typecode(retval, tc, buf, size, order);
-       break;
-#endif
      case tk_union:
        if (CORBA_TypeCode_is_fixed_size(tc)) {
 	 /* Returned type is value. */
@@ -1144,9 +1105,6 @@ int marshal_by_typecode(octet *buf, void *argv, CORBA_TypeCode tc, int *current)
        if (tc_ == NULL) { tc_ = CORBA_TypeCode_get(tk_null); }
           Address_Alignment(current, 4);
 	  marshal_typecode(buf, current, tc_);
-#if 0
-          marshalLong(buf, current, any->_len);
-#endif
          int32_t len;
          char *v = CORBA_any_get_encoded(any, &len);
          if (v) {
@@ -1379,9 +1337,6 @@ static int marshal_typecode(octet *buf, int *current, CORBA_TypeCode tc)
 	    
 	    marshal_typecode(buf_, &len_, ctc);
 	    Address_Alignment(&len_, 4);
-#if 0
-	    marshal_typecode(buf_, &len_, tc->length);
-#endif
 	    marshalLong(buf_, &len_, tc->length);
 	  }
 	break;

@@ -317,7 +317,8 @@ void POA_main_loop(PortableServer_POA rootPOA){
 /******************************/
 PortableServer_ObjectId
 PortableServer_POA_activate_object(PortableServer_POA poa, 
-		PortableServer_Servant servant, CORBA_Environment *env){
+		PortableServer_Servant servant, CORBA_Environment *env)
+{
   PortableServer_ObjectId obj_id;
   CORBA_Object obj;
   PortableServer_ServantBase *sb = (PortableServer_ServantBase *)servant;
@@ -337,9 +338,7 @@ PortableServer_POA_activate_object(PortableServer_POA poa,
 
   obj_id = (PortableServer_ObjectId)RtORB_alloc(sizeof(struct PortableServer_ObjectId_struct), "PortableServer_POA_activate_object");
 
-//  poa_obj->objectId = obj_id;
   obj->poa = poa;
-//  obj_id->_this = obj;
 
   register_PortableServer_Servant(poa, servant, env);
 
@@ -420,7 +419,9 @@ void RtORB_POA_Object__create(PortableServer_ClassInfo *info,
 
 void
 PortableServer_POA_deactivate_object(PortableServer_POA poa, 
-		PortableServer_ObjectId id, CORBA_Environment *env){
+		PortableServer_ObjectId id,
+		CORBA_Environment *env)
+{
 
   deleteItem(poa->object_map, id->_this->object_key);
   RtORB_free(id->_this->_ior_string, "PortableServer_POA_deactivate_object");
@@ -430,7 +431,8 @@ PortableServer_POA_deactivate_object(PortableServer_POA poa,
 
 void
 PortableServer_POA_reinstall_object(PortableServer_POA poa, 
-		CORBA_Object obj, char *object_key, CORBA_Environment *env){
+		CORBA_Object obj, char *object_key, CORBA_Environment *env)
+{
 
   PortableServer_ServantBase *sb;
 

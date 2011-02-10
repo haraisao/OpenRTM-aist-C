@@ -148,26 +148,9 @@ typedef struct CORBA_any {
 typedef struct{
   uint32_t _maximum;
   uint32_t _length;
-  void * *_buffer;
+  void  **_buffer;
   uint32_t  _release;
 } CORBA_SequenceBase;
-
-/*!
- * @struct CORBA_Sequence
- * @brief CORBA_Sequence structure
- * @param _length count of sequence array
- * @param _maximum max count of sequence array
- * @param _buffer address of data
- * @param _release data release flag (TRUE:release)
- * @param _type data type
- */
-typedef struct{
-  uint32_t _length;
-  uint32_t _maximum;
-  void *_buffer;
-  uint32_t  _release;
-  uint32_t _type;
-} CORBA_Sequence;
 
 /*!
  * @struct CORBA_Sequence_Octet

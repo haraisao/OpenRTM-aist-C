@@ -36,7 +36,6 @@
  * @return octet data size 
  */
 uint32_t get_octet_size(uint32_t type);
-
 /*!
  * @if jp
  * @brief CORBAタイプコードのデータタイプに応じて、Sequence型のOctetデータサイズの値を返す。
@@ -46,7 +45,7 @@ uint32_t get_octet_size(uint32_t type);
  * @param seq CORBA_Sequence data
  * @return sequence octet data size 
  */
-uint32_t sizeof_CORBA_Sequence(CORBA_Sequence *seq);
+uint32_t sizeof_CORBA_Sequence(CORBA_SequenceBase *seq, int type);
 
 /*!
  * @if jp
@@ -58,7 +57,7 @@ uint32_t sizeof_CORBA_Sequence(CORBA_Sequence *seq);
  * @param len initial length of Sequence array
  * @return reference of CORBA_Sequence data
  */
-CORBA_Sequence *new_CORBA_Sequence(uint32_t type, uint32_t len);
+CORBA_SequenceBase *new_CORBA_Sequence(uint32_t type, uint32_t len);
 
 /*!
  * @if jp
