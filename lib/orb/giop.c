@@ -316,6 +316,8 @@ printInvokeServent(char *fname, char *class_name, char *function){
 }
 #endif
 
+typedef void (*RtORB_impl_func)(PortableServer_ServantBase *, void*, CORBA_Class_Method*, void**, CORBA_Environment*, void*(*method)());
+
 GIOP_ReplyBody *invokeServant(PortableServer_POA poa,
 		GIOP_RequestHeader *header,
   		CORBA_Environment *env,
@@ -326,13 +328,11 @@ GIOP_ReplyBody *invokeServant(PortableServer_POA poa,
   PortableServer_ClassInfo *info;
   CORBA_Class_Method *m_data;
   void *(*impl_method)();
-  void (*call_impl_func)(PortableServer_ServantBase *, void*, CORBA_Class_Method*, void**, CORBA_Environment*, void*(*method)());
   void * *argv;
   void * result;
   RtORB_POA_Object *poa_obj=NULL;
   hashtable *tbl=NULL; 
-
-  typedef void (*impl_func_type)(PortableServer_ServantBase *, void*, CORBA_Class_Method*, void**, CORBA_Environment*, void*(*method)());
+  RtORB_impl_func call_impl_func;
 
   void RtORB_Result_free(CORBA_TypeCode tc, void **result);
 
@@ -371,7 +371,7 @@ GIOP_ReplyBody *invokeServant(PortableServer_POA poa,
     info = (PortableServer_ClassInfo *)poa_obj->impl_serv._private;
     PortableServer_ServantBase *sb = (PortableServer_ServantBase*)poa_obj->servant;
 
-    call_impl_func = (impl_func_type)(*info->impl_finder)(&sb->_private, function, &m_data, &impl_method );
+    call_impl_func = (RtORB_impl_func)(*info->impl_finder)(&sb->_private, function, &m_data, &impl_method );
 
 #ifdef METHOD_LOG
     printInvokeServent("method", (char *)poa_obj->obj->typedId, function);
