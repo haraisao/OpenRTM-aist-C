@@ -367,7 +367,6 @@ GIOP_ReplyBody *invokeServant(PortableServer_POA poa,
     return reply;
 
   }else{
-    extern void** Result_alloc(CORBA_TypeCode tc);
     info = (PortableServer_ClassInfo *)poa_obj->impl_serv._private;
     PortableServer_ServantBase *sb = (PortableServer_ServantBase*)poa_obj->servant;
 
