@@ -108,21 +108,6 @@ GIOP_Connection__close(GIOP_Connection *conn)
   return;
 }
 
-/* For multi thread */
-void *
-GIOP_Connection__run(GIOP_Connection *conn)
-{
-  if(!conn) return NULL;
-#if 0
-  if(conn->type != 0) return;
-#endif
-  if(conn->sock && conn->activate == FALSE){
-     conn->activate = TRUE;
-     server_socket_loop(conn->sock, (float)1000.0, NULL, NULL, RecvMessage);
-  }
-  return NULL;
-}
-
 void
 GIOP_Connection__free(GIOP_Connection *conn)
 {
@@ -963,10 +948,6 @@ GIOP_enqueue_request(GIOP_ConnectionHandler *h, PtrList *lst)
   GIOP_MessageHeader header;
   GIOP_Request_Item request;
 
-#ifdef DEBUG_OLD
-  fprintf(stderr, "\n=======================\n");
-#endif
-
   buf = ( char* )RtORB_alloc( RECV_BUF_SIZE, "GIOP_enqueue_request");
   memset(buf, 0, RECV_BUF_SIZE);
 
@@ -991,84 +972,6 @@ GIOP_enqueue_request(GIOP_ConnectionHandler *h, PtrList *lst)
   RtORB_free( buf, "GIOP_enqueue_request:finish" );
 
   return lst;
-}
-
-/*
- *   GIOP Communication
- *
- */
-int 
-RecvMessage(GIOP_ConnectionHandler *h)
-{
-  int byte_order = 0 ;
-  int fragment = -1 ;
-  char *recvbuf = NULL;
-  int res = 1;
-  GIOP_MessageHeader header;
-  int recvBufSize = RECV_BUF_SIZE;
-
-  CORBA_Sequence_Octet *body;
-  CORBA_Environment env;
-
-  if((recvbuf = (char *)RtORB_alloc( recvBufSize, "RecvMessage(buf)")) == NULL){
-    fprintf(stderr, "Error in RecvMesssage: Fail to allocate buffer...\n");  
-    return -1;
-  }
-
-  memset(&header, 0, SIZEOF_GIOP_HEADER);
-  memset(recvbuf, 0, recvBufSize);
-
-  body = (CORBA_Sequence_Octet *)new_CORBA_Sequence_Octet(0);
-
-  if(receiveMessage(h, &header, (unsigned char *)recvbuf, recvBufSize) < 0){
-    fprintf(stderr, "Error in RecvMesssage: Fail to receive data...\n");  
-    RtORB_free( recvbuf, "RecvMessage(buf)");
-    return -1;
-  }
-
-  if((header.flags & 0x01) == 0 );    /*header.message_size=ntohl(header.message_size); -> in receiveMessage */
-  else byte_order = 1;
-
-  if(header.minor > 0) fragment = header.flags & 0x02;
-
-#ifdef DEBUG_GIOP
-  fprintf(stderr, "[%d]\n", header.message_type);
-#endif
-
-  switch(header.message_type){
-    case GIOP_Request:   /* Sample Implementation only  */
-         GIOP_Request_perform(h, (octet *)recvbuf, NULL, &header, body, &env);
-         break;
-    case GIOP_Reply:     /* This is for a client, not implemented  */
-         GIOP_Reply_perform(h, (octet *)recvbuf, NULL, &header, body, &env);
-         break;
-    case GIOP_CancelRequest: 
-         GIOP_CancelRequest_perform(h, (octet *)recvbuf, NULL, &header, body, &env);
-         break;
-    case GIOP_LocateRequest:
-         GIOP_LocationRequest_perform(h, (octet *)recvbuf, NULL, &header, body, &env);
-         break;
-    case GIOP_LocateReply:  /* This is for a client, not complete  */
-         GIOP_LocationReply_perform(h, (octet *)recvbuf, NULL, &header, body, &env);
-         break;
-    case GIOP_CloseConnection:
-         GIOP_ConnectionHandler_close(h);
-         res = -1;
-	 break;
-    case GIOP_MessageError: 
-	 fprintf(stderr, "Message Error occured\n");
-         break;
-    case GIOP_Fragment: /* Not implemented  */
-	 fprintf(stderr, "FragmentMessage have not implemented.....\n");
-         break;
-    default:
-	 fprintf(stderr, "Invalid message type (%d)\n", header.message_type);
-         res=-1;
-  }
-
-  RtORB_free( recvbuf, "RecvMessage(buf)");
-
-  return res;
 }
 
 #if USE_THREAD

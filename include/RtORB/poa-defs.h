@@ -40,8 +40,9 @@ extern "C"
 /*    POA   */
 #define POA_HOLDING 	1  /*!< HOLDING Status of POA Manager    (request --> Hold to Queue) */
 #define POA_ACTIVE  	2  /*!< ACTIVE Status of POA Manager     (request --> Accept) */
-#define POA_DISCARDING 	3  /*!< DISCARDING Status of POA Manager (request --> Destroy) */
-#define POA_INACTIVE  	4  /*!< INACTIVE Status of POA Manager   (request --> Deny) */
+#define POA_INACTIVE  	3  /*!< INACTIVE Status of POA Manager   (request --> Deny) */
+#define POA_DISCARDING 	4  /*!< DISCARDING Status of POA Manager (request --> Destroy) */
+#define POA_TERMINATE 	5  /*!< TERMINATE Status of POA Manager  (request --> terminate) */
 
 /* POA   */
 /*!
