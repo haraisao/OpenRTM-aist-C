@@ -82,8 +82,8 @@ PortableServer_POA_createPOA(PortableServer_POA ppoa,
 void
 PortableServer_POA_activate(PortableServer_POA poa, CORBA_Environment *env) 
 {
-  if(poa->status == POA_INACTIVE){
-    CORBA_system_exception(env, "AdapterInactive");
+  if(poa->status == POA_TERMINATE || poa->status == POA_DISCARDING ){
+    CORBA_system_exception(env, "AdapterTerminated");
     return;
   }
   if(poa->status == POA_ACTIVE) return;
@@ -95,12 +95,13 @@ PortableServer_POA_activate(PortableServer_POA poa, CORBA_Environment *env)
 void
 PortableServer_POA_deactivate(PortableServer_POA poa, CORBA_Environment *env) 
 {
-   if(poa->status == POA_INACTIVE){
-     CORBA_system_exception(env, "AdapterInactive");
+  if(poa->status == POA_TERMINATE || poa->status == POA_DISCARDING ){
+     CORBA_system_exception(env, "AdapterTerminated");
      return;
    }
    poa->status = POA_INACTIVE;
 
+  /*  I should modify ... */
    GIOP_Connection__shutdown(poa->_server);
 
    return;
@@ -112,6 +113,14 @@ PortableServer_POA_deactivate(PortableServer_POA poa, CORBA_Environment *env)
 void 
 PortableServer_POA_shutdown(PortableServer_POA poa, CORBA_Environment *env) 
 {
+  if(poa->status == POA_TERMINATE ){
+     CORBA_system_exception(env, "AdapterTerminated");
+     return;
+  }
+
+  if(poa->status == POA_ACTIVE){
+    PortableServer_POA_deactivate(poa, env);
+  }
 
    poa->status = POA_DISCARDING;
 
@@ -124,11 +133,18 @@ PortableServer_POA_shutdown(PortableServer_POA poa, CORBA_Environment *env)
 void
 PortableServer_POA_destory(PortableServer_POA poa, CORBA_Environment *env) 
 {
-  PortableServer_POA_shutdown(poa, env);
+  if(poa->status == POA_ACTIVE){
+    PortableServer_POA_deactivate(poa, env);
+  }
+
+  if(poa->status == POA_INACTIVE){
+    PortableServer_POA_shutdown(poa, env);
+  }
+
   GIOP_Connection__free(poa->_server);
   poa->_server = 0;
 
-  poa->status = POA_INACTIVE;
+  poa->status = POA_TERMINATE;
   return;
 }
 
