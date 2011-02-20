@@ -183,5 +183,8 @@ char *strndup(const char *str, size_t n);
 void RtORB__free(void *val, const char *info);
 void RtORB_Result__free(CORBA_TypeCode tc, void **result, int cpp_flag);
 
+
+void ** Result_alloc(CORBA_TypeCode tc);
+
 #endif
 

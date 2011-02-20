@@ -673,7 +673,6 @@ CORBA_CosNaming_NamingContext
   /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object (poa, newservant, ev);
-  RtORB_free (objid, " objid");
   retval = PortableServer_POA_servant_to_reference (poa, newservant, ev);
 
   return retval;
@@ -1049,7 +1048,6 @@ impl_CosNaming_NamingContext_list (impl_POA_CosNaming_NamingContext * servant,
   /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object (poa, newservant, ev);
-  RtORB_free (objid, " objid");
   retval = PortableServer_POA_servant_to_reference (poa, newservant, ev);
   SOCKET_UNLOCK();
 

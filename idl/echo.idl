@@ -21,7 +21,7 @@ interface Echo {
   long plus(in long x, in long y);
   void plus2(in long x, in long y, out long ans);
 
-  float divide(in float x, in float y);
+  double divide(in float x, in float y);
   void divide2(in float x, in float y, out float ans);
 
 };

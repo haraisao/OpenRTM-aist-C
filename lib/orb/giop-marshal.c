@@ -1153,44 +1153,6 @@ Marshal_Arg(octet *buf, void * *argv, int i_args, CORBA_IArg *i_argv){
   return current;
 }
 
-/*!
- * @if jp
- * @brief TypeCodeに応じたメモリ確保処理。
- * @else
- * @brief Allocate memory related with TypeCode.
- * @endif
- * @param tc CORBA_TypeCode data
- * @return allocated memory's address
- */
-void ** Result_alloc(CORBA_TypeCode tc)
-{
-  void **buf = NULL;
-  if (!tc) { return NULL; }
-  
-  switch(tc->kind) {
-  case tk_null:
-  case tk_void:
-    return NULL;
-  case tk_alias:
-    return Result_alloc(tc->member_type[0]);
-  case tk_struct:
-  case tk_sequence:
-    buf = (void**)RtORB_alloc_by_typecode(tc, 1, "Result_alloc(tk_struct)");
-    return buf;
-  default:
-    break;
-  }
-  if (CORBA_TypeCode_is_fixed_size(tc)) {
-    buf = (void**)RtORB_alloc_by_typecode(tc, 1, "Result_alloc1");
-  } else {
-    buf = (void **)RtORB_alloc(sizeof(void**)*1, "Result_alloc2");
-/*
-    buf[0] = (void*)RtORB_alloc_by_typecode(tc, 1, "Result_alloc3");
-*/
-  }
-  return buf;
-}
-
 /*
  * Marshal_Reply_Arguments function
  *

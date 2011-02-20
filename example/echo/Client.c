@@ -137,7 +137,7 @@ plus(Echo e, CORBA_Environment *env){
 
 void
 divide(Echo e, CORBA_Environment *env){
-  float val;
+  double val;
   float val2;
   float a, b;
 
@@ -146,7 +146,7 @@ divide(Echo e, CORBA_Environment *env){
   val = Echo_divide(e, a, b,  env);
   Echo_divide2(e, b, a, &val2,  env);
 
-  fprintf(stderr, " %f / %f =%f \n", a, b, val);
+  fprintf(stderr, " %f / %f =%lf \n", a, b, val);
   fprintf(stderr, " %f / %f =%f \n", b, a,val2);
 }
 
@@ -198,12 +198,14 @@ fprintf(stderr, "... end string_to_object\n");
   gettimeofday(&tv1, &tz);
   for(i=0;i<n_loop;i++){
 fprintf(stderr, "hello");
-    hello(myEcho, &env);
 #if 0
+    hello(myEcho, &env);
     hello2(myEcho, &env);
     divide(myEcho, &env);
     plus(myEcho, &env);
 #endif
+    hello(myEcho, &env);
+    divide(myEcho, &env);
 fprintf(stderr, "...end\n");
   }
   gettimeofday(&tv2, &tz);
