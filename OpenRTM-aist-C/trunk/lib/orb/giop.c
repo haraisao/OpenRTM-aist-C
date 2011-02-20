@@ -314,13 +314,12 @@ GIOP_ReplyBody *invokeServant(PortableServer_POA poa,
   CORBA_Class_Method *m_data;
   void *(*impl_method)();
   void * *argv;
-  void * result;
+  void * *result;
   RtORB_POA_Object *poa_obj=NULL;
   hashtable *tbl=NULL; 
   RtORB_impl_func call_impl_func;
 
   void RtORB_Result_free(CORBA_TypeCode tc, void **result);
-
 
   GIOP_ReplyBody *reply = (GIOP_ReplyBody *)RtORB_alloc(sizeof(GIOP_ReplyBody),
 		  "ReplyBody in invokeServant");
@@ -397,11 +396,18 @@ GIOP_ReplyBody *invokeServant(PortableServer_POA poa,
     argv = (void * *)deMarshal_Arg(arg_buf, m_data->in_argc,
 		    m_data->in_argv, order);
 
-    (*call_impl_func)(sb, &result, m_data, argv, env, impl_method);
+    result = Result_alloc(m_data->retval);
+//    (*call_impl_func)(sb, &result, m_data, argv, env, impl_method);
+    (*call_impl_func)(sb, result, m_data, argv, env, impl_method);
 
     switch(env->_major){
       case CORBA_NO_EXCEPTION:
-        Marshal_Reply_Arguments(reply, (void**)result, argv, m_data);
+//        Marshal_Reply_Arguments(reply, (void**)result, argv, m_data);
+        if(result == 0){
+          Marshal_Reply_Arguments(reply, (void**)result, argv, m_data);
+        }else{
+          Marshal_Reply_Arguments(reply, (void**)(*result), argv, m_data);
+        }
         break;
       case CORBA_USER_EXCEPTION:
 	{
@@ -457,11 +463,16 @@ find_object(PortableServer_POA poa, char *key, char *ior)
   int res = GIOP_UNKNOWN_OBJECT;
 
   if(poa) tbl = poa->object_map;
+//  tbl = The_RootPOA->object_map;
 
   if ( tbl != NULL){
     if ( getValue(tbl, key) != NULL){
       res = GIOP_OBJECT_HERE;
+    }else{
+      fprintf(stderr, "(%x): Object(%s) not found.\n %s\n", tbl, key, ior);
     }
+  }else{
+   fprintf(stderr, "Object_Table not found\n");
   }
   return  res;
 }
@@ -565,7 +576,7 @@ int
 createLocateRequest(octet *buf, char *object_key, int len)
 {
   int size;
-  int version = 2;
+  int version = 0;
   GIOP_LocateRequestHeader Header;
 
   memset(buf, 0, MaxMessageSize);
@@ -691,6 +702,29 @@ confirmLocation(GIOP_ConnectionHandler *h, CORBA_URL *ior)
   locate_reply_header = (GIOP_LocateReplyHeader *)newLocateReplyHeader();
   deMarshalLocateReply(locate_reply_header, body, (unsigned char *)buf, &header);
   result =locate_reply_header->locate_status;
+  switch(locate_reply_header->locate_status){
+     case GIOP_UNKNOWN_OBJECT:
+	fprintf(stderr, "Unknown Object\n");
+	break;
+     case GIOP_OBJECT_HERE:
+	 break;
+     case GIOP_OBJECT_FORWARD:
+     case GIOP_OBJECT_FORWARD_PERM:
+	 fprintf(stderr, "Object forward\n");
+         dumpMessage(buf + SIZEOF_GIOP_HEADER, header.message_size);
+	 break;
+     case GIOP_LOC_SYSTEM_EXCEPTION:
+	 fprintf(stderr, "Locate System Exception\n");
+         dumpMessage(buf + SIZEOF_GIOP_HEADER, header.message_size);
+	 break;
+     case GIOP_LOC_NEEDS_ADDRESSING_MODE:
+	 fprintf(stderr, "Not Implemented\n");
+         dumpMessage(buf + SIZEOF_GIOP_HEADER, header.message_size);
+	 break;
+     default:
+	 fprintf(stderr, " *[ %d ]*\n", (int)locate_reply_header->locate_status);
+	 break;
+  }
   delete_CORBA_Sequence_Octet(body, 1);
   RtORB_free(locate_reply_header,"confirmLocation(locate_reply_header)");
   RtORB_free( buf, "confirmLocation:finish" );
@@ -1066,7 +1100,8 @@ GIOP_execute_request(PortableServer_POA poa, PtrList *lst)
 	 GIOP_LocationRequest_perform(h, (octet *)buf, poa, header, body, &env);
          break;
       case GIOP_LocateReply:  /* This is for a client, not complete */
-	 GIOP_LocationRequest_perform(h, (octet *)buf, poa, header, body, &env);
+         GIOP_LocationReply_perform(h, (octet *)buf, NULL, &header, body, &env);
+	 //GIOP_LocationRequest_perform(h, (octet *)buf, poa, header, body, &env);
          break;
       case GIOP_CloseConnection:
 	 break;

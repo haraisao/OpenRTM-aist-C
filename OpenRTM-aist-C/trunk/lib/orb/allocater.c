@@ -231,20 +231,34 @@ RtORB_Result__free(CORBA_TypeCode tc, void **result, int cpp_flag){
   case tk_void:
     return;
 
+  case tk_octet:
+  case tk_short:
+  case tk_ushort:
+  case tk_long:
+  case tk_ulong:
+#if 0
+  case tk_longlong:
+  case tk_ulonglong:
+#endif
+  case tk_float:
+  case tk_double:
+    RtORB_free(result, "Result_free: simple");
+    return;
+
   case tk_struct:
-    RtORB_free_by_typecode(tc, (void*)result, 1, cpp_flag);
+    RtORB_free_by_typecode(tc, (void*)(*result), 1, cpp_flag);
     return;
   case tk_sequence:
-    RtORB_free_by_typecode(tc, (void*)result, 1, cpp_flag);
+    RtORB_free_by_typecode(tc, (void*)(*result), 1, cpp_flag);
     return;
 
   case tk_string:
-    RtORB_free_by_typecode(tc, (void*)&result, 0, 0);
+    RtORB_free_by_typecode(tc, (void*)result, 0, 0);
     return;
 
   case tk_objref:
     if(cpp_flag == 0){
-      RtORB_free_by_typecode(tc, (void*)&result, 0, cpp_flag);
+      RtORB_free_by_typecode(tc, (void*)result, 0, cpp_flag);
     }
     return;
 
@@ -347,3 +361,56 @@ char * RtORB__strndup(const char *str, int32_t n, const char *info){
 }
 
 #endif
+
+/*!
+ * @if jp
+ * @brief TypeCodeに応じたメモリ確保処理。
+ * @else
+ * @brief Allocate memory related with TypeCode.
+ * @endif
+ * @param tc CORBA_TypeCode data
+ * @return allocated memory's address
+ */
+
+void ** 
+Result_alloc(CORBA_TypeCode tc)
+{
+  void **buf = NULL;
+  SKIP_ALIAS(tc);
+
+  if (!tc) { return NULL; }
+
+  switch(tc->kind) {
+  case tk_null:
+  case tk_void:
+    return NULL;
+  case tk_octet:
+    buf = RtORB_alloc(sizeof(CORBA_octet), "Result_alloc:octet");;
+    break;
+  case tk_short:
+  case tk_ushort:
+    buf = RtORB_alloc(sizeof(CORBA_short), "Result_alloc:short");;
+    break;
+  case tk_long:
+  case tk_ulong:
+    buf = RtORB_alloc(sizeof(CORBA_long), "Result_alloc:long");;
+    break;
+#if 0
+  case tk_longlong:
+  case tk_ulonglong:
+    buf = RtORB_alloc(sizeof(CORBA_longlong), "Result_alloc:longlong");;
+    break;
+#endif
+  case tk_float:
+    buf = RtORB_alloc(sizeof(CORBA_float), "Result_alloc:float");;
+    break;
+  case tk_double:
+    buf = RtORB_alloc(sizeof(CORBA_double), "Result_alloc:double");;
+    break;
+  default:
+    buf = (void**)RtORB_alloc(sizeof(void *), "Result_alloc(default)");
+    break;
+  }
+  return buf;
+}
+

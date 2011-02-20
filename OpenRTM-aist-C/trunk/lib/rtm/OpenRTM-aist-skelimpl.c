@@ -589,7 +589,6 @@ impl_SDOPackage_SDOSystemElement__create(PortableServer_POA poa, CORBA_Environme
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -670,7 +669,6 @@ impl_SDOPackage_SDO__create(PortableServer_POA poa, CORBA_Environment *ev)
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -896,7 +894,6 @@ impl_SDOPackage_Configuration__create(PortableServer_POA poa, CORBA_Environment 
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -1191,7 +1188,6 @@ impl_SDOPackage_Monitoring__create(PortableServer_POA poa, CORBA_Environment *ev
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -1252,7 +1248,6 @@ impl_SDOPackage_SDOService__create(PortableServer_POA poa, CORBA_Environment *ev
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -1313,7 +1308,6 @@ impl_SDOPackage_Organization__create(PortableServer_POA poa, CORBA_Environment *
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -1566,7 +1560,6 @@ impl_RTC_ComponentAction__create(PortableServer_POA poa, CORBA_Environment *ev)
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -1751,7 +1744,6 @@ impl_RTC_LightweightRTObject__create(PortableServer_POA poa, CORBA_Environment *
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -2082,7 +2074,6 @@ impl_RTC_ExecutionContext__create(PortableServer_POA poa, CORBA_Environment *ev)
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -2306,7 +2297,6 @@ impl_RTC_PortService__create(PortableServer_POA poa, CORBA_Environment *ev)
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -2476,7 +2466,6 @@ impl_RTC_ExecutionContextService__create(PortableServer_POA poa, CORBA_Environme
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -2716,7 +2705,6 @@ impl_RTC_RTObject__create(PortableServer_POA poa, CORBA_Environment *ev)
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -3268,7 +3256,6 @@ impl_RTC_DataFlowComponentAction__create(PortableServer_POA poa, CORBA_Environme
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -3371,7 +3358,6 @@ impl_RTC_DataFlowComponent__create(PortableServer_POA poa, CORBA_Environment *ev
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -3474,7 +3460,6 @@ impl_OpenRTM_DataFlowComponent__create(PortableServer_POA poa, CORBA_Environment
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -3577,7 +3562,6 @@ impl_OpenRTM_ExtTrigExecutionContextService__create(PortableServer_POA poa, CORB
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -3823,7 +3807,6 @@ impl_RTM_Manager__create(PortableServer_POA poa, CORBA_Environment *ev)
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -4200,7 +4183,6 @@ impl_OpenRTM_InPortCdr__create(PortableServer_POA poa, CORBA_Environment *ev)
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;
@@ -4275,7 +4257,6 @@ impl_OpenRTM_OutPortCdr__create(PortableServer_POA poa, CORBA_Environment *ev)
    /* ------ ---------- end ------------- ------ */
 
   objid = PortableServer_POA_activate_object(poa, newservant, ev);
-  RtORB_free(objid, " objid");
   retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);
 
   return retval;

@@ -209,7 +209,11 @@ PortableServer_POA_activate_object(PortableServer_POA poa,
     if(obj == NULL) {
       CORBA_system_exception(env, "Error in PortableServer_POA_activate_object:CORBA_Object is NULL");
     }else{
+#if 0
       obj_id = RtORB_strdup((char *)obj->object_key, "PortableServer_POA_activate_object");
+#else
+      obj_id = obj->object_key;
+#endif
       register_PortableServer_Servant(poa, servant, env);
     }
   }
@@ -240,7 +244,7 @@ void register_PortableServer_Servant(PortableServer_POA poa,
   ior = ( char* )RtORB_alloc( 1024,"register_PortableServer_Servant");
   memset(ior,0,1024);
 
-  registerItem(poa->object_map, obj->object_key, poa_obj);
+  registerItem(poa->object_map, strdup(obj->object_key), poa_obj);
 
   createIOR(ior,poa->_server->sock,(char *)obj->typedId,(char *)obj->object_key);
   obj->_ior_string = (unsigned char *)RtORB_strdup(ior, "register_PortableServer_Servant");

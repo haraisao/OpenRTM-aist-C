@@ -58,7 +58,7 @@ impl_Echo_plus2(
   CORBA_long* ans,
   CORBA_Environment *ev);
 
-static CORBA_float
+static CORBA_double
 impl_Echo_divide(
   impl_POA_Echo *servant,
   CORBA_float x,
@@ -88,7 +88,7 @@ static POA_Echo__epv impl_Echo_epv = {
     (CORBA_string (*)(void *, CORBA_string*, CORBA_Environment *))&impl_Echo_echoString3,
     (CORBA_long (*)(void *, CORBA_long, CORBA_long, CORBA_Environment *))&impl_Echo_plus,
     (void (*)(void *, CORBA_long, CORBA_long, CORBA_long*, CORBA_Environment *))&impl_Echo_plus2,
-    (CORBA_float (*)(void *, CORBA_float, CORBA_float, CORBA_Environment *))&impl_Echo_divide,
+    (CORBA_double (*)(void *, CORBA_float, CORBA_float, CORBA_Environment *))&impl_Echo_divide,
     (void (*)(void *, CORBA_float, CORBA_float, CORBA_float*, CORBA_Environment *))&impl_Echo_divide2,
 };
 
@@ -279,25 +279,26 @@ impl_Echo_plus2(
 #endif /*__cplusplus */
 }
 
-static CORBA_float
+static CORBA_double
 impl_Echo_divide(
   impl_POA_Echo *servant,
   CORBA_float x,
   CORBA_float y,
   CORBA_Environment *ev)
 {
-  CORBA_float retval;
+  CORBA_double retval;
 #if __cplusplus
     CORBA_Object object = impl_POA_ServantBase_to_Object((impl_POA_ServantBase *)servant);
     CORBA::Object *obj_ = reinterpret_cast<CORBA::Object*>(object->impl_obj);
     Echo__impl *impl = dynamic_cast<Echo__impl *>(obj_);
-    CORBA_float_var var = impl->divide(CORBA_float_CInArg(x ), CORBA_float_CInArg(y ));
+    CORBA_double_var var = impl->divide(CORBA_float_CInArg(x ), CORBA_float_CInArg(y ));
   /* type = 21 */
     retval = var;
     ev->_cpp_flag = 1;
 #else /*  C  */
     /* ------   insert method code here   ------ */
     retval = x / y;
+    fprintf(stderr, "%f / %f = %lf\n", x, y, retval);
     /* ------ ---------- end ------------ ------ */
 #endif /* __cplusplus */ 
   return retval;

@@ -393,14 +393,17 @@ int deMarshalReply(GIOP_ReplyHeader *header,
     GIOP_ReplyHeader_1_0 *h = &header->_1_0;
 
     h->service_context.num = demarshalLong(buf, &current, order);
-    for(i=0;i<h->service_context.num;i++){
-       IOP_ServiceContext *context = &h->service_context.data[i];
+    if( h->service_context.num  > 0){
+      h->service_context.data = RtORB_alloc(sizeof(IOP_ServiceContext) *
+                           h->service_context.num, "Alloc ServiceContext");
+      for(i=0;i<h->service_context.num;i++){
+        IOP_ServiceContext *context = &h->service_context.data[i];
 
-       context->context_id = demarshalLong(buf, &current, order);
-       demarshal_CORBA_String(&context->context_data,(octet *)buf, &current, order);
+        context->context_id = demarshalLong(buf, &current, order);
+        demarshal_CORBA_String(&context->context_data,(octet *)buf, &current, order);
+      }
     }
 
-    Address_Alignment(&current, 4);
     h->request_id   = demarshalLong((octet *)buf, &current, order);
     h->reply_status = demarshalLong((octet *)buf, &current, order);
 
@@ -410,13 +413,18 @@ int deMarshalReply(GIOP_ReplyHeader *header,
     h->request_id   = demarshalLong((octet *)buf, &current, order);
     h->reply_status = demarshalLong((octet *)buf, &current, order);
 
-    Address_Alignment(&current, 4);
     h->service_context.num = demarshalLong(buf, &current, order);
-    for(i=0;i<h->service_context.num;i++){
-       IOP_ServiceContext *context = &h->service_context.data[i];
 
-       context->context_id = demarshalLong(buf, &current, order);
-       demarshal_CORBA_String(&context->context_data,(octet *)buf, &current, order);
+   if( h->service_context.num  > 0){
+      h->service_context.data = RtORB_alloc(sizeof(IOP_ServiceContext) *
+                           h->service_context.num, "Alloc ServiceContext");
+
+      for(i=0;i<h->service_context.num;i++){
+        IOP_ServiceContext *context = &h->service_context.data[i];
+
+        context->context_id = demarshalLong(buf, &current, order);
+        demarshal_CORBA_String(&context->context_data,(octet *)buf, &current, order);
+      }
     }
 
     if(size > current - SIZEOF_GIOP_HEADER){

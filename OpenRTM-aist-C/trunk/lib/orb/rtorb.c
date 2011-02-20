@@ -134,8 +134,11 @@ void invokeMethod_via_GIOP(CORBA_Object obj,
   fprintf(stderr, "  ====== \n");
 #endif  
 
+  /*
+    Create Request for GIOP 1.0 
+  */
   len = createRequest(req_buf, 1, obj->_url[0].object_key, obj->_url[0].object_key_len,
-		  method->name, strlen(method->name)+1, arg_buf, len, 2 );
+		  method->name, strlen(method->name)+1, arg_buf, len, 0 );
 
   /* change for shmc */
   GIOP_ConnectionHandler_send(h, (char *)req_buf, len);

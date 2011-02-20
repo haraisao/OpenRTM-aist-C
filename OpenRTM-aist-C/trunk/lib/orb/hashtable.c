@@ -225,7 +225,6 @@ hashtableItem *getItemByKey(hashtable *tbl, void *k){
 
    key = (*tbl->hash_func)((const unsigned char*)k) % tbl->size;
 
-/*   if(!tbl->items[key].key) return NULL;   */
    while(n_items && size ){
 
      if(!tbl->items[key].key){
@@ -234,13 +233,10 @@ hashtableItem *getItemByKey(hashtable *tbl, void *k){
      }
      n_items--;
 
-
      if((*tbl->cmp_func)((char*)tbl->items[key].key, (char*)k)){
         return &tbl->items[key];
      }
      else key = hashtableNextKey(tbl, key);
-
-/*     if(tbl->deleted && !tbl->items[key].key) return NULL;  */
    }
    return NULL;
 }
@@ -268,16 +264,19 @@ int getIndexByKey(hashtable *tbl, void *k){
  *
  */
 void *getValue(hashtable *tbl, void *key){
-#if HASH_DEBUG
+#if 0
   fprintf(stderr, "getValue : %s in %x\n", (char *)key, tbl);
 #endif  
   hashtableItem *item = getItemByKey(tbl, key);
-#if HASH_DEBUG
+#if 0
   fprintf(stderr, "item : %x, ", item);
   if (item) fprintf(stderr, "item->value :%x\n", item->value);
   else fprintf(stderr, "\n");
 #endif  
-  if(item && item->value) return item->value;
+  if(item && item->value){
+     return item->value;
+  }else{
+  }
   return NULL;
 }
 
@@ -300,8 +299,8 @@ int32_t registerItem(hashtable *tbl, void *k, void *val){
      tbl->n_items += 1;
    }
    tbl->items[key].value = val;
-#if HASH_DEBUG
-   fprintf(stderr, "registerItem(%x):key=%s, ",tbl, (char*)k);
+#if 0
+   fprintf(stderr, "registerItem(%x):key=%s, (%d)",tbl, (char*)k, key);
    fprintf(stderr, " val=%x\n", val);
 
 #endif   

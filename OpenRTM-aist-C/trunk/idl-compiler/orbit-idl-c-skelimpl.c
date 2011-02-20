@@ -859,7 +859,9 @@ cbe_ski_do_interface(CBESkelImplInfo *ski)
     fprintf(ski->of, "   /* ------ ---------- end ------------- ------ */\n");
     fprintf(ski->of, "\n");
     fprintf(ski->of, "  objid = PortableServer_POA_activate_object(poa, newservant, ev);\n");
+#if 0
     fprintf(ski->of, "  RtORB_free(objid, \" objid\");\n");
+#endif
     fprintf(ski->of, "  retval = PortableServer_POA_servant_to_reference(poa, newservant, ev);\n");
     fprintf(ski->of, "\n  return retval;\n}\n\n");
 
