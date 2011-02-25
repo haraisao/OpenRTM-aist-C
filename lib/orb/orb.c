@@ -572,7 +572,8 @@ CORBA_Object_non_existent(CORBA_Object object, CORBA_Environment *env)
 uint32_t
 CORBA_Object_hash(CORBA_Object object, uint32_t maximum, CORBA_Environment *env)
 {
-  uint32_t val = elfhash(object->object_key);
+  //uint32_t val = elfhash(object->object_key);
+  uint32_t val = simple_hash(object->object_key);
 
   if(maximum) val =  val % maximum;
   return val;

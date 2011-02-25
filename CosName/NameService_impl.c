@@ -39,7 +39,7 @@ typedef struct
   /* ------ ---------- end ------------ ------ */
 } impl_POA_CosNaming_BindingIterator;
 
-#if 1
+
 typedef struct
 {
   POA_CosNaming_NamingContextExt servant;
@@ -51,7 +51,7 @@ typedef struct
   /* ------ ---------- end ------------ ------ */
 } impl_POA_CosNaming_NamingContextExt;
 
-#endif
+
 /*** Implementation stub prototypes ***/
 static void
 impl_CosNaming_NamingContext__destroy (impl_POA_CosNaming_NamingContext *
@@ -232,16 +232,37 @@ rest_of_CosNaming_Name(CosNaming_Name *name, int pos){
   return NULL;
 }
 
+void
+free_CosNaming_Name(CosNaming_Name *name)
+{
+  int i;
+  if(!name) return;
+  for(i=0;i<name->_length;i++){
+    free(name->_buffer[i].id);
+    free(name->_buffer[i].kind);
+  }
+  free(name->_buffer);
+  free(name);
+  return;
+}
+
 /*  Exceptions */
 void CosNaming_NotFound__set(CORBA_Environment *ev, long why, CosNaming_Name *rest, int pos){
    CosNaming_NamingContext_NotFound *ex =
 	  (CosNaming_NamingContext_NotFound *)RtORB_alloc(sizeof(CosNaming_NamingContext_NotFound), "CosNaming_NotFound");
 
    ex->why = why;
+#if 0
    ex->rest_of_name._length = rest->_length - pos;
    ex->rest_of_name._maximum = rest->_maximum - pos;
    ex->rest_of_name._release = rest->_release;
-   ex->rest_of_name._buffer = &rest->_buffer[pos];
+   ex->rest_of_name._buffer = rest_of_CosNaming_Name((CosNaming_Name *)rest->_buffer, pos);
+#else
+   ex->rest_of_name._length = 0;
+   ex->rest_of_name._maximum = 0;
+   ex->rest_of_name._release = 1;
+   ex->rest_of_name._buffer = NULL;
+#endif
 
    CORBA_user_exception_set(ev, ex_CosNaming_NamingContext_NotFound,
 		   TC_CosNaming_NamingContext_NotFound, ex);
@@ -253,10 +274,17 @@ void CosNaming_CannotProceed__set(CORBA_Environment *ev, CosNaming_NamingContext
 	  (CosNaming_NamingContext_CannotProceed *)RtORB_alloc(sizeof(CosNaming_NamingContext_CannotProceed), "CosNaming_CannotProceed");
 
    ex->cxt = CORBA_Object_dup(cxt);
+#if 0
    ex->rest_of_name._length = rest->_length - pos;
    ex->rest_of_name._maximum = rest->_maximum - pos;
    ex->rest_of_name._release = rest->_release;
-   ex->rest_of_name._buffer = &rest->_buffer[pos];
+   ex->rest_of_name._buffer = rest_of_CosNaming_Name((CosNaming_Name *)rest->_buffer, pos);
+#else
+   ex->rest_of_name._length = 0;
+   ex->rest_of_name._maximum = 0;
+   ex->rest_of_name._release = 1;
+   ex->rest_of_name._buffer = NULL;
+#endif
 
    CORBA_user_exception_set(ev, ex_CosNaming_NamingContext_CannotProceed,
 		   TC_CosNaming_NamingContext_CannotProceed, ex);
@@ -618,10 +646,6 @@ bind_new_context(impl_POA_CosNaming_NamingContext * servant,
   SOCKET_LOCK();
       CORBA_Object retval = impl_CosNaming_NamingContext__create(servant->poa, ev); 
       nc = &n->_buffer[i];
-#if 0
-      fprintf(stderr, "new bind context: %s/%s\n",nc->id, nc->kind);
-#endif
-
       srvt->ObjectList = (void *)PtrList_first(BindObject__append((PtrList *)srvt->ObjectList, CONTEXT, nc, retval));
       srvt = (impl_POA_CosNaming_NamingContext *)retval->servant;
       obj_list = (PtrList *)srvt->ObjectList;
@@ -700,7 +724,7 @@ impl_CosNaming_NamingContext__destroy (impl_POA_CosNaming_NamingContext *
 }
 
  /*** create servent **/
-     impl_POA_ServantBase
+impl_POA_ServantBase
        *impl_CosNaming_NamingContext__create_servant (PortableServer_POA poa,
 						      CORBA_Environment * ev)
 {
@@ -785,6 +809,7 @@ impl_CosNaming_NamingContext_rebind (impl_POA_CosNaming_NamingContext *
    PtrList **obj_list=NULL;
 
    contxt = bind_new_context(servant, n, n->_length -1, ev);
+   clearException(ev);
 
   SOCKET_LOCK();
    obj_list = NamingContext__resolve_ObjectList(servant,(CosNaming_Name *)n,ev);
@@ -823,6 +848,7 @@ impl_CosNaming_NamingContext_bind_context (impl_POA_CosNaming_NamingContext *
 					   CORBA_Environment * ev)
 {
   /* ------   insert method code here   ------ */
+   fprintf(stderr, "bind_context not implemented....\n");
 
   /* ------ ---------- end ------------ ------ */
 }
@@ -834,6 +860,7 @@ impl_CosNaming_NamingContext_rebind_context (impl_POA_CosNaming_NamingContext
 					     CORBA_Environment * ev)
 {
   /* ------   insert method code here   ------ */
+   fprintf(stderr, "rebind_context not implemented....\n");
   /* ------ ---------- end ------------ ------ */
 }
 
@@ -914,13 +941,6 @@ impl_CosNaming_NamingContext_bind_new_context
    PtrList **obj_list;
    CosNaming_NameComponent *nc;
 
-#if DEBUG
-   int i;
-   for(i=0;i<n->_length;i++){
-     fprintf(stderr, "CosNaming_Name[%d] id = %s, kind = %s\n",
-		   i, n->_buffer[i].id, n->_buffer[i].kind);
-   }
-#endif
 
   SOCKET_LOCK();
    obj_list = NamingContext__resolve_ObjectList(servant,(CosNaming_Name *)n,ev);
@@ -954,6 +974,7 @@ impl_CosNaming_NamingContext_destroy (impl_POA_CosNaming_NamingContext *
 				      servant, CORBA_Environment * ev)
 {
   /* ------   insert method code here   ------ */
+   fprintf(stderr, "destroy not implemented....\n");
   /* ------ ---------- end ------------ ------ */
 }
 
@@ -975,19 +996,10 @@ impl_CosNaming_NamingContext_list (impl_POA_CosNaming_NamingContext * servant,
     if(cbl == NULL){
       cbl = CORBA_sequence_CosNaming_Binding__alloc();
       servant->binding_list = cbl;
-#if 0
-      fprintf(stderr, " CORBA_sequence_CosNaming_Binding__alloc() \n");
-#endif
     }else{
-#if 0
-      fprintf(stderr, " delete_BindingList() \n");
-#endif
       delete_BindingList(cbl);
     }
     if(len > 0){
-#if 0
-      fprintf(stderr, " allocbuf() \n");
-#endif
       cbl->_buffer = CORBA_sequence_CosNaming_Binding_allocbuf(len);
       cbl->_length = cbl->_maximum = len;
     }else{
@@ -1000,9 +1012,6 @@ impl_CosNaming_NamingContext_list (impl_POA_CosNaming_NamingContext * servant,
       BindObject *bo;
       bo = (BindObject *)PtrList_get_item((PtrList *)servant->ObjectList, (int32_t)i);
       if(bo != NULL){
-#if 0
-        fprintf(stderr, " set_CosNaming_Name() \n");
-#endif
         set_CosNaming_Name(&bi->binding_name, bo);
         if(bo->type == CONTEXT){
           bi->binding_type = CosNaming_ncontext;
@@ -1108,6 +1117,7 @@ impl_CosNaming_BindingIterator_next_one (impl_POA_CosNaming_BindingIterator *
 {
   CORBA_boolean retval;
   /* ------   insert method code here   ------ */
+  fprintf(stderr, "next_one not implemented\n");
    retval = FALSE;
 
   /* ------ ---------- end ------------ ------ */
@@ -1122,8 +1132,9 @@ impl_CosNaming_BindingIterator_next_n (impl_POA_CosNaming_BindingIterator *
 {
   CORBA_boolean retval;
   /* ------   insert method code here   ------ */
-   retval = FALSE;
 
+  fprintf(stderr, "next_n not implemented\n");
+   retval = FALSE;
   /* ------ ---------- end ------------ ------ */
   return retval;
 }
@@ -1133,6 +1144,7 @@ impl_CosNaming_BindingIterator_destroy (impl_POA_CosNaming_BindingIterator *
 					servant, CORBA_Environment * ev)
 {
   /* ------   insert method code here   ------ */
+  fprintf(stderr, "destory not implemented\n");
   /* ------ ---------- end ------------ ------ */
 }
 

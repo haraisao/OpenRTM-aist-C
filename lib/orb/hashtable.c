@@ -46,7 +46,18 @@ uint32_t elfhash(const unsigned char *name) {
        h &= ~g;
    }
    return h;
- }
+}
+
+uint32_t simple_hash(const unsigned char *name)
+{
+   uint32_t h = 0;
+   uint32_t c=4;
+   while (*name != 0 && c > 0) {
+     h += (h << 4) + *name ;
+     name++; c--;
+   }
+   return h;
+}
 
 int cmp_string(char *str1, char *str2){
   return (int)(!strcmp(str1, str2));
@@ -68,7 +79,8 @@ hashtable *createHashtable(int32_t size){
   tbl->size=size;
   tbl->n_items=0;
   tbl->cmp_func = (int32_t (*)(char*, char*))cmp_string;
-  tbl->hash_func = elfhash;
+  //tbl->hash_func = elfhash;
+  tbl->hash_func = simple_hash;
   tbl->del_func = 0;
 
   return tbl;
