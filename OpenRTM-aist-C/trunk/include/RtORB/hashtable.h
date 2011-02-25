@@ -87,6 +87,10 @@ typedef struct hashtable{
  */
 uint32_t elfhash(const unsigned char *name);
 
+/*
+   Simple hash
+*/
+uint32_t simple_hash(const unsigned char *name);
 /*!
  * @if jp
  * @brief ハッシュ表を生成する。ハッシュ表の容量は、"size"で指定する。

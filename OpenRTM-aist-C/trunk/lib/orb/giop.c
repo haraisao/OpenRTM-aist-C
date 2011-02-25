@@ -397,17 +397,11 @@ GIOP_ReplyBody *invokeServant(PortableServer_POA poa,
 		    m_data->in_argv, order);
 
     result = Result_alloc(m_data->retval);
-//    (*call_impl_func)(sb, &result, m_data, argv, env, impl_method);
     (*call_impl_func)(sb, result, m_data, argv, env, impl_method);
 
     switch(env->_major){
       case CORBA_NO_EXCEPTION:
-//        Marshal_Reply_Arguments(reply, (void**)result, argv, m_data);
-        if(result == 0){
-          Marshal_Reply_Arguments(reply, (void**)result, argv, m_data);
-        }else{
-          Marshal_Reply_Arguments(reply, (void**)(*result), argv, m_data);
-        }
+        Marshal_Reply_Arguments(reply, result, argv, m_data);
         break;
       case CORBA_USER_EXCEPTION:
 	{

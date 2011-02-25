@@ -1166,10 +1166,10 @@ Marshal_Result(char *reply_buf, void * *result,
    switch(tc->kind){
      case tk_struct:
      case tk_sequence:
-       marshal_by_typecode((octet *)reply_buf, result, tc, size);
+       marshal_by_typecode((octet *)reply_buf, *result, tc, size);
        break;
      default:
-       marshal_by_typecode((octet *)reply_buf, &result, tc, size);
+       marshal_by_typecode((octet *)reply_buf, result, tc, size);
        break;
    }
    return;

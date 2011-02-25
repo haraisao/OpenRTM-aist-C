@@ -246,10 +246,10 @@ RtORB_Result__free(CORBA_TypeCode tc, void **result, int cpp_flag){
     return;
 
   case tk_struct:
-    RtORB_free_by_typecode(tc, (void*)(*result), 1, cpp_flag);
+    RtORB_free_by_typecode(tc, (void*)*result, 1, cpp_flag);
     return;
   case tk_sequence:
-    RtORB_free_by_typecode(tc, (void*)(*result), 1, cpp_flag);
+    RtORB_free_by_typecode(tc, (void*)*result, 1, cpp_flag);
     return;
 
   case tk_string:
@@ -268,8 +268,8 @@ RtORB_Result__free(CORBA_TypeCode tc, void **result, int cpp_flag){
 
   if ( !CORBA_TypeCode_is_fixed_size(tc) && cpp_flag == 0) {
     RtORB_free_by_typecode(tc, result[0], 1, cpp_flag);
-    RtORB__free(result, "RtORB_Result_free");
   }
+  RtORB__free(result, "RtORB_Result_free");
   return;
 }
 
@@ -371,9 +371,37 @@ char * RtORB__strndup(const char *str, int32_t n, const char *info){
  * @param tc CORBA_TypeCode data
  * @return allocated memory's address
  */
-
-void ** 
-Result_alloc(CORBA_TypeCode tc)
+#if 0
+void ** Result_alloc(CORBA_TypeCode tc)
+{
+  void **buf = NULL;
+  if (!tc) { return NULL; }
+  
+  switch(tc->kind) {
+  case tk_null:
+  case tk_void:
+    return NULL;
+  case tk_alias:
+    return Result_alloc(tc->member_type[0]);
+  case tk_struct:
+  case tk_sequence:
+    buf = (void**)RtORB_alloc_by_typecode(tc, 1, "Result_alloc(tk_struct)");
+    return buf;
+  default:
+    break;
+  }
+  if (CORBA_TypeCode_is_fixed_size(tc)) {
+    buf = (void**)RtORB_alloc_by_typecode(tc, 1, "Result_alloc1");
+  } else {
+    buf = (void **)RtORB_alloc(sizeof(void**)*1, "Result_alloc2");
+/*
+    buf[0] = (void*)RtORB_alloc_by_typecode(tc, 1, "Result_alloc3");
+*/
+  }
+  return buf;
+}
+#else
+void ** Result_alloc(CORBA_TypeCode tc)
 {
   void **buf = NULL;
   SKIP_ALIAS(tc);
@@ -414,3 +442,4 @@ Result_alloc(CORBA_TypeCode tc)
   return buf;
 }
 
+#endif
