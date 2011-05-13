@@ -12,7 +12,7 @@ CFLAGS  += -g
 
 CIN_OBJS = ConsoleInComp.o ConsoleIn.o
 
-LINK_LIBS = -L$(TOP_DIR)/lib/rtm -lRTM -L$(TOP_DIR)/lib/orb -lRtORB
+LINK_LIBS = -L$(TOP_DIR)/lib/rtm -lRTM -L$(TOP_DIR)/lib/orb -lRtORB -luuid
 
 TARGETS = ConsoleInComp
 

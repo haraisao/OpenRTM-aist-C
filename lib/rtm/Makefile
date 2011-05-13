@@ -7,8 +7,9 @@ UNAME := $(shell uname -s)
 TOP_DIR  = ../..
 
 CFLAGS  = -I$(TOP_DIR)/include -I. -I../include
-CFLAGS  += -g
-CFLAGS  += -02
+#CFLAGS  += -g
+CFLAGS  += -fPIC
+CFLAGS  += -O2
 
 IDL_COMP  = $(TOP_DIR)/idl-compiler/rtorb-idl
 IDL_FLAGS = -DORBIT2_IDL -I. -Iidl --nocpp-defs
