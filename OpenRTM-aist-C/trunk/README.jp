@@ -1,65 +1,65 @@
 
-                              RtORB�ˤĤ���
+                              RtORBについて
 
                                                 2007/02
-     						���ȵ������縦��� �� ��
+     						産業技術総合研究所 原 功
 
-1.RtORB�ˤĤ���
-���Υ��եȥ������ϡ�OpenRTM-aist ���̿���ʬ�򥵥ݡ��Ȥ��뤳�Ȥ���Ū�Ȥ���CORBA3.0�λ��ͤ˴�Ť�
-ɬ�׺���¤μ�����Ԥ���ΤȤ��롣
-���Τ��ᡢCORBA3.0�˴����ʽ��ǤϤʤ������Υ��֥��åȤȤʤ롣
+1.RtORBについて
+このソフトウェアは、OpenRTM-aist の通信部分をサポートすることを目的とし、CORBA3.0の仕様に基づき
+必要最低限の実装を行うものとする。
+そのため、CORBA3.0に完全な準拠ではなく、そのサブセットとなる。
 
-2.�饤���󥹤ˤĤ���
-���Υ��եȥ������ϡ�idl-compiler�ˤĤ��Ƥϡ�ORBit2�Υ����ɤ���Ѥ��ƺ������Ƥ��뤿��ˡ������Τ褦��
-�饤���󥹤Ȥ��롣
+2.ライセンスについて
+このソフトウェアは、idl-compilerについては、ORBit2のコードを改変して作成しているために、下記のような
+ライセンスとする。
 
-idl-compler : ORBit2��Ʊ�ͤΥ饤���󥹡����۾��Ȥ��롣
-����¾�Υ饤�֥�ꤪ��ӥ��ץꥱ�������    : AIST ITRI������饤���󥹤Ȥ��롣
+idl-compler : ORBit2と同様のライセンス、配布条件とする。
+その他のライブラリおよびアプリケーション    : AIST ITRIの定めるライセンスとする。
 
 
-3.ɬ�״Ķ�
-RtORB�ϡ�Linux�Ǥ����Ѥ�����Ȥ���idl����ѥ����ORBit2���˺������Ƥ��뤿���
-�����Υ饤�֥���ɬ�פȤ��롣
+3.必要環境
+RtORBは、Linuxでの利用を前提とし、idlコンパイラをORBit2を基に作成しているために
+下記のライブラリを必要とする。
 
    - Glib-2.0 or higher                  : GNOME toolkit
    - libIDL-2.0 (libIDL-0.8.2 or higher) : IDL compiling library
-   - libuuid                             : http://e2fsprogs.sourceforge.net/ (Linux�ξ��ˤϡ�ɬ�ܤǤϤʤ������侩���ޤ���
+   - libuuid                             : http://e2fsprogs.sourceforge.net/ (Linuxの場合には、必須ではないが、推奨します）
 
-��������RtORB�μ¹���ʬ�˴ؤ��Ƥϡ��ä�¾�Υġ��롢�饤�֥���ɬ�פȤ��ʤ���
+ただし、RtORBの実行部分に関しては、特に他のツール、ライブラリは必要としない。
 
-4.����ѥ���
-¿����Linux�ǥ����ȥ�ӥ塼�����ˤ����Ƥϡ��ȥåץǥ��쥯�ȥ�ˤ����ơ�
+4.コンパイル
+多くのLinuxディストリビューションにおいては、トップディレクトリにおいて、
 
   # make
 
-��Ԥ����Ȥǡ�rtorb-idl, libRtORB.so, libRtORB_cpp.so, NameService ���˺������롣
-ɬ�פ˱����ơ��ƥǥ��쥯�ȥ�� Makefile ��ľ�ܽ������Ƥ���������
+を行うことで、rtorb-idl, libRtORB.so, libRtORB_cpp.so, NameService を順に作成する。
+必要に応じて、各ディレクトリの Makefile を直接修正してください。
 
-���ߤμ����Ǥϡ�uuid�������ˤĤ��Ƥϡ�libuuid��ȤäƤ��ޤ����ۤȤ�ɤ�OS�ˤϡ�ɸ���
-Ƴ������Ƥ��ޤ�����Linux�Υǥ����ȥ�ӥ塼�����ˤ�äƤϡ����ץ���󰷤��ˤʤäƤ��ޤ���
-���Τ��ᡢLinux�ǤΤߡ��ȼ��Υ��르�ꥺ���UUID�������򤷤Ƥ��ޤ���
-���ξ��ˤϡ�
+現在の実装では、uuidの生成については、libuuidを使っています。ほとんどのOSには、標準で
+導入されていますが、Linuxのディストリビューションによっては、オプション扱いになっています。
+そのため、Linuxでのみ、独自のアルゴリズムでUUIDの生成をしています。
+この場合には、
 
  # make "MAKE_OPT= -no_libuuid"
 
- �ǥ���ѥ��뤷�Ƥ���������
+ でコンパイルしてください。
 
- �ޤ����¸�Ū�ˤǤ�����pthread��Ȥä�ư����뤳�Ȥ��Ǥ��ޤ���pthread��Ȥ��������ˤϡ�
+ また、実験的にですが、pthreadを使って動作させることができます。pthreadを使いたい場合には、
 
  # make "MAKE_OPT= -thread"
 
- �Ȥ��Ƥ���������
+ としてください。
 
-���줫�顢cmake�Ǥ⡢���������ѥ��뤹�뤳�Ȥ��Ǥ��ޤ���
-���ξ��ˤϡ�
+それから、cmakeでも、一応、コンパイルすることができます。
+その場合には、
  # cmake .
  # make
 
-��RtORB�γƥ饤�֥��򥳥�ѥ��뤹�뤳�Ȥ��Ǥ��ޤ���
+でRtORBの各ライブラリをコンパイルすることができます。
 
-5. ����¾�ξ���
-RtORB�˴ؤ������ϡ�
+5. その他の情報
+RtORBに関する情報は、
 
   http://www.openrtp.jp/wiki/_default/ja/Software/RtORB.html
 
-�ˤޤȤ�Ƥ���ޤ��Τǡ����Ȥ��Ƥ���������
+にまとめてありますので、参照してください。
