@@ -1,8 +1,6 @@
 #
 #
 #
-
-
 UNAME := $(shell uname -s)
 
 MAKE_OPT=""

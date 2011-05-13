@@ -15,6 +15,7 @@ VERSION = -DVERSION=\"0.1\"
 ORBIT_BACKENDS_DIR = -DORBIT_BACKENDS_DIR=\"/usr/lib/orbot-2.0/idl-backend\"
 
 INCS_Linux = -I/usr/include/libIDL-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I.
+INCS_Linux += -I/usr/lib64/glib-2.0/include
 
 INCS_Darwin = -I/opt/local/include/libIDL-2.0 -I/opt/local/include/glib-2.0 -I/opt/local/lib/glib-2.0/include -I.
 
