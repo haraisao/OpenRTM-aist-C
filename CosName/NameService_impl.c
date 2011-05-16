@@ -630,7 +630,7 @@ bind_new_context(impl_POA_CosNaming_NamingContext * servant,
   memset(ev, 0, sizeof(ev));
 
   SOCKET_LOCK();
-  PtrList *obj_list=(PtrList *)servant->ObjectList;
+//  PtrList *obj_list=(PtrList *)servant->ObjectList;
 
   if(depth > n->_length || depth < 0){
     depth = n->_length;
@@ -648,7 +648,7 @@ bind_new_context(impl_POA_CosNaming_NamingContext * servant,
       nc = &n->_buffer[i];
       srvt->ObjectList = (void *)PtrList_first(BindObject__append((PtrList *)srvt->ObjectList, CONTEXT, nc, retval));
       srvt = (impl_POA_CosNaming_NamingContext *)retval->servant;
-      obj_list = (PtrList *)srvt->ObjectList;
+//      obj_list = (PtrList *)srvt->ObjectList;
   SOCKET_UNLOCK();
 
     }else if( bo->type != CONTEXT){
@@ -658,7 +658,7 @@ bind_new_context(impl_POA_CosNaming_NamingContext * servant,
   SOCKET_LOCK();
       CORBA_Object obj = (CORBA_Object)bo->object;
       srvt = (impl_POA_CosNaming_NamingContext *)obj->servant;
-      obj_list = (PtrList *)srvt->ObjectList;
+//      obj_list = (PtrList *)srvt->ObjectList;
   SOCKET_UNLOCK();
     }
   }
@@ -692,7 +692,8 @@ CORBA_CosNaming_NamingContext
 
   /* ------ init private attributes here ------ */
 
-   newservant->ObjectList = 0;
+   newservant->ObjectList = NULL;
+   newservant->binding_list = NULL;
 
   /* ------ ---------- end ------------- ------ */
 
@@ -783,6 +784,7 @@ impl_CosNaming_NamingContext_bind (impl_POA_CosNaming_NamingContext * servant,
 
   SOCKET_LOCK();
    obj_list = NamingContext__resolve_ObjectList(servant,(CosNaming_Name *)n,ev);
+   if(obj_list == NULL) return;
    nc = &name->_buffer[name->_length - 1];
    if( ContextList__find_item(*obj_list, nc) ){
       fprintf(stderr, "Already binded\n");
