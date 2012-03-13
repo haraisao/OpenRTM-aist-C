@@ -1,15 +1,22 @@
-// -*- C++ -*-
-/*!
- * @file  ConsoleIn.cpp
- * @brief Console input component
- */
-
 #include "ConsoleIn.h"
 #include <stdio.h>
 
-// Module specification
-// <rtc-template block="module_spec">
-static const char* consolein_spec[] =
+/* Prototype */
+RTC_ReturnCode_t Rtc_onInitialize(RTComp *obj);
+RTC_ReturnCode_t Rtc_onFinalize(RTComp *obj);
+RTC_ReturnCode_t Rtc_onStartup(RTComp *obj, RTC_UniqueId ec_id);
+RTC_ReturnCode_t Rtc_onShutdown(RTComp *obj, RTC_UniqueId ec_id);
+RTC_ReturnCode_t Rtc_onActivated(RTComp *obj, RTC_UniqueId ec_id);
+RTC_ReturnCode_t Rtc_onDeactivated(RTComp *obj, RTC_UniqueId ec_id);
+RTC_ReturnCode_t Rtc_onExecute(RTComp *obj, RTC_UniqueId ec_id);
+RTC_ReturnCode_t Rtc_onAborting(RTComp *obj, RTC_UniqueId ec_id);
+RTC_ReturnCode_t Rtc_onError(RTComp *obj, RTC_UniqueId ec_id);
+RTC_ReturnCode_t Rtc_onReset(RTComp *obj, RTC_UniqueId ec_id);
+RTC_ReturnCode_t Rtc_onStateUpDate(RTComp *obj, RTC_UniqueId ec_id);
+RTC_ReturnCode_t Rtc_onRateChanged(RTComp *obj, RTC_UniqueId ec_id);
+
+/* Module specification */
+static const char* rtc_spec[] =
   {
     "implementation_id", "ConsoleIn",
     "type_name",         "ConsoleIn",
@@ -18,131 +25,186 @@ static const char* consolein_spec[] =
     "vendor",            "Noriaki Ando, AIST",
     "category",          "example",
     "activity_type",     "DataFlowComponent",
-    "max_instance",      "10",
-    "language",          "C++",
+    "max_instance",      "1",
+    "language",          "C",
     "lang_type",         "compile",
     NULL, NULL
   };
-// </rtc-template>
-RTC_ReturnCode_t ConsoleIn_onInitialize(ConsoleIn *obj);
-RTC_ReturnCode_t ConsoleIn_onExecute(ConsoleIn *obj, RTC_UniqueIdentifier ec_id);
 
-ConsoleIn *
-ConsoleIn_create(RTC_Manager *manager)
+/* Create Procedure */
+RTComp *
+Rtc_create(RTC_Manager *manager)
 {
-  fprintf(stderr, "====== Call ConsoleIn_create =====\n");
-  ConsoleIn *res = (ConsoleIn *)RtORB_calloc(1, sizeof(ConsoleIn), "Create ConsoleIn");
+
+  /* ======== [Common action] ================================== */
+  /** Create RtcBase Object **/
   CORBA_RTC_RTObject rtobj = RTC_DataFlowComponentBase_create(manager);
-  res->rtobj = rtobj;
-  res->m_outOut = RTC_OutPort_create(manager, "out", res->m_out);
 
-  // Registration: InPort/OutPort/Service
-  // <rtc-template block="registration">
-  // Set InPort buffers
-  
-  // Set OutPort buffer
-  
-  // Set service provider to Ports
-  
-  // Set service consumers to Ports
-  
-  // Set CORBA Service Ports
-  
-  // </rtc-template>
+  /** Allocate memory for RTC **/
+  RTComp *res = (RTComp *)RtORB_calloc(1, sizeof(RTComp), "Create ConsoleIn...");
+  res->m_private = (RTC_Member *)RtORB_calloc(1, sizeof(RTC_Member), "Create ConsoleIn member...");
 
- /// register Event Handler
-#if 1
-  res->on_initialize = ConsoleIn_onInitialize;
-  res->on_Execute = ConsoleIn_onExecute;
-#endif
+  /** Set function pointers of RTC's activity **/
+  res->onInitialize = Rtc_onInitialize;
+  /*
+  res->onFinalize = Rtc_onFinalize;
+  res->onStartup = Rtc_onStartup;
+  res->onShutdown = Rtc_onShutdown;
+  res->onActivated = Rtc_onActivated;
+  res->onDeactivated = Rtc_onDeactivated;
+  */
+  res->onExecute = Rtc_onExecute;
+  /*
+  res->onAborting = Rtc_onAborting;
+  res->onError = Rtc_onError;
+  res->onReset = Rtc_onReset;
+  res->onStateUpDate = Rtc_onStateUpDate;
+  res->onRateChanged = Rtc_onRateChanged;
+  */
 
-  fprintf(stderr, "%s\n", rtobj->typedId);
-  rtobj->impl_obj = (void *)res;
+  /** Set pointer **/
+  res->m_manager = manager;
+  res->m_rtobjRef = rtobj;
+  rtobj->impl_obj = (void *)res;   
+  /* ========================================================== */
 
   return res;
 }
 
+/* Delete Procedure */
 void
-ConsoleIn_delete(ConsoleIn *obj)
+Rtc_delete(RTComp *obj)
 {
   return;
 }
 
 
 RTC_ReturnCode_t
-ConsoleIn_onInitialize(ConsoleIn *obj)
+Rtc_onInitialize(RTComp *obj)
 {
+  /** Get Private Member **/
+  RTC_Member *private = (RTC_Member*)obj->m_private;
 
-    RTC_RTObject_addOutPort(obj, "out", obj->m_outOut);
+  /** Create DataPort **/
+  private->m_outOut = RTC_OutPort_create(obj->m_rtobjRef, "out", "RTC_TimedLong");
+  if (private->m_outOut == NULL)
+  {
+    return RTC_RTC_ERROR;
+  } else {
+    /* Set value's pointer */
+    private->m_out = (RTC_TimedLong*)private->m_outOut->m_value;
+  }
 
-  /*
-    add Event Listener : DataListener
-   */
-#if 0
-  RTC_addConnectorDataListener(obj->m_outOut, ON_BUFFER_WRITE,
-                                     DataListener_create("ON_BUFFER_WRITE"));
-  RTC_addConnectorDataListener(obj->m_outOut, ON_BUFFER_FULL, 
-                                     DataListener_create("ON_BUFFER_FULL"));
-  RTC_addConnectorDataListener(obj->m_outOut,ON_BUFFER_WRITE_TIMEOUT, 
-                                     DataListener_create("ON_BUFFER_WRITE_TIMEOUT"));
-  RTC_addConnectorDataListener(obj->m_outOut,ON_BUFFER_OVERWRITE, 
-                                     DataListener_create("ON_BUFFER_OVERWRITE"));
-  RTC_addConnectorDataListener(obj->m_outOut,ON_BUFFER_READ, 
-                                     DataListener_create("ON_BUFFER_READ"));
-  RTC_addConnectorDataListener(obj->m_outOut,ON_SEND, 
-                                     DataListener_create("ON_SEND"));
-  RTC_addConnectorDataListener(obj->m_outOut,ON_RECEIVED,
-                                     DataListener_create("ON_RECEIVED"));
-  RTC_addConnectorDataListener(obj->m_outOut,ON_RECEIVER_FULL, 
-                                     DataListener_create("ON_RECEIVER_FULL"));
-  RTC_addConnectorDataListener(obj->m_outOut,ON_RECEIVER_TIMEOUT, 
-                                     DataListener_create("ON_RECEIVER_TIMEOUT"));
-
-  /*
-    add Event Listener : ConnectorListener
-   */
-  RTC_addConnectorListener(Oobj->m_outOut,N_BUFFER_EMPTY,
-                                     ConnListener_create("ON_BUFFER_EMPTY"));
-  RTC_addConnectorListener(obj->m_outOut,ON_BUFFER_READ_TIMEOUT,
-                                     ConnListener_create("ON_BUFFER_READ_TIMEOUT"));
-  RTC_addConnectorListener(obj->m_outOut,ON_SENDER_EMPTY,
-                                     ConnListener_create("ON_SENDER_EMPTY"));
-  RTC_addConnectorListener(obj->m_outOut,ON_SENDER_TIMEOUT,
-                                     ConnListener_create("ON_SENDER_TIMEOUT"));
-  RTC_addConnectorListener(obj->m_outOut,ON_SENDER_ERROR,
-                                     ConnListener_create("ON_SENDER_ERROR"));
-  RTC_addConnectorListener(obj->m_outOut,ON_CONNECT,
-                                     ConnListener_create("ON_CONNECT"));
-  RTC_addConnectorListener(obj->m_outOut,ON_DISCONNECT,
-                                     ConnListener_create("ON_CONNECT"));
-#endif
   return RTC_RTC_OK;
 }
+
+/*
+RTC_ReturnCode_t
+Rtc_onFinalize(RTComp *obj)
+{
+  return RTC_RTC_OK;
+}
+*/
+
+/*
+RTC_ReturnCode_t
+Rtc_onStartup(RTComp *obj, RTC_UniqueId ec_id)
+{
+  return RTC_RTC_OK;
+}
+*/
+
+/*
+RTC_ReturnCode_t
+Rtc_onShutdown(RTComp *obj, RTC_UniqueId ec_id)
+{
+  return RTC_RTC_OK;
+}
+*/
+
+/*
+RTC_ReturnCode_t
+Rtc_onActivated(RTComp *obj, RTC_UniqueId ec_id)
+{
+  return RTC_RTC_OK;
+}
+*/
+
+/*
+RTC_ReturnCode_t
+Rtc_onDeactivated(RTComp *obj, RTC_UniqueId ec_id)
+{
+  return RTC_RTC_OK;
+}
+*/
+
 
 RTC_ReturnCode_t
-ConsoleIn_onExecute(ConsoleIn *obj, RTC_UniqueIdentifier ec_id)
+Rtc_onExecute(RTComp *obj, RTC_UniqueId ec_id)
 {
+  /** Get Private Member **/
+  RTC_Member *private = (RTC_Member*)obj->m_private;
 
+  /* Get data from STDIN */
   fprintf(stdout, "Please input number: ");
-  fscanf(stdin, "%d", &obj->m_out->data);
 
-  fprintf(stdout, "data=%d\n", obj->m_out->data);
+  fscanf(stdin, "%d", &private->m_out->data);
 
-  if (obj->m_out->data == 666) return RTC_ERROR;
+  if (private->m_out->data == 666) return RTC_ERROR;
 
-  RTC_OutPort_write(obj->m_outOut);
+  private->m_out->tm.sec = 0;
+  private->m_out->tm.nsec = 0;
+
+  /* Write data */
+  if (RTC_OutPort_write(private->m_outOut) < 0) return RTC_RTC_ERROR;
 
   return RTC_RTC_OK;
 }
 
 
-void
-ConsoleInInit(RTC_Manager* manager)
+/*
+RTC_ReturnCode_t
+Rtc_onAborting(RTComp *obj, RTC_UniqueId ec_id)
 {
-  RTC_Manager_registerFactory(manager,
-     consolein_spec,
-     ConsoleIn_create,
-     ConsoleIn_delete);
+  return RTC_RTC_OK;
 }
-  
+*/
 
+/*
+RTC_ReturnCode_t
+Rtc_onError(RTComp *obj, RTC_UniqueId ec_id)
+{
+  return RTC_RTC_OK;
+}
+*/
+
+/*
+RTC_ReturnCode_t
+Rtc_onReset(RTComp *obj, RTC_UniqueId ec_id)
+{
+  return RTC_RTC_OK;
+}
+*/
+
+/*
+RTC_ReturnCode_t
+Rtc_onStateUpDate(RTComp *obj, RTC_UniqueId ec_id)
+{
+  return RTC_RTC_OK;
+}
+*/
+
+/*
+RTC_ReturnCode_t
+Rtc_onRateChanged(RTComp *obj, RTC_UniqueId ec_id)
+{
+  return RTC_RTC_OK;
+}
+*/
+
+/* Init Procedure */
+void
+RtcInit(RTC_Manager* manager)
+{
+  RTC_Manager_registerFactory(manager, rtc_spec, Rtc_create, Rtc_delete );
+}

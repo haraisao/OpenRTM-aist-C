@@ -1,7 +1,5 @@
 #!/bin/bash
 
-export LD_LIBRARY_PATH=../../lib/orb:../../lib/rtm
-#export DYLD_LIBRARY_PATH=../../lib/orb:../../lib/rtm
+export LD_LIBRARY_PATH=$OPENRTM_C_DIR/lib/orb:$OPENRTM_C_DIR/lib/rtm
 
-#gdb ./ConsoleInComp
- ./ConsoleInComp
+./ConsoleInComp ./rtc.conf

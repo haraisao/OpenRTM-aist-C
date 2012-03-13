@@ -1,6 +1,6 @@
 // -*- IDL -*-
 /*!
- * @file DataType.idl
+ * @file BasicDataType.idl
  * @brief Basic Data Type definition
  * @date $Date: 2007-01-09 15:36:29 $
  * @author Noriaki Ando <n-ando@aist.go.jp>

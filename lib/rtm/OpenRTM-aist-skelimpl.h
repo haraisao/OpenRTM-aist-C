@@ -3,12 +3,29 @@
 /* User must edit this file, inserting servant  */
 /* specific code between markers. */
 
+/*
+ * Copyright (c) 2012, AIST.
+ * All rights reserved. This program is made available under the terms of the
+ * Eclipse Public License v1.0 which accompanies this distribution, and is
+ * available at http://www.eclipse.org/legal/epl-v10.html
+ * Contributors:
+ * National Institute of Advanced Industrial Science and Technology (AIST)
+ */
+/*!
+ * \file OpenRTM-aist-skelimpl.h
+ * \brief IDLに記述された各種データやInterfaceがIDL-Compilerによりgenerateされ、各種servantやimplementation関数などの宣言などを行う。<BR>
+ *        OpenRTM-aist-C内で実装に必要なInterfaceの[POA/Servant]に関する構造体(impl_POA_???_???)の中に、必要な変数などを追加実装している。
+ * \author National Institute of Advanced Industrial Science and Technology (AIST)
+ */
+
 #ifndef OPENRTM_AIST_SKELIMPL_H
 #define OPENRTM_AIST_SKELIMPL_H
 
 #include "OpenRTM-aist.h"
 #include <rtm/Properties.h>
-#include <rtm/PortAdmin.h>
+#include <rtm/Port.h>
+#include <rtm/RTComp.h>     
+#include <rtm/ExecutionContext.h>        
 
 /*** App-specific servant structures ***/
 typedef struct {
@@ -92,27 +109,60 @@ typedef struct {
 
 } impl_POA_RTC_ExecutionContext;
 
+/*!
+ * \struct impl_POA_RTC_PortService
+ * \brief RTC_PortService用POAServant構造体
+ * \param m_name [PortAdmin] getPortRef(), getPort()などで使用される、ユーザが設定したPortの名称
+ * \param m_portProfile 内部保持用のRTC_PortProfile型データへのポインタ。PortService_get_port_profile()などで使用される。
+ * \param m_InPortCdr InPort側においてPort接続時に生成される、InPortCdrのオブジェクトリファレンス。InPort型のPortServiceの場合は、当ポインタには自分、OutPort型PortServiceの場合は、接続相手のInPortCdrへのオブジェクトリファレンスがセットされる。
+ * \param m_portBase DataPortの基本情報格納用のRTC_DataPortBase型構造体へのポインタ。各種処理で必要。
+ */
 typedef struct {
     POA_RTC_PortService servant;
     PortableServer_POA poa;
 
     /* ------ add private attributes here ------ */
-
-    char *m_name;
+    char *m_name;   /* [PortAdmin] getPortRef(), getPort(), ... */
+    RTC_PortProfile *m_portProfile; 
+    CORBA_OpenRTM_InPortCdr m_InPortCdr;  /* [InPort]: my InPortCdr, [OutPort]: Server's InPortCdr */ 
+    RTC_DataPortBase *m_portBase;
 
     /* ------ ---------- end ------------ ------ */
 
 } impl_POA_RTC_PortService;
 
+/*!
+ * \struct impl_POA_RTC_ExecutionContextService
+ * \brief RTC_ExecutionContextService用POAServant構造体、これらの情報から[RTC_ExecutionContextProfile]も生成する。
+ * \param m_ecProfile 内部保持のExecutionContextProfile情報。主に[kind(PERIODIC/EVENT_DRIVEN/OTHER)(通常[PERIODIC]で固定)][rate(ECの実行周波数[Hz])][owner(親となるRTC_RTObject型オブジェクトリファレンス)]をセットして保持。
+ * \param m_running ECがstart/stopしているかのフラグ
+ * \param m_states 現在のRTCの状態を表すRTC_LifeCycleState型enumデータ(CREATED/INACTIVE/ACTIVE/ERROR)
+ * \param m_callback RTCが[m_states]のいずれかの状態にある時に、実施するAction用の関数ポインタをまとめたもの(entry/predo/do/postdo/exit)
+ */
 typedef struct {
     POA_RTC_ExecutionContextService servant;
     PortableServer_POA poa;
 
     /* ------ add private attributes here ------ */
+
+    RTC_ExecutionContextProfile m_ecProfile; 
+    CORBA_boolean m_running;  
+    EC_State *m_states; 
+    EC_Callback *m_callback;
+
     /* ------ ---------- end ------------ ------ */
 
 } impl_POA_RTC_ExecutionContextService;
 
+/*!
+ * \struct impl_POA_RTC_RTObject
+ * \brief RTC_RTObject用POAServant構造体、これが、RTCのBaseとなる。
+ * \param m_properties RTCが持つ固有の情報(Default値/rtc.conf値/RTCのspec[]/...)などをひとまとめに格納しておくRTC_Properties型データ。各関数で必要なパラメータ抽出はここが大元となる。
+ * \param m_portAdmin RTCがDataPortを持つ場合には、そのPortServiceのオブジェクトリファレンスが格納される。
+ * \param m_rtobjRef 自分自身のRTC_RTObject型オブジェクトリファレンス 
+ * \param m_dfcompRef 子として持つRTC_DataFlowComponentActionオブジェクトリファレンス 
+ * \param m_ecRef 相関関係にあたる、ECのCORBA_RTC_ExecutionContextServiceオブジェクトリファレンス
+ */
 typedef struct {
     POA_RTC_RTObject servant;
     PortableServer_POA poa;
@@ -120,15 +170,25 @@ typedef struct {
     /* ------ add private attributes here ------ */
     RTC_Properties *m_properties;
     RTC_PortAdmin *m_portAdmin;
+    CORBA_RTC_RTObject  m_rtobjRef; 
+    CORBA_RTC_DataFlowComponentAction  m_dfcompRef; 
+    CORBA_RTC_ExecutionContextService  m_ecRef;
+
     /* ------ ---------- end ------------ ------ */
 
 } impl_POA_RTC_RTObject;
 
+/*!
+ * \struct impl_POA_RTC_DataFlowComponentAction
+ * \brief RTC_DataFlowComponentAction用POAServant構造体
+ * \param m_rtobjRef 親となるRTC_RTObject型オブジェクトリファレンス 
+ */
 typedef struct {
     POA_RTC_DataFlowComponentAction servant;
     PortableServer_POA poa;
 
     /* ------ add private attributes here ------ */
+    CORBA_RTC_RTObject  m_rtobjRef; 
     /* ------ ---------- end ------------ ------ */
 
 } impl_POA_RTC_DataFlowComponentAction;
@@ -169,11 +229,22 @@ typedef struct {
 
 } impl_POA_RTM_Manager;
 
+/*!
+ * \struct impl_POA_OpenRTM_InPortCdr
+ * \brief OpenRTM_InPortCdr用POAServant構造体で、DataPort接続時に必要となる
+ * \param m_inport 自InPortに関連する情報が格納された、RTC_InPort型データへのポインタ
+ * \param m_isNew OutPortから新規データが着いたかどうかのフラグ
+ * \param m_buffer OutPortから着いたCdr型データ(put()がcallされた時の引数に相当)を、次のデータの上書き防止のためのバッファ用ポインタ.
+ */
 typedef struct {
     POA_OpenRTM_InPortCdr servant;
     PortableServer_POA poa;
 
     /* ------ add private attributes here ------ */
+    RTC_InPort *m_inport;
+    int m_isNew;  
+    OpenRTM_CdrData *m_buffer;
+
     /* ------ ---------- end ------------ ------ */
 
 } impl_POA_OpenRTM_InPortCdr;

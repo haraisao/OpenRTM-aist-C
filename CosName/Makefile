@@ -10,7 +10,6 @@ ifneq (,$(findstring CYGWIN, $(UNAME)))
 endif
 
 #CC= gcc
-#TOP_DIR=/usr/local/src/RtORB
 TOP_DIR=..
 IDLC=$(TOP_DIR)/idl-compiler/rtorb-idl
 #IDL_FLAGS= --nocpp-defs #--skeleton-impl
