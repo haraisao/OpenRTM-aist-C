@@ -7,9 +7,14 @@ UNAME := $(shell uname -s)
 TOP_DIR  = ../..
 
 CFLAGS  = -I$(TOP_DIR)/include -I. -I../include
-#CFLAGS  += -g
+CFLAGS  += -g
 CFLAGS  += -fPIC
+#CFLAGS  += -O0
 CFLAGS  += -O2
+
+#ifeq ($(UNAME),Linux)
+#CFLAGS  +=  -malign-double
+#endif
 
 IDL_COMP  = $(TOP_DIR)/idl-compiler/rtorb-idl
 IDL_FLAGS = -DORBIT2_IDL -I. -Iidl --nocpp-defs
@@ -43,13 +48,14 @@ LIB_SOURCES += NVUtil.c
 LIB_SOURCES += Utils.c
 LIB_SOURCES += Manager.c
 LIB_SOURCES += RTObject.c
-LIB_SOURCES += PortAdmin.c
+LIB_SOURCES += Port.c
 LIB_SOURCES += NamingManager.c
 LIB_SOURCES += ExecutionContext.c
 
 LIBOBJS = $(LIB_SOURCES:.c=.o)
 
-LINK_LIBS = -L$(TOP_DIR)/lib/orb -lRtORB
+#LINK_LIBS = -L$(TOP_DIR)/lib/orb -lRtORB
+LINK_LIBS = -L$(TOP_DIR)/lib/orb -lRtORB -lpthread
 LIBRTM = libRTM.so
 
 all:

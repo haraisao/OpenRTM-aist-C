@@ -1,0 +1,136 @@
+#ifndef __MYDATA_IDL__
+#define __MYDATA_IDL__
+
+/********************************************************************************************
+
+<IDL-compilerでのコンパイル>
+  [ $ OpenRTM-aist-C/bin/rtorb-idl -DORBIT2_IDL -I. -Iidl --nocpp-defs MyDataType.idl ]
+
+<制約条件>
+  (1)ユーザ定義用のデータ型として、IDLのデータ型の内、以下を使用可能とする。
+    [char] [octet] [boolean] [short] [unsigned short] [long] [unsigned long]
+    [float] [double] [string] [enum] [any(stringのみ)] [struct] [sequence]
+
+  (2)以下は、未サポートとする。
+    [long long] [unsigned long long] [long double]
+    [wchar] [fixed] [wstring] [union] [array] [valuetype]
+
+  (3)データ型の名称は、[アルファベット]と[数字]のみとする。(記号は不可とする。)
+
+*********************************************************************************************/
+
+module MyData {
+
+    /* typedef (tk_alias)  */
+    typedef double MyDouble;
+    typedef unsigned long MyULong;
+
+    /* struct */
+    struct MyStruct {
+        string str;
+        char ch;
+        short sh;
+        double dou;
+        octet oc;
+        boolean boo;
+        long lon;
+    };
+
+    /* enum */
+    enum MyEnum
+    {
+        SHORT_TYPE,
+        LONG_TYPE,
+        FLOAT_TYPE,
+        DOUBLE_TYPE
+    };
+
+    /* any (固定長) */
+    struct MyAny  /* ref: SDOPackage::NameValue(NVList) */
+    {
+      string str;
+      any anyval;   /* any (stringデータのみ可能とする) */
+    };
+
+    /* sequence (tk_alias) */
+    typedef sequence<long> MyLongSeq;
+    typedef sequence<string>  MyStringSeq;     /* string-seq */
+    typedef sequence<MyStruct> MyStructSeq;     /* struct-seq */
+
+/************************************************************/
+
+    /* struct-struct */
+    struct MyStruct1 {
+        string str;
+        MyStruct myst;  /* struct->struct */
+        double dou;
+        char ch;
+        short sh;
+    };
+
+    /* struct2 (Sequence/seq->struct) */
+    struct MyStruct2 {
+        short sh;
+        sequence<MyStruct1> mystseq;  /* struct->seq->struct->struct */
+        double dou;
+    };
+
+    /* struct3 (Sequence/tk_alias) */
+    struct MyStruct3 {
+        sequence<string>  mystringseq;  /* string-seq */
+        MyDouble mydouble;    /* tk_alias(double) */   
+        double dou;          /* normal(double) */ 
+        MyLongSeq mylongseq;        /* tk_alias(seq) */ 
+    };
+
+    /* struct4 (enum/Any/Seq) */
+    struct MyStruct4 {
+        string str;
+        MyAny myanydata;
+        sequence<MyAny> myanyseq;  /* struct-any-seq */
+        MyEnum myenumdata;  /* enum */
+        string strstr;
+        sequence<MyEnum> myenumseq; /* enum-seq */
+    };
+
+    /* struct5 (Recursiveテスト) */
+      struct MyStructDummy {
+          sequence<MyStruct> mystseq;  /* struct->sequence->struct */
+          MyDouble mydouble;    /* tk_alias(double) */
+      };
+          struct MyStructTmp0 {
+              string str;
+              MyStringSeq mystringseq;  /* sequence<string> */
+              double dou;
+          };
+          typedef sequence<MyStructTmp0>   MyStructTmpList;
+      struct MyStructTmp {
+          MyDouble mydouble;    /* tk_alias(double) */
+          sequence<MyStructDummy> mystdumseq;  /* struct->sequence->struct */
+          MyStructTmpList mslist;  /* sequence<struct> */
+      };
+    struct MyStruct5 {
+        sequence<MyStructDummy> mystdumseq;  /* struct->seq->struct->seq->struct */
+        double dou;
+        sequence<MyStructTmp> mysttmpseq; /* struct->seq->struct->seq->struct->seq->struct,  struct->seq->struct->seq(tk_alias) */
+        string str;
+        short sh;
+    };
+
+
+/************************************************************/
+    /* union (非推奨) */
+/*
+    union MyUnion switch (MyEnum)
+    {
+        case SHORT_TYPE:  short short_value;
+        case LONG_TYPE: long long_value;
+        case FLOAT_TYPE: float float_value;
+        case DOUBLE_TYPE: double double_value;
+    };
+*/
+
+}; // end of module MyData
+
+#endif // __MYDATA_IDL__
+

@@ -272,7 +272,7 @@ void dump_value_by_typecode(void *val, CORBA_TypeCode tc){
        fprintf(stderr, "Float = %f \n", *((float *)val));
        break;
     case tk_double:
-       fprintf(stderr, "Float = %lf \n", *((double *)val));
+       fprintf(stderr, "Double = %lf \n", *((double *)val));
        break;
     case tk_string:
        fprintf(stderr, "String = %s, 0x%x \n", *((char **)val),  (int)(*((char **)val)));
@@ -280,16 +280,30 @@ void dump_value_by_typecode(void *val, CORBA_TypeCode tc){
     case tk_sequence:
        fprintf(stderr, "Sequence found --0x%x ---\n", val);
        fprintf(stderr, "  len=%d ---\n", ((CORBA_SequenceBase *)val)->_length);
-       dump_value_by_typecode(((CORBA_SequenceBase *)val)->_buffer, tc->member_type[i]);
+
+       CORBA_SequenceBase* sb = (CORBA_SequenceBase*)val;
+       for(i=0;i<((CORBA_SequenceBase *)val)->_length;i++){
+          dump_value_by_typecode(&sb->_buffer[i], tc->member_type[i]);
+       }
+
        fprintf(stderr, "==== Sequence\n");
        break;
     case tk_except:
     case tk_struct:
        fprintf(stderr, "Struct found-- 0x%x ----\n", val);
+
+       val = Align_Pointer_Address(val, align_of_typecode(tc, F_DEMARSHAL));
+
        for(i=0;i<tc->member_count;i++){
          fprintf(stderr, "address val = %x\n", (int)val);
+         val = Align_Pointer_Address(val, align_of_typecode(tc->member_type[i], F_DEMARSHAL));
+
 	 dump_value_by_typecode(val,  tc->member_type[i]);
+
 	 val += size_of_typecode(tc->member_type[i], F_DEMARSHAL);
+         if (i == (tc->member_count - 1)) {
+           val = (void**)Align_Pointer_Address(val, align_of_typecode(tc->member_type[i], F_DEMARSHAL));
+         }
        }
        fprintf(stderr, "==== Struct\n");
        break;

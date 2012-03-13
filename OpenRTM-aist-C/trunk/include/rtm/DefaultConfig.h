@@ -1,9 +1,17 @@
 /*
+ * Copyright (c) 2012, AIST.
+ * All rights reserved. This program is made available under the terms of the
+ * Eclipse Public License v1.0 which accompanies this distribution, and is
+ * available at http://www.eclipse.org/legal/epl-v10.html
+ * Contributors:
+ * National Institute of Advanced Industrial Science and Technology (AIST)
+ */
+/*!
+ * \file DefaultConfig.h
+ * \brief Manager用のDefaultコンフィギュレーションパラメータを定義したもの。
+ * \author National Institute of Advanced Industrial Science and Technology (AIST)
+ */
 
-
-
-
-*/
 #ifndef RTM_DEFAULT_CONFIG_H
 #define RTM_DEFAULT_CONFIG_H
 
@@ -11,6 +19,9 @@ static const char openrtm_version[] = "1.0";
 static const char openrtm_name[] = "OpenRTM-aist-C-1.0";
 static const char corba_name[] = "RtORB-1.0";
 
+/*!
+ * @brief Manager用 デフォルト・コンフィギュレーションパラメータ。["名称"/"データ"]のセット
+ */
 static const char* default_config[] =
 {
   "config.version",                     openrtm_version,

@@ -132,6 +132,9 @@ uint32_t size_of_typecode(CORBA_TypeCode tc, int flag)
        for(i=0, size=0; i<tc->member_count;i++){
            Address_Alignment(&size, align_of_typecode(tc->member_type[i], flag));
            size += size_of_typecode(tc->member_type[i], flag);
+           if (i == (tc->member_count - 1)) {
+               Address_Alignment(&size, align_of_typecode(tc, flag)); /* Last padding */
+           }
        }
        return size;
     case tk_union:
@@ -172,8 +175,7 @@ uint32_t align_of_typecode(CORBA_TypeCode tc, int flag)
        return 1;
     case tk_sequence:
        return 4;
-    case tk_struct:
-       return align_of_typecode(tc->member_type[0], flag);
+    case tk_struct:  /* Modified to get Max_Align. */
     case tk_union:
        for(i=0, max_align=0; i<tc->member_count;i++){
 	   if((align = align_of_typecode(tc->member_type[i], flag)) > max_align) max_align = align;
@@ -618,6 +620,12 @@ demarshal_by_typecode(void **dist, CORBA_TypeCode tc, octet *buf, int *current, 
       {
         len = demarshalLong(buf, current, order);
         if (dist) {
+#if 1  /* Free() (But, need to comment out in [C++_Wrapper ver]...) */
+          if(*dist) {
+            RtORB_free(*dist, "Free {demarshal_by_typecode(string)}");
+            *dist = NULL;
+          }
+#endif
           *dist = (void *)RtORB_alloc(len, "demarshal_by_typecode(string)");
 	  copy_octet(*dist, buf, len, current);
         } else {
@@ -633,6 +641,10 @@ demarshal_by_typecode(void **dist, CORBA_TypeCode tc, octet *buf, int *current, 
         void **s_tmp = NULL;
         CORBA_SequenceBase *sb = NULL;
 
+        int MaxSize = 2000000;  /* Max SequeceData Size (For alloc) */
+        int32_t buf_size = 0;
+        void **s_tmp_base;
+
 	len = demarshalLong(buf, current, order);
 
         if (dist) {
@@ -647,41 +659,65 @@ demarshal_by_typecode(void **dist, CORBA_TypeCode tc, octet *buf, int *current, 
 
 	if (len > 0) {
           if (sb != NULL) {
-            s_tmp=sb->_buffer=(void **)RtORB_alloc_by_typecode(tc->member_type[0],
-			 len, "demarshal_by_typecode(sequence)");
-	  }
-	  for(i=0;i<len;i++){
-            offset = demarshal_by_typecode(s_tmp, tc->member_type[0], 
-					     buf, current, order);
-            if (s_tmp) {
+            s_tmp = s_tmp_base = (void**)RtORB_alloc(MaxSize, "demarshal_by_typecode(sequence) (maxsize)");  /* Allocate by MaxSize as Buffer */
+            if (!s_tmp_base) return 0;
+
+	    for(i=0;i<len;i++){
+              offset = demarshal_by_typecode(s_tmp, tc->member_type[0], buf, current, order);  
+
+              if (s_tmp) {
 #if DEBUG
-              dump_value_by_typecode(s_tmp, tc->member_type[0]);
+                dump_value_by_typecode(s_tmp, tc->member_type[0]);
 #endif
-              s_tmp = (void **)((char*)s_tmp + offset);
-	     }
-	   }
-	 }
+                s_tmp = (void **)((char*)s_tmp + offset); 
+	      }
+	    }
+            buf_size = (char*)s_tmp - (char*)s_tmp_base; /* Get needed buffer size */
+            sb->_buffer = (void**)RtORB_alloc(buf_size, "demarshal_by_typecode(sequence) (buffer)"); /* Allocate buffer */
+            if (!sb->_buffer) {
+                RtORB__free(s_tmp_base, "demarshal_by_typecode(sequence) (free)");
+                s_tmp_base = NULL;
+                return 0;
+            } else {
+                memcpy(sb->_buffer, s_tmp_base, buf_size);  /* Set unmarshaled data */
+                RtORB__free(s_tmp_base, "demarshal_by_typecode(sequence) (free)");
+                s_tmp_base = NULL;
+            }
+          } /* if(sb) */
+	} /* if(len) */
+
        }
        break;
 
      case tk_except:
      case tk_struct:
        {
-         int i;
+          int i;
           uint32_t tmp;
           void **args = dist;
 
-          Address_Alignment(current, 4);
+          Address_Alignment(current, align_of_typecode(tc,F_DEMARSHAL)); /* Align by MaxSize*/
+          /* Shift for Struct Padding (case: sequence<struct>) */
+          args = (void**)Align_Pointer_Address((void*)args, align_of_typecode(tc, F_DEMARSHAL));
+
   	  for(i=0;i<tc->member_count;i++){
-             tmp = demarshal_by_typecode(args, tc->member_type[i],
-			     buf, current, order);
-	     if (args) {
+            /* Shift for Members Padding */
+            args = (void**)Align_Pointer_Address((void*)args, align_of_typecode(tc->member_type[i], F_DEMARSHAL));  /* Each members align*/
+
+            tmp = demarshal_by_typecode(args, tc->member_type[i],buf, current, order);  
+
+            if (args) {
 #if DEBUG
                dump_value_by_typecode(args,  tc->member_type[i]);
 #endif
                args = (void **)((char *)args + tmp);
-            }
-          }
+
+               /* Add padding after last member by aligment of Struct(max alignment of members) */
+               if (i == (tc->member_count - 1)) {
+                 args = (void**)Align_Pointer_Address((void*)args, align_of_typecode(tc, F_DEMARSHAL));  /* Last align */
+               }
+             }
+          } /* for() */
         }
         break;
 

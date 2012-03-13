@@ -1,5 +1,5 @@
 
-本ソフトウェアは RtORB version 0.4 です。
+本ソフトウェアは OpenRTM-aist-C version 1.0 です。
 
 使用条件等は LICENSE-ja.txt をお読みください。
 

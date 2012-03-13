@@ -1,4 +1,6 @@
 #!/bin/bash
-export DYLD_LIBRARY_PATH=../lib/orb
-#gdb ./NameService 
+
+#export DYLD_LIBRARY_PATH=$OPENRTM_C_DIR/lib/orb
+export LD_LIBRARY_PATH=$OPENRTM_C_DIR/lib/orb
+
 ./NameService 

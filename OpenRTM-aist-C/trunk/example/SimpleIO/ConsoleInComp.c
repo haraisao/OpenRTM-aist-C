@@ -1,20 +1,14 @@
-/*
-   SimpleIO: ConsoleInComp.c
-
-
-*/
-
 #include <rtm/OpenRTM.h>
 #include <strings.h>
 #include "ConsoleIn.h"
 
 /*
-   Console In Procedure
+   RTC Procedure
 */
 RTC_ReturnCode_t
 MyModuleInit(RTC_Manager *manager)
 {
-  RTC_RtcBase comp;
+  RTC_RtcBase comp;             
   RTC_ComponentProfile *prof;
   RTC_PortServiceList *portlist;
   CORBA_Environment env;
@@ -24,7 +18,7 @@ MyModuleInit(RTC_Manager *manager)
   /*
     Userfunction
   */
-  ConsoleInInit(manager);
+  RtcInit(manager);
 
   /*
      Create a component: library
@@ -32,9 +26,18 @@ MyModuleInit(RTC_Manager *manager)
   fprintf(stdout,  "Creating a component: \"ConsoleIn\"....");
   clearEnvironment(&env);
 
-  comp = RTC_Manager_createComponent(manager, "ConsoleIn");
+  comp = RTC_Manager_createComponent(manager, "ConsoleIn");    /* [User_TODO]: <RTC's name> */
+  if (!comp) {
+    fprintf(stderr,  "Failed to create component.\n");
+    abort();
+  } else {
+    fprintf(stdout,  "succeed.\n");
+  }
 
-  fprintf(stdout,  "succeed.\n");
+
+  /*===========================================================================*/
+  /*======================= Dump Profile ======================================*/
+  /*===========================================================================*/
 
   prof = RTC_RTObject_get_component_profile(comp, &env);
 
@@ -47,22 +50,24 @@ MyModuleInit(RTC_Manager *manager)
   fprintf(stdout, "Version:        %s\n", prof->version );
   fprintf(stdout, "Maker:          %s\n", prof->vendor );
   fprintf(stdout, "Category:       %s\n", prof->category );
-  fprintf(stdout, "  Other properties   \n");
+  fprintf(stdout, "\n  Other properties <NVUtil_dump(prof->properties)>   \n");
 
   NVUtil_dump(prof->properties);
 
-  fprintf(stdout, "=================================================\n");
+  fprintf(stdout, "=================================================\n\n");
 
   portlist = RTC_RTObject_get_ports(comp, &env);
   n = portlist->_length; 
 
   if(n == 0){
       fprintf(stdout, "No data port found.\n");
+  } else {
+      fprintf(stdout, "Data port found!!\n");
   }
 
   for (i=0; i < n; ++i)
   {
-    RTC_PortService *port;
+    RTC_PortService port;
     RTC_PortProfile *port_profile;
     RTC_PortInterfaceProfileList *iflist;
     RTC_PortInterfaceProfile *pip;
@@ -84,7 +89,7 @@ MyModuleInit(RTC_Manager *manager)
     iflist = &port_profile->interfaces;
     ProfileLen = iflist->_length;
 
-    for (j=0; j < n; ++j)
+    for (j=0; j < ProfileLen; ++j)
     {
         pip = &(iflist->_buffer[j]);
         pol = pip->polarity == 0 ? "PROVIDED" : "REQUIRED";
@@ -102,6 +107,7 @@ MyModuleInit(RTC_Manager *manager)
     NVUtil_dump(port_profile->properties);
     fprintf(stdout, "-------------------------------------------------\n");
   }
+
   return RTC_RTC_OK;
 }
 
@@ -121,6 +127,7 @@ main(int argc, char** argv)
   RTC_Manager_activateManager(manager);
 
   RTC_Manager_runManager(manager, mode);
+
   return 0;
 }
 

@@ -1,8 +1,16 @@
 /*
-
-
-
-*/
+ * Copyright (c) 2012, AIST.
+ * All rights reserved. This program is made available under the terms of the
+ * Eclipse Public License v1.0 which accompanies this distribution, and is
+ * available at http://www.eclipse.org/legal/epl-v10.html
+ * Contributors:
+ * National Institute of Advanced Industrial Science and Technology (AIST)
+ */
+/*!
+ * \file typedefs.h
+ * \brief 各種データ型を環境依存対応のためtypedefしているファイル
+ * \author National Institute of Advanced Industrial Science and Technology (AIST)
+ */
 
 #ifndef RTM_TYPEDEFS_H
 #define RTM_TYPEDEFS_H
