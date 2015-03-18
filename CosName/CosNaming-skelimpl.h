@@ -3,8 +3,8 @@
 /* User must edit this file, inserting servant  */
 /* specific code between markers. */
 
-#ifndef COSNAMING_SKELIMPL_H
-#define COSNAMING_SKELIMPL_H
+#ifndef COSNAMINGœõ9çÈUÏœõ9çÈUÏœõ9(m_SKELIMPL_H
+#define COSNAMINGœõ9çÈUÏœõ9çÈUÏœõ9(m_SKELIMPL_H
 
 #include "CosNaming.h"
 

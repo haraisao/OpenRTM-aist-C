@@ -129,7 +129,7 @@ int copy_fds_set(fd_set *target, fd_set *src){
   int k;
   int	 nfds = 1;
 
-  for(k= FD_SETSIZE; k >0 ;k--){
+  for(k = FD_SETSIZE-1; k >0 ;k--){
     if(FD_ISSET(k, src)){
       FD_SET(k, target);
       if(nfds < k) nfds = k+1;
