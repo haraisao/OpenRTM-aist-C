@@ -224,7 +224,9 @@ RTC_Manager_createComponent(RTC_Manager *manager, const char *comp_args)
   }
 
   /* Bind RTC to NameServer */
+  fprintf(stderr, "=== registerComponent === \n");
   RTC_Manager_registerComponent(manager, res);
+  fprintf(stderr, "=== done === \n");
 
   return res;
 }
@@ -254,8 +256,10 @@ RTC_Manager_registerComponent(RTC_Manager *mgr, CORBA_RTC_RTObject comp)
   int i,len;
   char **names;
 
+  fprintf(stderr, " ===> registerComponet \n");
   names = RTC_RTObject_getNamingNames(comp, &len);
 
+  fprintf(stderr, " len=%d, names ===> %s \n", len, names[0]);
   for (i = 0; i < len; ++i){
     /* Bind */
     RTC_NamingManager_bindObject(mgr->m_namingManager, names[i], comp);

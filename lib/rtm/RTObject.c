@@ -369,6 +369,5 @@ double
 RTObject_getExecutionContextRate(CORBA_RTC_RTObject obj)
 {
   impl_POA_RTC_RTObject  *implobj=(impl_POA_RTC_RTObject *)obj->servant;
-  return atof(Properties_getProperty(implobj->m_properties, "exec_cxt.periodic.rate"));
-
+  return (double)atof(Properties_getProperty(implobj->m_properties, "exec_cxt.periodic.rate"));
 }

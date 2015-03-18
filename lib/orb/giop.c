@@ -340,6 +340,7 @@ GIOP_ReplyBody *invokeServant(PortableServer_POA poa,
     }
     if(!obj_key) obj_key = (char *)"NameService";
     if(strcmp(obj_key, "OpenRTMNamingNotifier") == 0) obj_key = (char *)"NameService";
+
     poa_obj = (RtORB_POA_Object *)getValue(tbl, obj_key);
   }
 

@@ -107,6 +107,8 @@ impl_RTC_LightweightRTObject_initialize(
   impl_POA_RTC_RTObject *rtobj_servant;
   impl_POA_RTC_ExecutionContextService *ecs_servant;
   CORBA_double rate;
+
+  double RTObject_getExecutionContextRate();
   
   rtobj_servant = (impl_POA_RTC_RTObject *)servant;
   rtobj_ref = PortableServer_POA_servant_to_reference(rtobj_servant->poa, rtobj_servant, ev); 
@@ -131,6 +133,7 @@ impl_RTC_LightweightRTObject_initialize(
   /* Get and Set EC rate (from configuration ["exec_cxt.periodic.rate"]) */
   ecs_servant = ecs_ref->servant;
   rate = (CORBA_double)RTObject_getExecutionContextRate(rtobj_ref);
+
   clearEnvironment(ev);
   retval = RTC_ExecutionContext_set_rate(ecs_ref, rate, ev);
   if (retval != RTC_RTC_OK) { 

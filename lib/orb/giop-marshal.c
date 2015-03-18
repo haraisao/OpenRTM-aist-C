@@ -178,12 +178,17 @@ uint32_t align_of_typecode(CORBA_TypeCode tc, int flag)
     case tk_struct:  /* Modified to get Max_Align. */
     case tk_union:
        for(i=0, max_align=0; i<tc->member_count;i++){
-	   if((align = align_of_typecode(tc->member_type[i], flag)) > max_align) max_align = align;
+        if((align = align_of_typecode(tc->member_type[i], flag)) > max_align){
+          max_align = align;
+        }
        }
        return max_align;
     case tk_string:
+       return 4;
+/*
        if(flag == F_MARSHAL) return 4;
-       return sizeof(void *);
+       return sizeof(char *);
+*/
     default:
       if (tc->alignment) return tc->alignment;
       else return 1;
@@ -880,6 +885,7 @@ deMarshal_Arg(octet *buf, int i_args, CORBA_IArg *i_argv, int order){
   for(i=0;i<i_args;i++){
     /* Memory of the in ant in-out argment is allocated.  */
     /* That of the out argment is NOT.    */
+
     if(i_argv[i].io == CORBA_I_ARG_IN || i_argv[i].io == CORBA_I_ARG_INOUT )
     {
       argv[i] = RtORB_alloc_by_typecode(i_argv[i].tc, 1, "deMarshal_Arg");
@@ -887,6 +893,7 @@ deMarshal_Arg(octet *buf, int i_args, CORBA_IArg *i_argv, int order){
     } else {
       CORBA_TypeCode tc = i_argv[i].tc;
       SKIP_ALIAS(tc);
+
       switch(tc->kind) {
       case tk_sequence:
       case tk_union:

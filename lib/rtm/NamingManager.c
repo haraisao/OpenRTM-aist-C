@@ -79,6 +79,7 @@ RTC_NamingManager_bindObject(RTC_NamingManager *mgr, const char *name, const RTC
     RTC_NamingBase *nb = mgr->m_names[i]->name;
     if (nb != NULL){
       /* Bind RTC to NameServer */
+      fprintf(stderr, " === bindObject %s \n", name);
       RTC_NamingBase_bindObject(nb, name, rtobj);
     }
   }
@@ -333,6 +334,7 @@ static int RTC_NamingBase_bindObject(RTC_NamingBase *nb, const char *name, const
   namingName->_buffer = CosNaming_Name_allocbuf(names->length);
   namingName->_length = namingName->_maximum = names->length;
 
+  fprintf(stderr, "~~~ prepare bind buffer ~~~\n");
   for(i=0;i<names->length;i++){
     char *nn = names->buffer[i];
     if(count_delim(nn, '.') > 0){
@@ -342,9 +344,12 @@ static int RTC_NamingBase_bindObject(RTC_NamingBase *nb, const char *name, const
       strncpy(str1, nn, strlen(nn) - strlen(str));
       namingName->_buffer[i].id = strdup(str1);    /* [NameComponent].[id] */
       namingName->_buffer[i].kind = strdup(str+1); /* [NameComponent].[kind] */
+      fprintf(stderr, "~~~ namingName = (%s, %s)\n",
+        namingName->_buffer[i].id , namingName->_buffer[i].kind
+      );
     }
   }
-
+ 
   /* Bind to NameServer([CosNaming]) */
   clearEnvironment(&nb->env);
   CosNaming_NamingContext_rebind(nb->rootContext, namingName, obj, &nb->env); 
