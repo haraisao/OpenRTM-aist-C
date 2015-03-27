@@ -90,6 +90,41 @@ RTC_DataPortBase* Port_createPort(CORBA_RTC_RTObject rtobj, const char *port_nam
   return dataport;
 }
 
+/*
+ Called from [RTC_OutPort_create(), RTC_inPort_create()].
+*/
+RTC_DataPortBase* Port_createPort2(CORBA_RTC_RTObject rtobj, const char *port_name, CORBA_TypeCode typecode, DataPortType port_type)
+{
+
+  /* get DataTypeName separated ModuleName */
+  char *typename = typecode->identifier;
+
+  /* create PortService and PortProfile */
+  CORBA_RTC_PortService ps_obj;
+  ps_obj = Port_create_PortService(rtobj, port_name, typename, port_type);
+
+  /* Create Port's parameter to RTC_DataPort struct */
+  RTC_DataPortBase* dataport;
+  if (port_type == INPORT_TYPE) {
+    dataport = (RTC_InPort *)RtORB_calloc(1, sizeof(RTC_InPort)
+                                           , "Create RTC_InPort");
+  } else if (port_type == OUTPORT_TYPE) {
+    dataport = (RTC_OutPort *)RtORB_calloc(1, sizeof(RTC_OutPort)
+                                            , "Create RTC_OutPort");
+  } else {
+    fprintf(stderr
+         , " [ERROR] Can't create DataPortBase by unknown 'DataPortType'.\n");
+    return  NULL;
+  }
+  if (Port_create_DataPortBase(dataport, port_type, typecode, ps_obj) <0) {
+    /* Release heap memory */
+    Port_deletePort();
+    return NULL;
+  }
+
+  return dataport;
+}
+
 
 /* =========================== [ Delete ] ================================== */
 void Port_deletePort()
@@ -238,7 +273,10 @@ int Port_Marshal_by_TypeCode(OpenRTM_CdrData *cdr_data,  RTC_OutPort *out_port)
   memset(cdr_buf, 0, MAX_MARSHALBUF);
 
   /* Marshal to Buffer, and calculate DataSize */
+  fprintf(stderr, "Port Marshal tc = %s\n", out_port->m_typecode->identifier);
   data_size = marshal_by_typecode((octet*)cdr_buf, out_port->m_value, out_port->m_typecode, &pos);
+
+  fprintf(stderr, "Port Marshal buff_size = %d\n", data_size);
 
   /* Allocate memory for CDR_Stream data */
   cdr_data->_buffer = OpenRTM_CdrData_allocbuf(data_size);
@@ -471,8 +509,12 @@ static CORBA_TypeCode Port_getTypeCode(char* repoid)
 {
   /* [refer to] <RtORB> [corba-typecode.c] CORBA_TypeCode_get_by_repoid() */
 
+  extern CORBA_TypeCode CORBA_TypeCode_get_dynamic();
+  CORBA_TypeCode res;
   int i,len;
   len = sizeof(TypeCodeTbl)/sizeof(TypeCodeTbl[0]);
+
+  fprintf(stderr, "== RepoID = %s ==\n", repoid);
 
   for (i=0; i<len; i++) {
     if (!TypeCodeTbl[i]) { continue; }
@@ -480,7 +522,9 @@ static CORBA_TypeCode Port_getTypeCode(char* repoid)
       return TypeCodeTbl[i];  // Matched
     }
   }
-  return NULL;  //Unmatched
+
+  return CORBA_TypeCode_get_dynamic(0, repoid, 0);
+  //return NULL;  //Unmatched
 
   //TODO: TypeCodeテーブルの事前作成と、その取得方法などは別途検討
 

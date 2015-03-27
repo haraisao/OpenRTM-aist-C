@@ -89,52 +89,52 @@ Rtc_onInitialize(RTComp *obj)
   /** Create DataPort **/
 
     /* TimedShortSeq */
-  private->m_tmShortSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmShortSeq", "RTC_TimedShortSeq");
+  private->m_tmShortSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmShortSeq", TC_RTC_TimedShortSeq);
   if (private->m_tmShortSeqOut == NULL) return RTC_RTC_ERROR;
   else private->m_tmShortSeq = (RTC_TimedShortSeq*)private->m_tmShortSeqOut->m_value;
 
     /* TimedLongSeq */
-  private->m_tmLongSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmLongSeq", "RTC_TimedLongSeq");
+  private->m_tmLongSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmLongSeq", TC_RTC_TimedLongSeq);
   if (private->m_tmLongSeqOut == NULL) return RTC_RTC_ERROR;
   else private->m_tmLongSeq = (RTC_TimedLongSeq*)private->m_tmLongSeqOut->m_value;
 
     /* TimedUShortSeq */
-  private->m_tmUShortSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmUShortSeq", "RTC_TimedUShortSeq");
+  private->m_tmUShortSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmUShortSeq", TC_RTC_TimedUShortSeq);
   if (private->m_tmUShortSeqOut == NULL) return RTC_RTC_ERROR;
   else private->m_tmUShortSeq = (RTC_TimedUShortSeq*)private->m_tmUShortSeqOut->m_value;
 
     /* TimedULongSeq */
-  private->m_tmULongSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmULongSeq", "RTC_TimedULongSeq");
+  private->m_tmULongSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmULongSeq", TC_RTC_TimedULongSeq);
   if (private->m_tmULongSeqOut == NULL) return RTC_RTC_ERROR;
   else private->m_tmULongSeq = (RTC_TimedULongSeq*)private->m_tmULongSeqOut->m_value;
 
     /* TimedFloatSeq */
-  private->m_tmFloatSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmFloatSeq", "RTC_TimedFloatSeq");
+  private->m_tmFloatSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmFloatSeq", TC_RTC_TimedFloatSeq);
   if (private->m_tmFloatSeqOut == NULL) return RTC_RTC_ERROR;
   else private->m_tmFloatSeq = (RTC_TimedFloatSeq*)private->m_tmFloatSeqOut->m_value;
 
     /* TimedDoubleSeq */
-  private->m_tmDoubleSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmDoubleSeq", "RTC_TimedDoubleSeq");
+  private->m_tmDoubleSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmDoubleSeq", TC_RTC_TimedDoubleSeq);
   if (private->m_tmDoubleSeqOut == NULL) return RTC_RTC_ERROR;
   else private->m_tmDoubleSeq = (RTC_TimedDoubleSeq*)private->m_tmDoubleSeqOut->m_value;
 
     /* TimedCharSeq */
-  private->m_tmCharSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmCharSeq", "RTC_TimedCharSeq");
+  private->m_tmCharSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmCharSeq", TC_RTC_TimedCharSeq);
   if (private->m_tmCharSeqOut == NULL) return RTC_RTC_ERROR;
   else private->m_tmCharSeq = (RTC_TimedCharSeq*)private->m_tmCharSeqOut->m_value;
 
     /* TimedBooleanSeq */
-  private->m_tmBooleanSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmBooleanSeq", "RTC_TimedBooleanSeq");
+  private->m_tmBooleanSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmBooleanSeq", TC_RTC_TimedBooleanSeq);
   if (private->m_tmBooleanSeqOut == NULL) return RTC_RTC_ERROR;
   else private->m_tmBooleanSeq = (RTC_TimedBooleanSeq*)private->m_tmBooleanSeqOut->m_value;
 
     /* TimedOctetSeq */
-  private->m_tmOctetSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmOctetSeq", "RTC_TimedOctetSeq");
+  private->m_tmOctetSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmOctetSeq", TC_RTC_TimedOctetSeq);
   if (private->m_tmOctetSeqOut == NULL) return RTC_RTC_ERROR;
   else private->m_tmOctetSeq = (RTC_TimedOctetSeq*)private->m_tmOctetSeqOut->m_value;
 
     /* TimedStringSeq */
-  private->m_tmStringSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmStringSeq", "RTC_TimedStringSeq");
+  private->m_tmStringSeqOut = RTC_OutPort_create(obj->m_rtobjRef, "tmStringSeq", TC_RTC_TimedStringSeq);
   if (private->m_tmStringSeqOut == NULL) return RTC_RTC_ERROR;
   else private->m_tmStringSeq = (RTC_TimedStringSeq*)private->m_tmStringSeqOut->m_value;
 

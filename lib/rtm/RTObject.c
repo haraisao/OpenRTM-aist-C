@@ -29,7 +29,7 @@ RTC_DataFlowComponentBase_create(RTC_Manager *manager)
   return res;
 }
 
-
+#if 0
 /*
  Called from [<USER_RTCOMP> onInitialzie()].
 */
@@ -48,6 +48,29 @@ RTC_InPort_create(CORBA_RTC_RTObject rtobj, const char *port_name, const char *t
 {
   return (RTC_InPort*)Port_createPort(rtobj, port_name, type_name, INPORT_TYPE);
 }
+
+#else
+/*
+ Called from [<USER_RTCOMP> onInitialzie()].
+*/
+RTC_OutPort*
+RTC_OutPort_create(CORBA_RTC_RTObject rtobj, const char *port_name, CORBA_TypeCode typecode)
+{
+  return (RTC_OutPort*)Port_createPort2(rtobj, port_name, typecode, OUTPORT_TYPE);
+}
+
+
+/*
+ Called from [<USER_RTCOMP> onInitialzie()].
+*/
+RTC_InPort*
+RTC_InPort_create(CORBA_RTC_RTObject rtobj, const char *port_name, CORBA_TypeCode typecode)
+{
+  return (RTC_InPort*)Port_createPort2(rtobj, port_name, typecode, INPORT_TYPE);
+}
+
+
+#endif
 
 
 /*

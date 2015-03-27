@@ -11,6 +11,7 @@ CFLAGS  += -g
 CFLAGS  += -fPIC
 #CFLAGS  += -O0
 CFLAGS  += -O2
+#CFLAGS  += -DOS64
 
 #ifeq ($(UNAME),Linux)
 #CFLAGS  +=  -malign-double

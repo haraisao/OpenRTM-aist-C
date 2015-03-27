@@ -86,8 +86,13 @@ Rtc_onInitialize(RTComp *obj)
   RTC_Member *private = (RTC_Member*)obj->m_private;
 
   /** Create DataPort **/
+#if 0
   private->m_outOut = RTC_OutPort_create(obj->m_rtobjRef, "out", "MyData_MyStruct2");
   private->m_out2Out = RTC_OutPort_create(obj->m_rtobjRef, "out2", "RTC_TimedLong");
+#else
+  private->m_outOut = RTC_OutPort_create(obj->m_rtobjRef, "out", TC_MyData_MyStruct2);
+  private->m_out2Out = RTC_OutPort_create(obj->m_rtobjRef, "out2", TC_RTC_TimedLong);
+#endif
 
   if (private->m_outOut == NULL)
   {
@@ -106,7 +111,7 @@ Rtc_onInitialize(RTComp *obj)
   }
 
   /* set Sequence length */
-  RTC_OutPort_setSeqLength(private->m_outOut, 3, (void*)(&private->m_out->mystseq), "mystseq");
+  RTC_OutPort_setSeqLength(private->m_outOut, 4, (void*)(&private->m_out->mystseq), "mystseq");
   printf("[DEBUG] <mystseq> getSeqLen() = %d\n",RTC_OutPort_getSeqLength(private->m_outOut, (void*)(&private->m_out->mystseq), "mystseq"));
 
   return RTC_RTC_OK;
@@ -176,7 +181,7 @@ Rtc_onExecute(RTComp *obj, RTC_UniqueId ec_id)
   fprintf(stdout, " sh = %d \n",private->m_out->sh);
 
   /* sequence<MyStruct1> data */
-  for(i=0; i<3; i++) {
+  for(i=0; i<4; i++) {
 
     if (counter%2 == 0) {
       private->m_out->mystseq._buffer[i].str = (i%2 == 0) ? "efghijklmnop" : "ABCD";

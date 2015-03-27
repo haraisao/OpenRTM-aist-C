@@ -31,6 +31,7 @@
  */
 CORBA_RTC_RTObject RTC_DataFlowComponentBase_create(RTC_Manager *manager);
 
+#if 0
 /*!
  * \brief OutPortオブジェクトを生成する。内部で[Port_createPort()]をcallするのみ。
  * \param rtobj DataPortを保持する親のRTC_RTObjectオブジェクト
@@ -49,6 +50,27 @@ RTC_OutPort* RTC_OutPort_create(CORBA_RTC_RTObject rtobj, const char *port_name,
  */
 RTC_InPort* RTC_InPort_create(CORBA_RTC_RTObject rtobj, const char *port_name, const char *type_name);
 
+#else
+/*!
+ * \brief OutPortオブジェクトを生成する。内部で[Port_createPort()]をcallするのみ。
+ * \param rtobj DataPortを保持する親のRTC_RTObjectオブジェクト
+ * \param port_name 生成するOutPortの名前
+ * \param type_name 生成するOutPortで扱うデータのデータ型名称(モジュール名_変数名の必要あり。例として、[RTC_TimedLong]など)
+ * \return 生成されたOutPortの情報を管理する[RTC_OutPort]型データのポインタ
+ */
+RTC_OutPort* RTC_OutPort_create(CORBA_RTC_RTObject rtobj, const char *port_name, CORBA_TypeCode typecode);
+
+/*!
+ * \brief InPortオブジェクトを生成する。内部で[Port_createPort()]をcallするのみ。
+ * \param rtobj DataPortを保持する親のRTC_RTObjectオブジェクト
+ * \param port_name 生成するInPortの名前
+ * \param type_name 生成するInPortで扱うデータのデータ型名称(モジュール名_変数名の必要あり。例として、[RTC_TimedLong]など)
+ * \return 生成されたInPortの情報を管理する[RTC_InPort]型データのポインタ
+ */
+RTC_InPort* RTC_InPort_create(CORBA_RTC_RTObject rtobj, const char *port_name, CORBA_TypeCode typecode);
+
+
+#endif
 /*!
  * \brief OutPortにて、扱うデータの型が可変長(sequence型)の場合に、その長さを指定(メモリの確保)する。Portが生成されていれば、RTCがどの状態遷移にいても指定可能である。なお、サイズ「0」を指定すれば、既に確保したメモリを解放する。内部で[Port_setSequenceLength()]をcallするのみ。
  * \param out_port 生成済みのOutPortの情報を管理する[RTC_OutPort]型データのポインタ

@@ -174,7 +174,14 @@ uint32_t align_of_typecode(CORBA_TypeCode tc, int flag)
     case tk_void:
        return 1;
     case tk_sequence:
+#ifdef OS64
+       if(flag == F_MARSHAL) return 4;
+       return 8;
+#else
        return 4;
+#endif
+
+
     case tk_struct:  /* Modified to get Max_Align. */
     case tk_union:
        for(i=0, max_align=0; i<tc->member_count;i++){
@@ -624,14 +631,16 @@ demarshal_by_typecode(void **dist, CORBA_TypeCode tc, octet *buf, int *current, 
     case tk_string:
       {
         len = demarshalLong(buf, current, order);
+        //fprintf(stderr, "demarshal string len=%d\n", len);
         if (dist) {
-#if 1  /* Free() (But, need to comment out in [C++_Wrapper ver]...) */
+#if 0  /* Free() (But, need to comment out in [C++_Wrapper ver]...) */
           if(*dist) {
             RtORB_free(*dist, "Free {demarshal_by_typecode(string)}");
             *dist = NULL;
           }
 #endif
           *dist = (void *)RtORB_alloc(len, "demarshal_by_typecode(string)");
+          //fprintf(stderr, "demarshal copy_octet \n");
 	  copy_octet(*dist, buf, len, current);
         } else {
           *current += len;
@@ -927,6 +936,7 @@ void
 deMarshal_Result(void **retval, CORBA_TypeCode tc, octet *buf,
 		int *size, int order){
    SKIP_ALIAS(tc);
+   //fprintf(stderr, "Call deMarshal_Result  kind=%d\n", tc->kind);
 
    switch(tc->kind){
      case tk_union:
@@ -964,11 +974,13 @@ deMarshal_Arguments(void **retval, void **args, octet *buf,
   int current = 0;
   int size = 0;
 
+  //fprintf(stderr, "demarshal result\n");
   if (retval){
      deMarshal_Result(retval, method->retval, buf, &size, order);
      buf += size;
   }
 
+  //fprintf(stderr, "demarshal argout\n");
   for(i=0;i<method->in_argc;i++){
     if(method->in_argv[i].io == CORBA_I_ARG_OUT) {
       demarshal_by_typecode((void**)*(void**)args[i], method->in_argv[i].tc,
@@ -992,7 +1004,7 @@ int marshal_by_typecode(octet *buf, void *argv, CORBA_TypeCode tc, int *current)
   CORBA_TypeCode_add_dynamic(tc);
 
 #ifdef DEBUG_MARSHAL
-  fprintf(stderr, "  [[[ %s ]]](%d)\n", tc->repository_id, *current);
+  fprintf(stderr, "  [[[ %s (%d)]]](%d) 0x%x\n", tc->repository_id, tc->kind, *current, argv);
 #endif
   
   SKIP_ALIAS(tc);
@@ -1028,6 +1040,7 @@ int marshal_by_typecode(octet *buf, void *argv, CORBA_TypeCode tc, int *current)
     case tk_string:
       marshalString(buf, current, *((char **)argv));
       break;
+
     case tk_sequence:
       {
         int i;
@@ -1039,9 +1052,13 @@ int marshal_by_typecode(octet *buf, void *argv, CORBA_TypeCode tc, int *current)
         CORBA_SequenceBase *sb = (CORBA_SequenceBase *)argv;
 
         marshalLong(buf, current, sb->_length);
+     //fprintf(stderr, "seq max=%d\n", sb->_maximum);
+     //fprintf(stderr, "seq len=%d\n", sb->_length);
+     //fprintf(stderr, "seq buffer=%x\n", sb->_buffer);
+     //fprintf(stderr, "seq release=%x\n", sb->_release);
 
         align_base = align_of_typecode(tc->member_type[0],F_DEMARSHAL);
-        for(i=0;i<sb->_length;i++){
+        for(i=0; i < sb->_length; i++){
           Address_Alignment(&cpos, align_base);
           _buffer = (char *)sb->_buffer + cpos;
           marshal_by_typecode(buf, (void **)_buffer, tc->member_type[0], current);

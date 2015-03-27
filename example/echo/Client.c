@@ -37,7 +37,7 @@ getObjectReference(CORBA_ORB orb, CORBA_Environment *env){
 
   rootContext = (CosNaming_NamingContext)CORBA_ORB_resolve_initial_references(orb, "NameService", env);
   if(! rootContext  ) {
-     fprintf(stderr, "Fail to resolve NameServicn");
+     fprintf(stderr, "Fail to resolve NameService");
      return NULL;
   }
     CosNaming_Name *name = CosNaming_Name__alloc();
@@ -95,7 +95,7 @@ hello(Echo e, CORBA_Environment *env){
   res = Echo_echoString(e, src,  env);
   //res = Echo_echoString(e, arg,  env);
 
-  fprintf(stderr, "I said, \"%s\". The Echo object replied, \"%s\"\n", src, res);
+//  fprintf(stderr, "I said, \"%s\". The Echo object replied, \"%s\"\n", src, res);
   //free(res);
   return;
 }
@@ -197,7 +197,7 @@ fprintf(stderr, "... end string_to_object\n");
 
   gettimeofday(&tv1, &tz);
   for(i=0;i<n_loop;i++){
-fprintf(stderr, "hello");
+fprintf(stderr, "hello...\n");
 #if 0
     hello(myEcho, &env);
     hello2(myEcho, &env);
@@ -205,7 +205,7 @@ fprintf(stderr, "hello");
     plus(myEcho, &env);
 #endif
     hello(myEcho, &env);
-    divide(myEcho, &env);
+//    divide(myEcho, &env);
 fprintf(stderr, "...end\n");
   }
   gettimeofday(&tv2, &tz);

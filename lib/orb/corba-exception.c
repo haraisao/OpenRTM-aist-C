@@ -100,7 +100,7 @@ void clearException(CORBA_Environment *env){
      RtORB_free_by_typecode(env->_params._type, env->_params._vaue, 1); 
    }
   */
-  CORBA_any_clear(&env->_params);
+ // CORBA_any_clear(&env->_params);
   memset(env, 0, sizeof(CORBA_Environment));
 }
 

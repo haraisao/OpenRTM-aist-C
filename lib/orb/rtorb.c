@@ -146,6 +146,7 @@ void invokeMethod_via_GIOP(CORBA_Object obj,
   memset(&header, 0, SIZEOF_GIOP_HEADER);
   memset(buf, 0, MaxMessageSize);
 
+  //fprintf(stderr, "==Recv===\n");
   /*  receive reply */
   if(receiveMessage(h, &header, (octet *)buf, MaxMessageSize) < 0){
      env->_major = CORBA_SYSTEM_EXCEPTION;
@@ -158,15 +159,21 @@ void invokeMethod_via_GIOP(CORBA_Object obj,
     return;
   }
 
+  //fprintf(stderr, "==Done===\n");
  if((header.flags & 0x01) == 0 ) header.message_size=ntohl(header.message_size);
  else byte_order = 1;
  if(header.minor > 0) fragment = header.flags & 0x02;
 
+  //fprintf(stderr, "==Body===\n");
   body = (CORBA_Sequence_Octet *)new_CORBA_Sequence_Octet(0);
   actionReply((octet *)buf, body, method, env);
 
+  //fprintf(stderr, "==CheckExcepion===\n");
   if(env->_major == CORBA_NO_EXCEPTION){
+    //fprintf(stderr, "==No Excepion===\n");
     deMarshal_Arguments(retval, args, body->_buffer, method, byte_order);
+
+    //fprintf(stderr, "==Done===\n");
   }else if(env->_major == CORBA_USER_EXCEPTION){
        int len, i;
        int pos=0;
@@ -190,6 +197,7 @@ void invokeMethod_via_GIOP(CORBA_Object obj,
           fprintf(stderr, "Unknown Exception occured: %s\n", env->_repo_id);
   }
 
+  //fprintf(stderr, "=====\n");
   delete_CORBA_Sequence_Octet(body, 1);
 
   RtORB_free(h, "invokeMethod_via_GIOP(h)");
@@ -243,6 +251,7 @@ void invokeMethod(CORBA_Object obj,
   if(!CORBA_ORB_find_object(The_RootPOA, obj, env))
   {
     /* Object is in Remote_Host */
+//fprintf(stderr, "Call remote methods\n");
     invokeMethod_via_GIOP(obj, method, retval, args, env);
   }else{
     /* Object is in Local_Host */

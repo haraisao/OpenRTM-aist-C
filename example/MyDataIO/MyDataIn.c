@@ -86,9 +86,14 @@ Rtc_onInitialize(RTComp *obj)
   RTC_Member *private = (RTC_Member*)obj->m_private;
 
   /** Create DataPort **/
+#if 0
   private->m_inIn = RTC_InPort_create(obj->m_rtobjRef, "in", "MyData_MyStruct2");
   private->m_in2In = RTC_InPort_create(obj->m_rtobjRef, "in2", "RTC_TimedLong");
+#else
+  private->m_inIn = RTC_InPort_create(obj->m_rtobjRef, "in", TC_MyData_MyStruct2);
+  private->m_in2In = RTC_InPort_create(obj->m_rtobjRef, "in2", TC_RTC_TimedLong);
 
+#endif
   if (private->m_inIn == NULL)
   {
     return RTC_RTC_ERROR;

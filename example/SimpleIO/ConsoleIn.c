@@ -86,7 +86,7 @@ Rtc_onInitialize(RTComp *obj)
   RTC_Member *private = (RTC_Member*)obj->m_private;
 
   /** Create DataPort **/
-  private->m_outOut = RTC_OutPort_create(obj->m_rtobjRef, "out", "RTC_TimedLong");
+  private->m_outOut = RTC_OutPort_create(obj->m_rtobjRef, "out", TC_RTC_TimedLong);
   if (private->m_outOut == NULL)
   {
     return RTC_RTC_ERROR;

@@ -15,6 +15,7 @@ endif
 
 CFLAG_DEBUG = -Wall
 CFLAG_DEBUG += -g
+#CFLAG_DEBUG += -DUSE_THREAD
 #CFLAG_DEBUG += -DDEBUG
 #CFLAG_DEBUG += -DDEBUG_MALLOC 
 #CFLAG_DEBUG += -DHASH_DEBUG
@@ -52,9 +53,9 @@ LIBOBJS += poa.o
 LIBOBJS += rtorb.o connection.o server_loop.o
 LIBOBJS += $(NAMING_OBJ)
 
-ifdef CFLAG_THREAD
+#ifdef CFLAG_THREAD
 LIBOBJS += pthread.o
-endif 
+#endif 
 
 ifeq ($(UNAME),Cygwin)
 LIBORB = RtORB.dll

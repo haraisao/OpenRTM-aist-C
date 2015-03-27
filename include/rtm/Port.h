@@ -121,6 +121,8 @@ typedef RTC_DataPortBase RTC_InPort;
  */
 RTC_DataPortBase* Port_createPort(CORBA_RTC_RTObject rtobj, const char *port_name, const char *type_name, DataPortType port_type);
 
+RTC_DataPortBase* Port_createPort2(CORBA_RTC_RTObject rtobj, const char *port_name, CORBA_TypeCode typecode, DataPortType port_type);
+
 /*!
  * \brief 未実装(T.B.D)
  * \return 未実装(T.B.D)
